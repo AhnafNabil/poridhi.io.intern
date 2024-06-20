@@ -26,6 +26,14 @@
 ---
 - [Full Stack Application using React Flask MySQL]()
 ---
-- [Deploy Flask Application in k8s]()
+- [Deploy Flask Application in k8s](https://github.com/Konami33/poridhi.io.intern/tree/main/Deploy%20Flask%20application%20in%20k8s)
+    - [Deploy MySQL into Kubernetes and test connectivity from a Ubuntu container](https://github.com/Konami33/poridhi.io.intern/tree/main/Deploy%20Flask%20application%20in%20k8s/1)
+    - [Flask App and MySQL Deployment in Kubernetes](https://github.com/Konami33/poridhi.io.intern/tree/main/Deploy%20Flask%20application%20in%20k8s/2)
+    - [Create Flask and MySQL deployments using secrets](https://github.com/Konami33/poridhi.io.intern/tree/main/Deploy%20Flask%20application%20in%20k8s/3)
 ---
-- [Basic AWS Lab]()
+- [Basic AWS Lab](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB)
+    - [EC2-Setup](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/EC2-Setup)
+    - [Flask-Restapi-SQLAlchemy](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/EC2-Setup)
+    - [MySql-backup](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/EC2-Setup)
+    - [Private-subnet-mysql](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/EC2-Setup)
+    - [Two public subnet](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/EC2-Setup)
