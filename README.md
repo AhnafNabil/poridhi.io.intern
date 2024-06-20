@@ -24,3 +24,4 @@
 - [NGINX as a Load-Balancer]()
     - [Lab 1: NGINX l4 Load Balancer]()
 ---
+- [Full Stack Application using React Flask MySQL]()
