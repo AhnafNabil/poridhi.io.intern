@@ -166,6 +166,38 @@ After the deployment completes, you should see the exported VPC ID, public subne
 
 Go to the [AWS Management Console](https://aws.amazon.com/console/) and navigate to the VPC, Subnet, and Internet Gateway sections to verify that the resources have been created as expected.
 
+## Tear down the deployment
+
+To tear down (or destroy) the deployment created with Pulumi, you need to use the `pulumi destroy` command. This will delete all the resources that were created as part of the deployment. Follow these steps to destroy your Pulumi stack:
+
+### Step 1: Navigate to Your Project Directory
+
+Ensure you are in the directory where your Pulumi project is located. Open Command Prompt or PowerShell and navigate to your project directory:
+
+```sh
+cd my-vpc-project
+```
+
+### Step 2: Destroy the Pulumi Stack
+
+Run the following command to destroy the stack:
+
+```sh
+pulumi destroy
+```
+
+This command will show a preview of the resources that will be destroyed and prompt you to confirm the operation. Type "yes" to confirm and proceed with the destruction of the resources.
+
+### Step 3: Remove the Stack (Optional)
+
+If you no longer need the stack and want to remove it from Pulumi's state management, you can run the following command after destroying the resources:
+
+```sh
+pulumi stack rm
+```
+
+This will remove the stack from Pulumi's state file, but only do this if you are sure you no longer need to manage this stack.
+
 ## Summary
 
 By following these steps, you will have set up a VPC with one public subnet, a public route table, and an Internet Gateway using Pulumi and AWS CLI on Windows. If you encounter any issues or need further assistance, feel free to ask!

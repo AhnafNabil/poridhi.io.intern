@@ -13,6 +13,8 @@
     - [PULUMI python](https://github.com/Konami33/poridhi.io.intern/tree/main/PULUMI/PULUMI%20python)
     - [PULUMI js](https://github.com/Konami33/poridhi.io.intern/tree/main/PULUMI/PULUMI%20js)
 ---
+- [Nodejs labs](https://github.com/Konami33/poridhi.io.intern/tree/main/Nodejs%20labs)
+---
 - [k3s in AWS]()
     - [Lab 1: k3s-deployment-in-aws]()
 ---
