@@ -16,11 +16,11 @@
     - [Lab 4: SSH from Public Subnet Instance to Private Subnet Instance](https://github.com/Konami33/poridhi.io.intern/tree/main/PULUMI/lab-4)
 ---
 - [k3s in AWS]()
-    - [k3s-deployment-in-aws]()
+    - [Lab 1: k3s-deployment-in-aws]()
 ---
 - [Monitoring using Grafana]()
-    - [Monitoring-Login-Endpoint]
+    - [Lab 1: Monitoring-Login-Endpoint]()
 ---
 - [NGINX as a Load-Balancer]()
-    - [NGINX l4 Load Balancer]()
+    - [Lab 1: NGINX l4 Load Balancer]()
 ---
