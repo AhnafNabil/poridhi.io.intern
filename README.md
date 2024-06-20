@@ -15,16 +15,17 @@
 ---
 - [Nodejs labs](https://github.com/Konami33/poridhi.io.intern/tree/main/Nodejs%20labs)
 ---
-- [k3s in AWS]()
+- [k3s in AWS](https://github.com/Konami33/poridhi.io.intern/tree/main/k3s%20in%20AWS)
     - [Lab 1: k3s-deployment-in-aws]()
 ---
-- [Monitoring using Grafana]()
+- [Monitoring using Grafana](https://github.com/Konami33/poridhi.io.intern/tree/main/Monitoring%20using%20Grafana)
     - [Lab 1: Monitoring-Login-Endpoint]()
+    - [Lab 2: Flask MySQL latency]()
 ---
-- [NGINX as a Load-Balancer]()
+- [NGINX as a Load-Balancer](https://github.com/Konami33/poridhi.io.intern/tree/main/NGINX%20as%20a%20Load-Balancer)
     - [Lab 1: NGINX l4 Load Balancer]()
 ---
-- [Full Stack Application using React Flask MySQL]()
+- [Full Stack Application using React Flask MySQL](https://github.com/Konami33/poridhi.io.intern/tree/main/Full%20Stack%20Application%20using%20React%20flask%20MySQL)
 ---
 - [Deploy Flask Application in k8s](https://github.com/Konami33/poridhi.io.intern/tree/main/Deploy%20Flask%20application%20in%20k8s)
     - [Deploy MySQL into Kubernetes and test connectivity from a Ubuntu container](https://github.com/Konami33/poridhi.io.intern/tree/main/Deploy%20Flask%20application%20in%20k8s/1)
@@ -38,7 +39,7 @@
     - [Private-subnet-mysql](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/Two%20public%20subnet)
     - [Two public subnet](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/private-subnet-mysql)
 ---
-- [Kubernetes & Docker: The Container Masterclass]()
+- [Kubernetes & Docker: The Container Masterclass](https://github.com/Konami33/poridhi.io.intern/tree/main/Kubernetes%20%26%20Docker%20-%20The%20Container%20Masterclass)
     - [Chapter 1]()
     - [Chapter 2]()
     - [Chapter 3]()
