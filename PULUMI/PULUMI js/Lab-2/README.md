@@ -1,5 +1,3 @@
-To convert the provided Pulumi Python code to Pulumi JavaScript, you'll follow similar steps but use JavaScript syntax. Below is the complete conversion:
-
 # Lab 2: VPC with Public and Private Subnets, Route Tables, IGW, and NAT Gateway
 
 In this lab, we will expand our AWS VPC setup by adding both public and private subnets and configuring Internet access for the private subnet. Specifically, we will:
