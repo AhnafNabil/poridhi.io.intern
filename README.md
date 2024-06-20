@@ -33,7 +33,7 @@
 ---
 - [Basic AWS Lab](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB)
     - [EC2-Setup](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/EC2-Setup)
-    - [Flask-Restapi-SQLAlchemy](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/EC2-Setup)
-    - [MySql-backup](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/EC2-Setup)
-    - [Private-subnet-mysql](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/EC2-Setup)
-    - [Two public subnet](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/EC2-Setup)
+    - [Flask-Restapi-SQLAlchemy](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/Flask-Restapi-SQLAlchemy)
+    - [MySql-backup](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/MySql-backup)
+    - [Private-subnet-mysql](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/Two%20public%20subnet)
+    - [Two public subnet](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/private-subnet-mysql)
