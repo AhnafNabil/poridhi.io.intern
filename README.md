@@ -1,6 +1,6 @@
 # Index
 ---
-1. [MySQL Lab](https://github.com/Konami33/poridhi.io.intern/tree/main/MySQL-Lab)
+- [MySQL Lab](https://github.com/Konami33/poridhi.io.intern/tree/main/MySQL-Lab)
 
     - [Launch mysql using Docker](https://github.com/Konami33/poridhi.io.intern/blob/main/MySQL-Lab/1/README.md)
     - [Connecting with mysql container from flask](https://github.com/Konami33/poridhi.io.intern/blob/main/MySQL-Lab/2/README.md)
