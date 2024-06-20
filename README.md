@@ -25,3 +25,7 @@
     - [Lab 1: NGINX l4 Load Balancer]()
 ---
 - [Full Stack Application using React Flask MySQL]()
+---
+- [Deploy Flask Application in k8s]()
+---
+- [Basic AWS Lab]()
