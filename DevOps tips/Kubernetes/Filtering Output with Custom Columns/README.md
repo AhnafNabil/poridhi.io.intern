@@ -30,9 +30,10 @@ Filtering output with custom columns in `kubectl get` allows you to specify exac
    ```
    Output:
    ```
-   POD_NAME        NODE_NAME
-   pod1            node1
-   pod2            node2
+    POD_NAME   NODE_NAME
+    mypod      cluster-ubvvwx-master-1
+    mypod1     cluster-ubvvwx-worker-2
+    mypod2     cluster-ubvvwx-master-1
    ```
 
    #### Example 2: Show Service Names and Cluster IP
@@ -42,9 +43,8 @@ Filtering output with custom columns in `kubectl get` allows you to specify exac
    ```
    Output:
    ```
-   SERVICE_NAME    CLUSTER_IP
-   service1        10.1.2.3
-   service2        10.1.2.4
+    SERVICE_NAME   CLUSTER_IP
+    kubernetes     10.43.0.1
    ```
 
    #### Example 3: List Deployments with Namespace and Labels
@@ -54,15 +54,24 @@ Filtering output with custom columns in `kubectl get` allows you to specify exac
    ```
    Output:
    ```
-   DEPLOYMENT      NAMESPACE   LABELS
-   deployment1     default     app1
-   deployment2     default     app2
+   DEPLOYMENT         NAMESPACE   LABELS
+    nginx-deployment   default     <none>
    ```
 
     #### Example 4: Here is the command that gives custom output showing the pod name and CPU & memory requests.
 
     ```bash
     kubectl get pods -o custom-columns='POD_NAME:.metadata.name,CPU_REQUEST:.spec.containers[*].resources.requests.cpu,MEMORY_REQUEST:.spec.containers[*].resources.requests.memory'
+    ```
+    Output:
+    ```sh
+    POD_NAME                           CPU_REQUEST   MEMORY_REQUEST
+    mypod                              <none>        <none>
+    mypod1                             <none>        <none>
+    mypod2                             <none>        <none>
+    nginx-deployment-576c6b7b6-2tbs9   <none>        <none>
+    nginx-deployment-576c6b7b6-7k6hw   <none>        <none>
+    nginx-deployment-576c6b7b6-rr96v   <none>        <none>
     ```
 
     Explanation of the command:
@@ -72,17 +81,33 @@ Filtering output with custom columns in `kubectl get` allows you to specify exac
     - `CPU_REQUEST:.spec.containers[*].resources.requests.cpu`: Defines a column header `CPU_REQUEST` that displays the CPU request (`resources.requests.cpu`) for each container (`[*]` means all containers) within the pod.
     - `MEMORY_REQUEST:.spec.containers[*].resources.requests.memory`: Defines a column header `MEMORY_REQUEST` that displays the memory request (`resources.requests.memory`) for each container (`[*]` means all containers) within the pod.
 
-    Output:
+    #### Example 5: Here's the `kubectl get` command with `custom-columns` to display pod names along with the volumes defined in each pod:
+
+    ```bash
+    kubectl get pods -o custom-columns='POD_NAME:.metadata.name, VOLUMES:.spec.volumes[*].name'
     ```
-    POD_NAME        CPU_REQUEST   MEMORY_REQUEST
-    pod1            1             512Mi
-    pod2            0.5           256Mi
+
+    Explanation of the command:
+    - `kubectl get pods`: This fetches information about all pods in the cluster.
+    - `-o custom-columns='POD_NAME:.metadata.name, VOLUMES:.spec.volumes[*].name'`: Specifies custom columns to display.
+    - `POD_NAME:.metadata.name`: Defines a column header `POD_NAME` that displays the name of each pod (`metadata.name`).
+    - `VOLUMES:.spec.volumes[*].name`: Defines a column header `VOLUMES` that displays the names of all volumes (`spec.volumes[*].name`) defined in each pod.
+
+    Output will show something like:
+    ```
+    POD_NAME                            VOLUMES
+    mypod                              kube-api-access-bplh5
+    mypod1                             kube-api-access-tbnhf
+    mypod2                             kube-api-access-znfmt
+    nginx-deployment-576c6b7b6-2tbs9   kube-api-access-kfrhj
+    nginx-deployment-576c6b7b6-7k6hw   kube-api-access-qt95f
+    nginx-deployment-576c6b7b6-rr96v   kube-api-access-zlrzr
     ```
 
 ### Notes:
-- Ensure you have permissions to access pod information in the specified namespace or across the cluster, depending on your `kubectl` configuration.
-- The JSONPath expressions (`spec.containers[*].resources.requests.cpu` and `spec.containers[*].resources.requests.memory`) extract CPU and memory request values from each container within the pods.
-- Adjust the command as needed for different resource types or to include additional fields based on your requirements.
+- Make sure you have the appropriate permissions to access pod information in the specified namespace or across the cluster.
+- The `spec.volumes[*].name` JSONPath expression retrieves the names of all volumes defined within the pod's specification. Adjust the command if you need more detailed information or additional fields.
+- This command is useful for quickly viewing which volumes are mounted in each pod, which can be essential for troubleshooting or verifying deployment configurations.
 
 ### Tips:
 - **JSONPath Basics:** Use `kubectl explain` to understand the structure of Kubernetes resources and discover available fields for JSONPath expressions.
