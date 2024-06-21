@@ -54,3 +54,7 @@
     - [Chapter 12]()
     - [Chapter 13]()
     - [Chapter 14]()
+---
+- [DevOps Tips](https://github.com/Konami33/poridhi.io.intern/tree/main/DevOps%20tips)
+    - [Kubernetes](https://github.com/Konami33/poridhi.io.intern/tree/main/DevOps%20tips/Kubernetes)
+    - [Linux](https://github.com/Konami33/poridhi.io.intern/tree/main/DevOps%20tips/Linux)
