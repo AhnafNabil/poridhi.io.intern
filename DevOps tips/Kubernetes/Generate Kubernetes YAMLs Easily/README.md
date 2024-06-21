@@ -41,7 +41,7 @@ There are various online tools available to help you generate Kubernetes YAML ma
 
 Helm is a package manager for Kubernetes that helps you define, install, and upgrade even the most complex Kubernetes applications.
 
-It looks like `helm` is not installed on your system. To use Helm for generating Kubernetes YAML files, you'll need to install it first. Here are the steps to install Helm and create a basic Helm chart:
+To use Helm for generating Kubernetes YAML files, you'll need to install it first. Here are the steps to install Helm and create a basic Helm chart:
 
 ### Step 1: Install Helm
 
