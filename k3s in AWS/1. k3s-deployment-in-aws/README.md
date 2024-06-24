@@ -2,7 +2,7 @@
 
 In this lab, we will deploy a k3s kubernetes cluster on aws EC2.
 
-![](https://github.com/Konami33/poridhi.io.intern/blob/main/k3s%20in%20AWS/1.%20k3s-deployment-in-aws/image/k3sarchi.png?raw=true)
+![](https://github.com/Konami33/poridhi.io.intern/blob/main/k3s%20in%20AWS/1.%20k3s-deployment-in-aws/image/k3sarch1.png?raw=true)
 
 ## Introduction to AWS EC2
 
