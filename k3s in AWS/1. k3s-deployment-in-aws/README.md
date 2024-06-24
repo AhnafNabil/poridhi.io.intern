@@ -2,21 +2,6 @@
 
 In this lab, we will deploy a k3s kubernetes cluster on aws EC2.
 
-
-<!-- This documentation provides a comprehensive guide on how to deploy a K3s Kubernetes cluster on AWS EC2, including detailed explanations of the key concepts and terms involved. -->
-
-<!-- ## Table of Contents
-
-1. [Introduction to AWS EC2](#introduction-to-aws-ec2)
-2. [Setting Up the EC2 Instance](#setting-up-the-ec2-instance)
-3. [Allocating and Associating an Elastic IP](#allocating-and-associating-an-elastic-ip)
-4. [Accessing the EC2 Instance via SSH](#accessing-the-ec2-instance-via-ssh)
-5. [Installing K3s on AWS EC2](#installing-k3s-on-aws-ec2)
-6. [Dockerizing Your Application](#dockerizing-your-application)
-7. [Pushing the Docker Image to DockerHub](#pushing-the-docker-image-to-dockerhub)
-8. [Creating a K3s Kubernetes Cluster](#creating-a-k3s-kubernetes-cluster)
-9. [Deploying Your Application](#deploying-your-application) -->
-
 ## Introduction to AWS EC2
 
 Amazon Elastic Compute Cloud (EC2) is a service that provides scalable computing capacity in the cloud. It allows users to rent virtual computers on which to run their own applications. EC2 instances are like virtual servers that can run different operating systems, depending on your preference.
@@ -27,7 +12,7 @@ Amazon Elastic Compute Cloud (EC2) is a service that provides scalable computing
 
 # AWS VPC Setup Documentation
 
-![](./image/vpc-archi.png)
+![vpc architecture](https://github.com/Konami33/poridhi.io.intern/blob/main/k3s%20in%20AWS/1.%20k3s-deployment-in-aws/image/vpc-archi.png?raw=true)
 
 ### Step 1: Create Your VPC
 1. **Open the AWS Management Console** and search for "VPC" in the search bar.
@@ -89,33 +74,16 @@ Amazon Elastic Compute Cloud (EC2) is a service that provides scalable computing
 
 ### Resource Map:
 
-![](./image/14.png)
+![](https://github.com/Konami33/poridhi.io.intern/blob/main/k3s%20in%20AWS/1.%20k3s-deployment-in-aws/image/14.png?raw=true)
 
 Now we have our vpc setup.
 </details>
 
 ## Setting Up the EC2 Instance
 
+*K3s* is a lightweight Kubernetes distribution designed for resource-constrained environments.
 
-<!-- ## Allocating and Associating an Elastic IP
-
-`Elastic IPs` are static IP addresses designed for dynamic cloud computing. They allow your instance to maintain the `same IP address` even after it is stopped and started.
-
-1. **Allocate an Elastic IP**:
-    - Navigate to the Elastic IPs section in the EC2 dashboard.
-    - Click "Allocate new address" and follow the prompts to create an Elastic IP.
-
-2. **Associate the Elastic IP**:
-    - Select the newly created Elastic IP.
-    - Click "Actions" > "Associate Elastic IP address".
-    - Choose your instance and private IP address to associate.
-
-![](./image/1.png) -->
-## Setup K3s on AWS EC2
-
-K3s is a lightweight Kubernetes distribution designed for resource-constrained environments.
-
-To set up a Kubernetes cluster using k3s on AWS with one master node and two worker nodes, follow these steps:
+To set up a Kubernetes cluster using k3s on AWS with `one master` node and `two worker` nodes, follow these steps:
 
 ### 1. Launch EC2 Instances:
 
@@ -129,7 +97,7 @@ To set up a Kubernetes cluster using k3s on AWS with one master node and two wor
   - `Security groups` configured to allow necessary inbound and outbound traffic (including ports for k3s communication).
   - `Public IP` addresses for the master and worker nodes if you need to access them from outside the VPC.
 
-![](./image/ec2-lnch.png)
+![ec2-lnch](https://github.com/Konami33/poridhi.io.intern/blob/main/k3s%20in%20AWS/1.%20k3s-deployment-in-aws/image/ec2-lnch.png?raw=true)
 
 ### 2. Accessing the EC2 Instance via SSH
 
@@ -150,7 +118,7 @@ To set up K3s on your EC2 instance, you need to access it via SSH. There are two
 - Click "Connect" and choose "EC2 Instance Connect".
 - Open the terminal in your browser to access the instance.
 
-For simplification we will use the AWS EC2 Instance Connect. 
+For simplification we will use the **AWS EC2 Instance Connect**. 
 
 ### 3. Install k3s on Master Node:
 
@@ -160,7 +128,7 @@ For simplification we will use the AWS EC2 Instance Connect.
   ```
 - After installation, the master node should become the control plane for your Kubernetes cluster.
 
-![](./image/master.png)
+![](https://github.com/Konami33/poridhi.io.intern/blob/main/k3s%20in%20AWS/1.%20k3s-deployment-in-aws/image/master.png?raw=true)
 
 ### 4. Test connectivity using PING or telnet
 
@@ -172,7 +140,7 @@ For simplification we will use the AWS EC2 Instance Connect.
 ping <worker-1_node_ip>
 ping <worker-2_node_ip>
 ```
-![](./image/ping.png)
+![](https://github.com/Konami33/poridhi.io.intern/blob/main/k3s%20in%20AWS/1.%20k3s-deployment-in-aws/image/ping.png?raw=true)
 
 ### 5. Join Worker Nodes to the Cluster:
 
@@ -180,15 +148,15 @@ ping <worker-2_node_ip>
   ```bash
   sudo cat /var/lib/rancher/k3s/server/node-token
   ```
-![](./image/token.png)
+![](https://github.com/Konami33/poridhi.io.intern/blob/main/k3s%20in%20AWS/1.%20k3s-deployment-in-aws/image/token.png?raw=true)
 
 - Copy the token.
 
-- SSH into each worker node and run the following command to join it to the cluster (replace `<master-ip>` with the private IP of the master node and `<token>` with the token obtained earlier):
+- SSH into `each worker node` and run the following command to join it to the cluster (replace `<master-ip>` with the private IP of the master node and `<token>` with the token obtained earlier):
   ```bash
   curl -sfL https://get.k3s.io | K3S_URL=https://<master-ip>:6443 K3S_TOKEN=<token> sh -
   ```
-![](./image/worker-1.1.png)
+![worker-1](https://github.com/Konami33/poridhi.io.intern/blob/main/k3s%20in%20AWS/1.%20k3s-deployment-in-aws/image/worker-1.1.png?raw=true)
 
 ### 6. Verify Cluster Setup:
 
@@ -198,11 +166,11 @@ ping <worker-2_node_ip>
   ```
 - You should see the master node and both worker nodes listed as ready.
 
-![](./image/getnodes.png)
+![getnodes](https://github.com/Konami33/poridhi.io.intern/blob/main/k3s%20in%20AWS/1.%20k3s-deployment-in-aws/image/getnodes.png?raw=true)
 
-So, we have configured master node and two worker node. Lets deploy some application in the kubenetes.
+So, we have configured master node and two worker node. Lets deploy some application on k3s kubernetes distribution.
 
-## Exaple task: Deploy a nginx web server on k3s kubenetes destribution.
+## Exaple task: Deploy a nginx web server on k3s kubenetes distribution.
 
 ## Creating a K3s Kubernetes Cluster
 
@@ -312,7 +280,7 @@ kubectl get services
 kubectl get ingress
 ```
 
-![](./image/getall.png)
+![](https://github.com/Konami33/poridhi.io.intern/blob/main/k3s%20in%20AWS/1.%20k3s-deployment-in-aws/image/getall.png?raw=true)
 
 
 ## Deploying Your Application
@@ -327,11 +295,11 @@ We can curl from the terminal using the node-ip:
 ```sh
 curl <node-ip>
 ```
-![](./image/curl.png)
+![](https://github.com/Konami33/poridhi.io.intern/blob/main/k3s%20in%20AWS/1.%20k3s-deployment-in-aws/image/curl.png?raw=true)
 
 We can also check it from our browser. For example:
 
-![](./image/result.png)
+![rslt](https://github.com/Konami33/poridhi.io.intern/blob/main/k3s%20in%20AWS/1.%20k3s-deployment-in-aws/image/result.png?raw=true)
 
 ---
 
