@@ -2,6 +2,8 @@
 
 In this lab, we will deploy a k3s kubernetes cluster on aws EC2.
 
+![](./image/k3sarchi.png)
+
 ## Introduction to AWS EC2
 
 Amazon Elastic Compute Cloud (EC2) is a service that provides scalable computing capacity in the cloud. It allows users to rent virtual computers on which to run their own applications. EC2 instances are like virtual servers that can run different operating systems, depending on your preference.
@@ -34,7 +36,7 @@ Amazon Elastic Compute Cloud (EC2) is a service that provides scalable computing
    ![alt text](https://github.com/Konami33/MySQl-Database-Connection/raw/flask-mysql-aws/EC2-Setup/images/Create-subnet.jpeg)
 
 3. Designate the VPC you just created.
-4. Assign a CIDR block within your VPC’s range (e.g., `10.0.1.0/24`).
+4. Assign a CIDR block within your VPC’s range (e.g., `10.0.0.0/24`).
 5. Click on the created subnet and then "Edit subnet settings".
 6. Enable "Auto-assign public IPv4 address" and save.
 
