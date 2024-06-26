@@ -27,7 +27,7 @@ Here is the `resource-map` of our VPC:
 
 <!-- <img src="https://github.com/Minhaz00/NodeJS-MySQL/blob/main/10.%20Nginx%20L4%20LB%20NodeJS%20service%20in%20AWS/image/image.jpg?raw=true" /> -->
 
-![alt text](image.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/NGINX%20as%20a%20Load-Balancer/5/images/image.png?raw=true)
 
 ### Create and setup EC2 instances
 
@@ -274,9 +274,9 @@ This configuration provides a simple weighted round-robin load balancing with a 
 
     Example:
 
-    ![alt text](<Screenshot 2024-06-26 214643.png>)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/NGINX%20as%20a%20Load-Balancer/5/images/Screenshot%202024-06-26%20214643.png?raw=true)
 
-    ![alt text](<Screenshot 2024-06-26 214707.png>)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/NGINX%20as%20a%20Load-Balancer/5/images/Screenshot%202024-06-26%20214707.png?raw=true)
 
     <!-- <img src="https://github.com/Minhaz00/NodeJS-MySQL/blob/main/11.%20Nginx%20L4%20LB%20NodeJS-MySQL%20App%20in%20AWS/images/app1.png?raw=true" />
 
