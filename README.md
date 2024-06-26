@@ -23,7 +23,12 @@
     - [Lab 2: Flask MySQL latency]()
 ---
 - [NGINX as a Load-Balancer](https://github.com/Konami33/poridhi.io.intern/tree/main/NGINX%20as%20a%20Load-Balancer)
-    - [Lab 1: NGINX l4 Load Balancer]()
+    - [Lab 1: Nginx Layer 4 Load Balancing on NodeJS App in AWS](https://github.com/Minhaz00/NodeJS-Tasks/tree/main/10.%20Nginx%20L4%20LB%20NodeJS%20service%20in%20AWS)
+    - [Lab 2: Nginx Layer 4 Load Balancing on NodeJS-MySQL App in AWS](https://github.com/Minhaz00/NodeJS-Tasks/tree/main/11.%20Nginx%20L4%20LB%20NodeJS-MySQL%20App%20in%20AWS)
+    - [Lab 3: Nginx Layer 7 Load Balancing on NodeJS App in AWS](https://github.com/Minhaz00/NodeJS-MySQL/blob/main/12.%20Nginx%20L7%20LB%20NodeJS%20service%20in%20AWS/README.md)
+    - [Lab 4: Nginx Layer 7 Load Balancing on NodeJS-MySQL App in AWS](https://github.com/Minhaz00/NodeJS-MySQL/blob/main/13.%20Nginx%20L7%20LB%20NodeJS-MySQL%20App%20in%20AWS/README.md)
+    - [Lab 5: Nginx Layer 4 weighted Load Balancing on NodeJS App in AWS](https://github.com/Konami33/poridhi.io.intern/tree/main/NGINX%20as%20a%20Load-Balancer/5)
+    - [Lab 6: Nginx Layer 7 weighted Load Balancing on NodeJS App in AWS](https://github.com/Konami33/poridhi.io.intern/tree/main/NGINX%20as%20a%20Load-Balancer/6)
 ---
 - [Full Stack Application using React Flask MySQL](https://github.com/Konami33/poridhi.io.intern/tree/main/Full%20Stack%20Application%20using%20React%20flask%20MySQL)
 ---
