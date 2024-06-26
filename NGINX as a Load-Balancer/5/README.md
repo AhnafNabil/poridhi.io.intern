@@ -2,10 +2,11 @@
 
 This document outlines the process of setting up a `layer 4` load-balanced Node.js application environment using Nginx. The setup consists of two identical Node.js applications, an `Nginx` server for weighted load balancing and health checkup. We will use `mysql` database for this app. We will also deploy it in AWS.
 
-<img src="https://github.com/Minhaz00/NodeJS-MySQL/blob/main/11.%20Nginx%20L4%20LB%20NodeJS-MySQL%20App%20in%20AWS/images/nginx-01.PNG?raw=true" />
+<img src="https://github.com/Minhaz00/NodeJS-MySQL/blob/main/10.%20Nginx%20L4%20LB%20NodeJS%20service%20in%20AWS/image/nginxlb-02.PNG?raw=true" />
+
 
 ## Task
-Create a load-balanced environment with two `Node.js` applications, `Nginx` as a load balancer with weighting parameter and health checkup, and a `MySQL` database, all running in AWS EC2 instance.
+Create a load-balanced environment with two `Node.js` applications, `Nginx` as a layer 4 load balancer with weighting parameter and health checkup, and a `MySQL` database, all running in AWS EC2 instance.
 
 
 ## Steps
@@ -24,11 +25,13 @@ At first, we need to create a VPC in AWS, configure subnet, route tables and gat
 
 Here is the `resource-map` of our VPC:
 
-<img src="https://github.com/Minhaz00/NodeJS-MySQL/blob/main/10.%20Nginx%20L4%20LB%20NodeJS%20service%20in%20AWS/image/image.jpg?raw=true" />
+<!-- <img src="https://github.com/Minhaz00/NodeJS-MySQL/blob/main/10.%20Nginx%20L4%20LB%20NodeJS%20service%20in%20AWS/image/image.jpg?raw=true" /> -->
+
+![alt text](image.png)
 
 ### Create and setup EC2 instances
 
-We need to create `3 instances` in EC2. One in the public subnet for nginx server, second one is for Nodejs Application and third one is mysql. Both will be in the private subnet.
+We need to create `3 instances` in EC2. One in the public subnet for `nginx` server, rest two is for two Nodejs Application. Both will be in the private subnet.
 
 #### Create the NodeJS App EC2 Instances:
 - Launch two EC2 instances (let's call them `node-app-1` and `node-app-2`) in our private subnet.
@@ -39,7 +42,7 @@ We need to create `3 instances` in EC2. One in the public subnet for nginx serve
 #### Create the NGINX EC2 Instance:
 - Launch another EC2 instance for the NGINX load balancer (let's call it `nginx-lb`) in our public subnet.
 - Configure the instance with a security group to allow incoming traffic on the load balancer port (typically port 80/443) and outgoing traffic to the NodeJS servers.
-- Assign a key pair for SSH access.
+- Assign a key pair e.g. <MyKeyPair.pem> for SSH access.
 
 #### Create the mysql EC2 Instance:
 - Launch another EC2 instance for the MySQL Database (let's call it `mysql`).
@@ -48,17 +51,11 @@ We need to create `3 instances` in EC2. One in the public subnet for nginx serve
 ### Access the Public Instance via SSH
 
 1. *Set File Permissions*:
-   - *For Windows*: Open PowerShell and navigate to the directory where MyKeyPair.pem is located. Then, use the following command to set the correct permissions:
-     ```powershell
-     icacls MyKeyPair.pem /inheritance:r
-     icacls MyKeyPair.pem /grant:r "$($env:USERNAME):(R)"
-     ```
 
    - *For Linux*:
      ```sh
-     chmod 400 MyKeyPair.pem
+     chmod 400 <MyKeyPair.pem>
      ```
-
 
 2. *SSH into the Public Instance*:
    - Open a terminal and run:
@@ -72,7 +69,7 @@ We need to create `3 instances` in EC2. One in the public subnet for nginx serve
 3. *Copy the Key Pair to the Public Instance*:
    - On your local machine, run the following command to copy the key pair to the public instance:
      ```sh
-     scp -i MyKeyPair.pem MyKeyPair.pem ubuntu@<public_instance_ip>:~
+     scp -i <MyKeyPair.pem> <MyKeyPair.pem> ubuntu@<public_instance_ip>:~
      ```
    - Replace <public_instance_ip> with the public IP address of the public instance.
 
@@ -81,27 +78,13 @@ We need to create `3 instances` in EC2. One in the public subnet for nginx serve
 3. *SSH into the Private Instance from the Public Instance*:
    - On the public instance, change the permissions of the copied key pair:
      ```sh
-     chmod 400 MyKeyPair.pem
+     chmod 400 <MyKeyPair.pem>
      ```
    - Then, SSH into the private instance:
      ```sh
-     ssh -i MyKeyPair.pem ubuntu@<private_instance_ip>
+     ssh -i <MyKeyPair.pem> ubuntu@<private_instance_ip>
      ```
    - Replace <private_instance_ip> with the private IP address of the private instance.
-
-## Set up MySQL
-
-Connect to `mysql` instance install `Docker` and run the following command to run mysql database container:
-
-```bash
-docker run --name my_mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=my_db -e MYSQL_USER=my_user -e MYSQL_PASSWORD=my_password -p 3306:3306 -v mysql_data:/var/lib/mysql -d mysql:latest
-```
-
-This command creates and runs a MySQL database container with specified database, user, and password and volume mounting for persistent storage, accessible externally on port 3306.
-
-You need to set inbound security-group to give access on port `3306`.
-
-
 
 ## Set up Node.js Applications
 
@@ -127,116 +110,17 @@ Create `index.js` in the Node-app-1 directory with the following code:
 
 ```javascript
 const express = require('express');
-const mysql = require('mysql2');
-const bodyParser = require('body-parser');
-
 const app = express();
 const port = process.env.PORT;
 
-const dbConfig = {
-  host: "<mysql-instance-private-ip>",
-  user: 'my_user',
-  password: 'my_password',
-  database: 'my_db'
-};
-
-// Middleware to parse JSON bodies
-app.use(bodyParser.json());
-
-function createConnection() {
-  const connection = mysql.createConnection(dbConfig);
-  connection.connect(error => {
-    if (error) {
-      console.error('Error connecting to the database:', error);
-      return null;
-    }
-    console.log('Connected to MySQL database');
-  });
-  return connection;
-}
-
-function createTable() {
-  const connection = createConnection();
-  if (connection) {
-    const createTableQuery = `
-      CREATE TABLE IF NOT EXISTS users (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL UNIQUE
-      )
-    `;
-    connection.query(createTableQuery, (error, results) => {
-      connection.end();
-      if (error) {
-        console.error('Error creating table:', error);
-      } else {
-        console.log('Table "users" ensured to exist');
-      }
-    });
-  }
-}
-
-// Ensure the table is created when the server starts
-createTable();
-
 app.get('/', (req, res) => {
-  
-  const connection = createConnection();
-  if (connection) {
-    res.status(200).json({ message: `Hello, from Node App on PORT: ${port} ! Connected to MySQL database.` });
-    connection.end();
-  } else {
-    res.status(500).json({ message: 'Failed to connect to MySQL database' });
-  }
-});
-
-
-// GET route to fetch all users
-app.get('/users', (req, res) => {
-  const connection = createConnection();
-  if (connection) {
-    connection.query('SELECT * FROM users', (error, results) => {
-      connection.end();
-      if (error) {
-        return res.status(500).json({ message: 'Error fetching users', error });
-      }
-      res.json(results);
-    });
-  } else {
-    res.status(500).json({ message: 'Failed to connect to MySQL database' });
-  }
-});
-
-// POST route to add a new user
-app.post('/users', (req, res) => {
-  const connection = createConnection();
-  const { name, email } = req.body;
-
-  if (!name || !email) {
-    return res.status(400).json({ message: 'Name and email are required' });
-  }
-
-  if (connection) {
-    const query = 'INSERT INTO users (name, email) VALUES (?, ?)';
-    connection.query(query, [name, email], (error, results) => {
-      connection.end();
-      if (error) {
-        return res.status(500).json({ message: 'Error adding user', error });
-      }
-      res.status(201).json({ message: 'User added', userId: results.insertId });
-    });
-  } else {
-    res.status(500).json({ message: 'Failed to connect to MySQL database' });
-  }
+  res.status(200).send(`Hello, from Node App on PORT: ${port}!`);
 });
 
 app.listen(port, () => {
-  console.log(`App running on port :${port}`);
+  console.log(`App running on http://localhost:${port}`);
 });
-
 ```
-
-Replace `<mysql-instance-private-ip>` with your mysql instance private ip.
 
 ### Create Node App 2
 
@@ -246,36 +130,119 @@ Here, do the similar steps as `Node-app-1`.
 
 ### Start Node.js Applications
 Navigate to each Node.js application directory and run:
+For node-app-1:
+
 ```bash
-export PORT=5001
+export PORT=3001
+node index.js
+```
+For node-app-2:
+```bash
+export PORT=3002
 node index.js
 ```
 
-Do the same for both nodejs app instances. Make sure they are running and connected to the database properly. Note that, you need to set the `PORT=5002` in `Node-app-2` instance.
+### Install and setup NGINX:
 
+Nginx is very easy to install if we install it from a package manager like apt on Ubuntu or yum in CentOS. It is good for a general proposed load balancer, reverse proxy, and web server. But sometimes we need additional modules to add more function to Nginx that is not included in default installation from the package manager. If that is the case, you need to install the Nginx from source. In this tutorial, we will guide you step by step on how to install Nginx from source on ubuntu.
 
-## Set up Nginx
+#### Sudo Privileges
+Before starting, make sure that we have no permission issue on the installation & configuration.
 
-Now, connect to teh `nginx` instance and create a `nginx.conf` file and a `Dockerfile`. You also need to install `Docker`. 
-
-### Create Nginx Configuration
 ```bash
-mkdir Nginx
-cd Nginx
+sudo su
 ```
 
-Create `nginx.conf` in the Nginx directory with the following configuration:
+#### Install Dependencies
+Run this command to install Nginx dependencies
+
+```bash
+apt update -y && apt-get install git build-essential libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev libgd-dev libxml2 libxml2-dev uuid-dev
+```
+
+#### Download Nginx Source Code
+Before you download the Nginx source code, you can visit http://nginx.org/en/download.html to see the Nginx version available now. After that you can download them by running this command:
+
+```bash
+wget http://nginx.org/download/nginx-<version>.tar.gz
+```
+Now, the latest stable version is 1.26.1, so for me, I will download the nginx-1.26.1 version
+
+```bash
+wget http://nginx.org/download/nginx-1.26.1.tar.gz
+```
+
+Extract the downloaded file
+
+```bash
+tar -zxvf nginx-1.26.1.tar.gz
+```
+
+#### Build & Install Nginx
+After extract the file, go to the nginx directory
+
+```bash
+cd nginx-1.20.1
+```
+Now is the time to configure Nginx that suits your need, this is where you put in the module you want to include in Nginx using the ./configure command. The full documentation is in here: Building Nginx from Sources. For now, I will give you the minimum configure option so you can build a good load balancer, reverse proxy, or webserver. Run this command to configure Nginx:
+
+```bash
+./configure \
+    --prefix=/etc/nginx \
+    --conf-path=/etc/nginx/nginx.conf \
+    --error-log-path=/var/log/nginx/error.log \
+    --http-log-path=/var/log/nginx/access.log \
+    --pid-path=/run/nginx.pid \
+    --sbin-path=/usr/sbin/nginx \
+    --with-http_ssl_module \
+    --with-http_v2_module \
+    --with-http_stub_status_module \
+    --with-http_realip_module \
+    --with-file-aio \
+    --with-threads \
+    --with-stream \
+    --with-stream_ssl_preread_module
+```
+
+After that, run this command to build & install the Nginx
+
+```bash
+make && make install
+```
+
+To verify the installation, you can check the Nginx version
+
+```bash
+nginx -V
+```
+
+### Configure NGINX as an L4 Load Balancer
+
+First, move to work directory to the Nginx configuration folder
+```sh
+cd /etc/nginx
+```
+Backup the default Nginx configuration file
+```sh
+mv nginx.conf nginx.conf.old
+```
+Open the NGINX configuration file.
+```sh
+sudo vim nginx.conf
+```
+**nginx.conf:**
 
 ```sh
 events {}
 
 stream {
     upstream nodejs_backend {
-        server <Node-app-1 private-ip>:3001 weight=3; # Node-app-1 with weight 3
-        server <Node-app-2 private-ip>:3002 weight=1; # Node-app-2 with weight 1
+        # Weighted load balancing
+        server <Node-app-1 private-ip>:3001 weight=3 max_fails=2 fail_timeout=10s; # Node-app-1 with higher traffic
+        server <Node-app-2 private-ip>:3002 weight=1 max_fails=2 fail_timeout=10s; # Node-app-2 with less traffic
 
-        # Optional: Specify the maximum number of connections per server
-        # max_conns 100;
+        # Shared memory zone for session persistence across worker processes
+        zone backend 64k;
     }
 
     server {
@@ -285,20 +252,9 @@ stream {
 
         # Enable TCP load balancing
         proxy_connect_timeout 1s;
-        proxy_timeout 3s;
-
-        # Health check configuration
-        health_check interval=5s fails=2 passes=2;
-        health_check_timeout 2s; # Time to wait for a health check response
-        health_check_connect_timeout 1s; # Time to wait for a connection attempt
-        health_check_match using=string expected="200 OK"; # Expected response for a successful check
-
-        # Logging
-        access_log /var/log/nginx/access.log; # Access log path
-        error_log /var/log/nginx/error.log; # Error log path
+        proxy_timeout 3s;    
     }
 }
-
 ```
 
 Replace the `pubic ip` of nodejs app according to `your ec2 instances`.
@@ -307,64 +263,24 @@ Replace the `pubic ip` of nodejs app according to `your ec2 instances`.
 - `Weight-Based Load Balancing:` 
     Each server in the upstream block has a weight parameter. The higher the weight, the more requests are sent to that server. In this case, <Node-app-1 private-ip>:3001 has a weight of 3, and <Node-app-2 private-ip>:3002 has a weight of 1.
 
-- `Health Checks:`
-
-    - `health_check_timeout 2s;`: Sets the time to wait for a health check response.
-    - `health_check_connect_timeout 1s;`: Sets the time to wait for a connection attempt during a health check.
-    - `health_check_match using=string expected="200 OK";`: Specifies the expected response for a successful health check. This example assumes the health check endpoint returns a "200 OK" status.
-
-
 This configuration provides a simple weighted round-robin load balancing with a healthcheckup across our Node.js applications at the TCP level, which can be more efficient than HTTP-level load balancing for certain use cases.
-
-### Create Dockerfile for Nginx
-Create a file named `Dockerfile` in the Nginx directory with the following content:
-
-```Dockerfile
-FROM nginx:latest
-COPY nginx.conf /etc/nginx/nginx.conf
-```
-
-### Build Nginx Docker Image
-```bash
-docker build -t custom-nginx .
-```
-
-This command builds a Docker image for Nginx with our custom configuration.
-
-### Run Nginx Container
-```bash
-docker run -d -p 80:80 --name my_nginx custom-nginx
-```
-
-This command starts the Nginx container with our custom configuration.
 
 
 ## Verification
 
 1. Visit `http://<nginx-public-ip>` in a web browser. You should see a response from one of the Node.js applications.
 
-2. To test the user operations, use the following endpoints:
-   - GET `http://<nginx-public-ip>/users` (to fetch all users)
-   - POST `http://<nginx-public-ip>/users` (to add a new user)
-
-   For the POST request, use a JSON body like:
-   ```json
-   {
-     "name": "John Doe",
-     "email": "john@example.com"
-   }
-   ```
-
-    I am using `Postman` for `POST` method. After adding the user, let's try to see the user using `GET` request: `http://<nginx-public-ip>/users`
-
-
-3. Refresh the browser or make multiple requests to observe the load balancing in action. You should see responses alternating between Node-app-1 and Node-app-2 running on different ports.
+2. Refresh the browser or make multiple requests to observe the load balancing in action. You should see responses alternating between Node-app-1 and Node-app-2 running on different ports.
 
     Example:
 
-    <img src="https://github.com/Minhaz00/NodeJS-MySQL/blob/main/11.%20Nginx%20L4%20LB%20NodeJS-MySQL%20App%20in%20AWS/images/app1.png?raw=true" />
+    ![alt text](<Screenshot 2024-06-26 214643.png>)
 
-    <img src="https://github.com/Minhaz00/NodeJS-MySQL/blob/main/11.%20Nginx%20L4%20LB%20NodeJS-MySQL%20App%20in%20AWS/images/app2.png?raw=true" />
+    ![alt text](<Screenshot 2024-06-26 214707.png>)
+
+    <!-- <img src="https://github.com/Minhaz00/NodeJS-MySQL/blob/main/11.%20Nginx%20L4%20LB%20NodeJS-MySQL%20App%20in%20AWS/images/app1.png?raw=true" />
+
+    <img src="https://github.com/Minhaz00/NodeJS-MySQL/blob/main/11.%20Nginx%20L4%20LB%20NodeJS-MySQL%20App%20in%20AWS/images/app2.png?raw=true" /> -->
    
 ## Conclusion
 
