@@ -1,4 +1,6 @@
 
+# Nginx as a L4 Load Balancer
+
 ## Nginx Setup in `Nginx-Instance`
 
 ### Step 1: Install NGINX
