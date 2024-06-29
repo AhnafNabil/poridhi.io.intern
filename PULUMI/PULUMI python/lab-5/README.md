@@ -2,6 +2,8 @@
 
 This documentation outlines the steps to create AWS infrastructure using GitHub Actions, generate SSH keys, set up GitHub secrets, create workflows, and establish SSH connections.
 
+![alt text](./images/image-2.png)
+
 ### 1. Generate SSH Keys Locally
 
 Generate a new SSH key pair on your local machine. This key pair will be used to SSH into the EC2 instances.
@@ -34,9 +36,22 @@ cd ~/.ssh
 3. Navigate to **Settings** > **Secrets and variables** > **Actions** > **New repository secret**.
 4. Add a new secret named `PUBLIC_KEY` and paste the contents of your `id_rsa.pub` file.
 
-### 4. Create the Main File (`main.py`)
+### Step 4: Set Up a Pulumi Project
 
-Create a Python script named `main.py` to define your AWS infrastructure using Pulumi.
+1. **Set Up a Pulumi Project**:
+   - Create a new directory for your project and navigate into it:
+     ```sh
+     mkdir vpc-project
+     cd vpc-project
+     ```
+
+2. **Initialize a New Pulumi Project**:
+   - Run the following command to create a new Pulumi project:
+     ```sh
+     pulumi new aws-python
+     ```
+   - Follow the prompts to set up your project.
+It will create the necessary folders for pulumi setup. Now update the `__main__.py` file according to this:
 
 ```python
 import pulumi
@@ -118,7 +133,7 @@ security_group = aws.ec2.SecurityGroup("web-secgrp",
 
 # Create instances in the VPC and subnet
 ami_id = "ami-04b70fa74e45c3917"  # Replace with a valid AMI ID for your region
-instance_type = "t2.micro"
+instance_type = "t3.small"
 
 master_node = aws.ec2.Instance("master-node",
     instance_type=instance_type,
@@ -274,8 +289,9 @@ After the infrastructure is deployed, copy the private key to a file named `my-k
 
 ```sh
 cp ./id_rsa ./my-key-pair.pem
-chmod 600 my-key-pair.pem
 ```
+
+![alt text](./images/image-11.png)
 
 ### 8. SSH Using `my-key-pair.pem`
 
@@ -286,6 +302,9 @@ ssh -i ./my-key-pair.pem ec2-user@<instance-public-ip>
 ```
 
 Replace `<instance-public-ip>` with the public IP address of your EC2 instance.
+
+
+![alt text](./images/image-1.png)
 
 ### Summary
 
