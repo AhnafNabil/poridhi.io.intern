@@ -2,7 +2,7 @@
 
 This documentation outlines the steps to create AWS infrastructure using GitHub Actions, generate SSH keys, set up GitHub secrets, create workflows, and establish SSH connections.
 
-![alt text](./images/image-2.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-5/images/image-2.png)
 
 ### 1. Generate SSH Keys Locally
 
@@ -291,7 +291,7 @@ After the infrastructure is deployed, copy the private key to a file named `my-k
 cp ./id_rsa ./my-key-pair.pem
 ```
 
-![alt text](./images/image-11.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-5/images/image-11.png)
 
 ### 8. SSH Using `my-key-pair.pem`
 
@@ -304,7 +304,7 @@ ssh -i ./my-key-pair.pem ec2-user@<instance-public-ip>
 Replace `<instance-public-ip>` with the public IP address of your EC2 instance.
 
 
-![alt text](./images/image-1.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-5/images/image-1.png)
 
 ### Summary
 
