@@ -1,4 +1,4 @@
-## Documentation for Creating AWS Infrastructure with GitHub Actions and SSH Access
+# Documentation for Creating AWS Infrastructure with GitHub Actions and SSH Access
 
 This documentation outlines the steps to create AWS infrastructure using GitHub Actions, generate SSH keys, set up GitHub secrets, create workflows, and establish SSH connections.
 
@@ -56,10 +56,6 @@ It will create the necessary folders for pulumi setup. Now update the `__main__.
 ```python
 import pulumi
 import pulumi_aws as aws
-
-# Define your AWS infrastructure here
-import pulumi
-import pulumi_aws as aws
 import os
 
 # Read the public key from the environment (set by GitHub Actions)
@@ -82,7 +78,7 @@ public_subnet = aws.ec2.Subnet("public-subnet",
     vpc_id=vpc.id,
     cidr_block="10.0.1.0/24",
     map_public_ip_on_launch=True,
-    availability_zone="us-east-1a",
+    availability_zone="ap-southeast-1a",
 )
 
 # Create Internet Gateway
@@ -132,7 +128,7 @@ security_group = aws.ec2.SecurityGroup("web-secgrp",
 )
 
 # Create instances in the VPC and subnet
-ami_id = "ami-04b70fa74e45c3917"  # Replace with a valid AMI ID for your region
+ami_id = "ami-008c09a18ce321b3c"  # Replace with a valid AMI ID for your region
 instance_type = "t3.small"
 
 master_node = aws.ec2.Instance("master-node",
@@ -177,14 +173,13 @@ nginx_instance = aws.ec2.Instance("nginx-instance",
         "Name": "nginx-instance"
     })
 
-# Export Nginx public IP
-pulumi.export("nginx_public_ip", nginx_instance.public_ip)
 
 
 # Export outputs
 pulumi.export("master_public_ip", master_node.public_ip)
 pulumi.export("worker1_public_ip", worker_node_1.public_ip)
 pulumi.export("worker2_public_ip", worker_node_2.public_ip)
+pulumi.export("nginx_instance", nginx_instance.public_ip)
 ```
 
 ### 5. Create the GitHub Actions Workflow
@@ -312,9 +307,9 @@ By following these steps, you have:
 1. Generated SSH keys locally.
 2. Navigated to the SSH folder and obtained the public key.
 3. Added the public key as a GitHub secret.
-4. Created the `main.py` file to define your AWS infrastructure.
+4. Created the `__main__.py` file to define the AWS infrastructure.
 5. Created a GitHub Actions workflow to deploy the infrastructure.
-6. Pushed your changes to GitHub.
+6. Pushed the changes to GitHub.
 7. Copied the private key for SSH access.
 8. Established an SSH connection using the private key.
 
