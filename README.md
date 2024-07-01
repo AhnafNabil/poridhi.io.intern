@@ -20,8 +20,9 @@
     - [Lab 2: Automating K3s cluster Deployment in AWS Using Pulumi and GitHub Actions](https://github.com/Konami33/k3s-deployment-automation)
 ---
 - [Monitoring using Grafana](https://github.com/Konami33/poridhi.io.intern/tree/main/Monitoring%20using%20Grafana)
-    - [Lab 1: Monitoring-Login-Endpoint]()
-    - [Lab 2: Flask MySQL latency]()
+    - [Lab 1: Monitoring-Login-Endpoint](https://github.com/Konami33/poridhi.io.intern/tree/main/Monitoring%20using%20Grafana/Monitoring-Login-Endpoint)
+    - [Lab 2: Flask MySQL latency](https://github.com/Konami33/poridhi.io.intern/tree/main/Monitoring%20using%20Grafana/Flask-mysql-latency)
+    - [Lab 3: Tracing with OpenTelemetry and Grafana Tempo in a NodeJS-Redis-MySQL App](https://github.com/Minhaz00/NodeJS-Tasks/tree/main/8.%20Tracing%20a%20NodeJS%20App%20with%20OpenTelemetry%20and%20Grafana%20Tempo)
 ---
 - [NGINX as a Load-Balancer](https://github.com/Konami33/poridhi.io.intern/tree/main/NGINX%20as%20a%20Load-Balancer)
     - [Lab 1: Nginx Layer 4 Load Balancing on NodeJS App in AWS](https://github.com/Minhaz00/NodeJS-Tasks/tree/main/10.%20Nginx%20L4%20LB%20NodeJS%20service%20in%20AWS)
