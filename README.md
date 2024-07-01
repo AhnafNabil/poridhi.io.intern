@@ -17,6 +17,7 @@
 ---
 - [k3s in AWS](https://github.com/Konami33/poridhi.io.intern/tree/main/k3s%20in%20AWS)
     - [Lab 1: k3s-deployment-in-aws](https://github.com/Konami33/poridhi.io.intern/tree/main/k3s%20in%20AWS/1.%20k3s-deployment-in-aws)
+    - [Lab 2: Automating K3s cluster Deployment in AWS Using Pulumi and GitHub Actions](https://github.com/Konami33/k3s-deployment-automation)
 ---
 - [Monitoring using Grafana](https://github.com/Konami33/poridhi.io.intern/tree/main/Monitoring%20using%20Grafana)
     - [Lab 1: Monitoring-Login-Endpoint]()
@@ -63,3 +64,15 @@
 - [DevOps Tips](https://github.com/Konami33/poridhi.io.intern/tree/main/DevOps%20tips)
     - [Kubernetes](https://github.com/Konami33/poridhi.io.intern/tree/main/DevOps%20tips/Kubernetes)
     - [Linux](https://github.com/Konami33/poridhi.io.intern/tree/main/DevOps%20tips/Linux)
+---
+- [Automation with Github Action]()
+    - [Lab 1: Creating AWS Infrastructure with GitHub Actions and SSH Access](https://github.com/Konami33/poridhi.io.intern/tree/main/PULUMI/PULUMI%20python/lab-5)
+    - [Lab 2: Automating K3s cluster Deployment in AWS Using Pulumi and GitHub Actions](https://github.com/Konami33/k3s-deployment-automation)
+    - [Lab 3: Automating Lambda Function Deployment with Pulumi and GitHub Actions](https://github.com/Galadon123/Lambda-Function-with-Pulumi-python)
+    - [Lab 4: Automated CI/CD Pipeline for Express.js Deployment Using GitHub Actions and Self-Hosted Runners](https://github.com/Minhaz00/Auto-deploy-Express-Service?fbclid=IwZXh0bgNhZW0CMTAAAR3EfF0NuMWI_OsgRo3zOJRMF7DM8CNmYJwRcOFbCjOtSe3dT2j1ruoZjFc_aem_i7CWdbhGXHRVjO8qWBtiGQ)
+    - [lab 5: Deploy React app on EC2 instance using github actions](https://github.com/Minhaz00/React-App-in-EC2?fbclid=IwZXh0bgNhZW0CMTAAAR32YQ9u4o5gpsVdgPu7CQr_4WtqHR6Z9g7s6k83qGhM_qoihcCyMF5nZFk_aem_c0vksLc04aYNrhfUTwVHLw)
+    - [Lab 6: Auto-Deploy Go App on AWS EC2 by Building a Docker Image and Publish it to Dockerhub with CI/CD Pipeline using GitHub Actions](https://github.com/Konami33/GO-app-with-github-action?fbclid=IwZXh0bgNhZW0CMTAAAR35Tfe2GqGV9WY8TEPyRV_qU2jSvuWAVhGWfFi7mn-pOCS2vFlQqq5-yMQ_aem_aXNmyzg0AaJpAN86BVHVOw)
+    - [Lab 7: Setting Up CI/CD Pipeline for Flask Application on AWS EC2 with GitHub Actions](https://github.com/Galadon123/Flask-app-with-github-action/tree/main?fbclid=IwZXh0bgNhZW0CMTAAAR2SlRy2GR41lt7WbXgOO9S_hRU55wf1SyPuVx1CFxqReYiXV25OaZNwVb0_aem_kubsbf6BUT_nPmKkT5sWZg)
+---
+- [Automation with Jenkins]()
+    - [Automating Docker Image Builds and Pushes to Docker Hub using Jenkins on AWS EC2](https://github.com/AhnafNabil/Jenkins-Test-Demo)
