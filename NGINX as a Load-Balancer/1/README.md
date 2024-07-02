@@ -21,29 +21,29 @@ At first, we need to create a VPC in AWS, configure subnet, route tables and int
 
 3. Create a private subnet named: `private-subnet`.
 
-![subent](./images/1.png)
+![subent](https://github.com/Konami33/poridhi.io.intern/raw/main/NGINX%20as%20a%20Load-Balancer/1/images/1.png)
 
 3. Create a public route table named `rt-public` and associate it with `public-subnet`.
 
 4. Create a private route table named `rt-private` and associate it with `private-subnet`
 
-![](./images/2.png)
+![](https://github.com/Konami33/poridhi.io.intern/raw/main/NGINX%20as%20a%20Load-Balancer/1/images/2.png)
 
 5. Create an internet gateway named `igw` and attach it to `my-vpc`.
 
-![](./images/3.png)
+![](https://github.com/Konami33/poridhi.io.intern/raw/main/NGINX%20as%20a%20Load-Balancer/1/images/3.png)
 
 6. Create a NAT gateway named `nat-gw` and associate it with `public-subnet`.
 
-![](./images/4.png)
+![](https://github.com/Konami33/poridhi.io.intern/raw/main/NGINX%20as%20a%20Load-Balancer/1/images/4.png)
 
 7. Configure the route tables to use the internet gateway and NAT gateway.
 
-![](./images/5.png)
+![](https://github.com/Konami33/poridhi.io.intern/raw/main/NGINX%20as%20a%20Load-Balancer/1/images/5.png)
 
 Here is the `resource-map` of our VPC:
 
-![alt text](./images/6.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/NGINX%20as%20a%20Load-Balancer/1/images/6.png)
 
 ### Create and setup EC2 instances
 
@@ -68,7 +68,7 @@ We need to create `3 instances` in EC2. One in the public subnet for `nginx` ser
 
 ### Now connect the Public and private instance using SSH command:
 
-![](./images/10.png)
+![](https://github.com/Konami33/poridhi.io.intern/raw/main/NGINX%20as%20a%20Load-Balancer/1/images/10.png)
 
 ### Access the Public Instance via SSH
 
@@ -88,7 +88,7 @@ We need to create `3 instances` in EC2. One in the public subnet for `nginx` ser
    - You should be able to login to the instance now.
    - Now run `exit` to return to your local terminal.
 
-   ![](./images/7.png)
+   ![](https://github.com/Konami33/poridhi.io.intern/raw/main/NGINX%20as%20a%20Load-Balancer/1/images/7.png)
 
 #### Copy the Key Pair to the Public Instance
 
@@ -100,7 +100,7 @@ We need to create `3 instances` in EC2. One in the public subnet for `nginx` ser
 
     - Replace <public_instance_ip> with the public IP address of the public instance and the <MyKeyPair.pem> with the keypair.
 
-    ![](./images/8.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/NGINX%20as%20a%20Load-Balancer/1/images/8.png)
 
 #### SSH from the Public Instance to the Private Instance
 
@@ -123,7 +123,7 @@ We need to create `3 instances` in EC2. One in the public subnet for `nginx` ser
 
     - Remember to Replace the <private_instance_ip> with the private IP address of the private instance.
 
-    ![](./images/9.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/NGINX%20as%20a%20Load-Balancer/1/images/9.png)
 
 ## Set up Node.js Applications
 
@@ -181,107 +181,25 @@ export PORT=3002
 node index.js
 ```
 
-### Install and setup NGINX:
+## Set up Nginx
 
-Nginx is very easy to install if we install it from a package manager like apt on Ubuntu or yum in CentOS. It is good for a general proposed load balancer, reverse proxy, and web server. But sometimes we need additional modules to add more function to Nginx that is not included in default installation from the package manager. If that is the case, you need to install the Nginx from source. In this tutorial, we will guide you step by step on how to install Nginx from source on ubuntu.
+Now, connect to teh nginx instance and create a nginx.conf file and a Dockerfile. You also need to install Docker. 
 
-#### Sudo Privileges
-Before starting, make sure that we have no permission issue on the installation & configuration.
-
+### Create Nginx Configuration
 ```bash
-sudo su
+mkdir Nginx
+cd Nginx
 ```
 
-#### Install Dependencies
-Run this command to install Nginx dependencies
-
-```bash
-apt update -y && apt-get install git build-essential libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev libgd-dev libxml2 libxml2-dev uuid-dev
-```
-
-#### Download Nginx Source Code
-Before you download the Nginx source code, you can visit http://nginx.org/en/download.html to see the Nginx version available now. After that you can download them by running this command:
-
-```bash
-wget http://nginx.org/download/nginx-<version>.tar.gz
-```
-Now, the latest stable version is 1.26.1, so for me, I will download the nginx-1.26.1 version
-
-```bash
-wget http://nginx.org/download/nginx-1.26.1.tar.gz
-```
-
-Extract the downloaded file
-
-```bash
-tar -zxvf nginx-1.26.1.tar.gz
-```
-
-#### Build & Install Nginx
-After extract the file, go to the nginx directory
-
-```bash
-cd nginx-1.26.1
-```
-Now is the time to configure Nginx that suits your need, this is where you put in the module you want to include in Nginx using the ./configure command. The full documentation is in here: Building Nginx from Sources. For now, I will give you the minimum configure option so you can build a good load balancer, reverse proxy, or webserver. Run this command to configure Nginx:
-
-```bash
-./configure \
-    --prefix=/etc/nginx \
-    --conf-path=/etc/nginx/nginx.conf \
-    --error-log-path=/var/log/nginx/error.log \
-    --http-log-path=/var/log/nginx/access.log \
-    --pid-path=/run/nginx.pid \
-    --sbin-path=/usr/sbin/nginx \
-    --with-http_ssl_module \
-    --with-http_v2_module \
-    --with-http_stub_status_module \
-    --with-http_realip_module \
-    --with-file-aio \
-    --with-threads \
-    --with-stream \
-    --with-stream_ssl_preread_module
-```
-
-After that, run this command to build & install the Nginx
-
-```bash
-make && make install
-```
-
-To verify the installation, you can check the Nginx version
-
-```bash
-nginx -V
-```
-
-### Configure NGINX as an L4 Load Balancer
-
-First, move to work directory to the Nginx configuration folder
-```sh
-cd /etc/nginx
-```
-Backup the default Nginx configuration file
-```sh
-mv nginx.conf nginx.conf.old
-```
-Open the NGINX configuration file.
-```sh
-sudo vim nginx.conf
-```
-**nginx.conf:**
+Create nginx.conf in the Nginx directory with the following configuration:
 
 ```sh
 events {}
 
 stream {
     upstream nodejs_backend {
-        # Weighted load balancing
-        server <Node-app-1 private-ip>:3001;
-        server <Node-app-2 private-ip>:3002;
-
-        # Shared memory zone for session persistence across worker processes
-        zone backend 64k;
+        server <Node-app-1 private-ip>:3001; # Node-app-1
+        server <Node-app-2 private-ip>:3002; # Node-app-2
     }
 
     server {
@@ -291,12 +209,57 @@ stream {
 
         # Enable TCP load balancing
         proxy_connect_timeout 1s;
-        proxy_timeout 3s;    
+        proxy_timeout 3s;
     }
 }
 ```
 
 Replace the `private ip` of nodejs app according to `your ec2 instances`.
+
+This configuration sets up Nginx to act as a `TCP load balancer`, distributing traffic between the `two Node.js` applications. Let's break down the key components:
+
+- `stream {}`: This block is used for TCP and UDP load balancing. It's different from the http {} block used in HTTP load balancing. It allows it to handle TCP and UDP traffic at the transport layer (Layer 4) of the OSI model.
+
+- `upstream nodejs_backend {}`: This defines a group of backend servers. We're using host.docker.internal to refer to the host machine from within the Docker container. The ports 3001 and 3002 correspond to our two Node.js applications.
+
+- `server {}`: This block defines the server configuration for the load balancer.
+listen 80: This tells Nginx to listen on port 80 for incoming TCP connections.
+
+
+This configuration provides a simple round-robin load balancing across our Node.js applications at the TCP level, which can be more efficient than HTTP-level load balancing for certain use cases.
+
+### Install Docker in Nginx Instance
+
+Update packages and install Docker:
+
+```sh
+sudo apt-get update -y
+sudo apt-get install -y docker.io
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo usermod -aG docker ubuntu
+```
+
+### Create Dockerfile for Nginx
+Create a file named Dockerfile in the Nginx directory with the following content:
+
+```Dockerfile
+FROM nginx:latest
+COPY nginx.conf /etc/nginx/nginx.conf
+```
+
+### Build Nginx Docker Image
+```bash
+docker build -t custom-nginx .
+```
+This command builds a Docker image for Nginx with our custom configuration.
+
+### Run Nginx Container
+```bash
+docker run -d -p 80:80 --name my_nginx custom-nginx
+```
+
+This command starts the Nginx container with our custom configuration.
 
 ## Verification
 
