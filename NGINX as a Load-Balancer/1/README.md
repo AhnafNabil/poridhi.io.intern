@@ -66,6 +66,9 @@ We need to create `3 instances` in EC2. One in the public subnet for `nginx` ser
 
 - Assign a key pair e.g. <MyKeyPair.pem> for SSH access.
 
+### Now connect the Public and private instance using SSH command:
+
+![](./images/10.png)
 
 ### Access the Public Instance via SSH
 
