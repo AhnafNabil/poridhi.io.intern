@@ -1,31 +1,49 @@
 # Nginx Layer 4 weighted Load Balancing on NodeJS-MySQL App in AWS
 
-This document outlines the process of setting up a `layer 4` load-balanced Node.js application environment using Nginx. The setup consists of two identical Node.js applications, an `Nginx` server for weighted load balancing and health checkup. We will use `mysql` database for this app. We will also deploy it in AWS.
+This document outlines the process of setting up a `layer 4` load-balanced Node.js application environment using Nginx. The setup consists of two identical `Node.js` applications, an `Nginx` server.
 
 <img src="https://github.com/Minhaz00/NodeJS-MySQL/blob/main/10.%20Nginx%20L4%20LB%20NodeJS%20service%20in%20AWS/image/nginxlb-02.PNG?raw=true" />
 
 
 ## Task
-Create a load-balanced environment with two `Node.js` applications, `Nginx` as a layer 4 load balancer with weighting parameter and health checkup, and a `MySQL` database, all running in AWS EC2 instance.
+Create a load-balanced environment with two `Node.js` applications, `Nginx` as a layer 4 load balancer. Nginx will reside in the `public subnet` and the Node.js server will be in the `private subnet`.
 
 
 ## Steps
 
 ### Setup AWS: Create VPC, subnets, route table and gateways 
 
-At first, we need to create a VPC in AWS, configure subnet, route tables and gateway. Remember to set the region to `ap-southeast-1`
+At first, we need to create a VPC in AWS, configure subnet, route tables and internet gateway, NAT gateway, security group.
 
-1. Create a VPC named `my-vpc`
-2. Create 2 subnets `public-subnet` and `private-subnet`.
+1. Create a VPC named `my-vpc`.
+
+2. Create a public subnet named: `public-subnet`.
+
+3. Create a private subnet named: `private-subnet`.
+
+![subent](./images/1.png)
+
 3. Create a public route table named `rt-public` and associate it with `public-subnet`.
+
 4. Create a private route table named `rt-private` and associate it with `private-subnet`
+
+![](./images/2.png)
+
 5. Create an internet gateway named `igw` and attach it to `my-vpc`.
+
+![](./images/3.png)
+
 6. Create a NAT gateway named `nat-gw` and associate it with `public-subnet`.
-7. Configure the route tables to use the internet gateway and NAT gateway.  
+
+![](./images/4.png)
+
+7. Configure the route tables to use the internet gateway and NAT gateway.
+
+![](./images/5.png)
 
 Here is the `resource-map` of our VPC:
 
-![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/NGINX%20as%20a%20Load-Balancer/5/images/image.png?raw=true)
+![alt text](./images/6.png)
 
 ### Create and setup EC2 instances
 
@@ -35,15 +53,18 @@ We need to create `3 instances` in EC2. One in the public subnet for `nginx` ser
 - Launch two EC2 instances (let's call them `node-app-1` and `node-app-2`) in our private subnet.
 - Choose an appropriate AMI (e.g., Ubuntu).
 - Configure the instances with necessary security group rules to allow HTTP/HTTPS traffic (typically port 80/443).
-- Assign a key pair for SSH access.
+
+![security group]()
+
+- Assign a key pair <MyKeyPair.pem> for SSH access.
 
 #### Create the NGINX EC2 Instance:
 - Launch another EC2 instance for the NGINX load balancer (let's call it `nginx-lb`) in our public subnet.
 - Configure the instance with a security group to allow incoming traffic on the load balancer port (typically port 80/443) and outgoing traffic to the NodeJS servers.
-- Assign a key pair e.g. <MyKeyPair.pem> for SSH access.
 
-#### Create the mysql EC2 Instance:
-- Launch another EC2 instance for the MySQL Database (let's call it `mysql`).
+![security group]()
+
+- Assign a key pair e.g. <MyKeyPair.pem> for SSH access.
 
 
 ### Access the Public Instance via SSH
@@ -58,31 +79,48 @@ We need to create `3 instances` in EC2. One in the public subnet for `nginx` ser
 2. *SSH into the Public Instance*:
    - Open a terminal and run:
      ```sh
-     ssh -i MyKeyPair.pem ubuntu@<public_instance_ip>
+     ssh -i <MyKeyPair.pem> ubuntu@<public_instance_ip>
      ```
-   - Replace <public_instance_ip> with the public IP address of the public instance.
+   - Replace <public_instance_ip> with the public IP and the <MyKeyPair.pem> with the keypair.
+   - You should be able to login to the instance now.
+   - Now run `exit` to return to your local terminal.
+
+   ![](./images/7.png)
 
 #### Copy the Key Pair to the Public Instance
 
 3. *Copy the Key Pair to the Public Instance*:
-   - On your local machine, run the following command to copy the key pair to the public instance:
-     ```sh
+    - On your local machine, run the following command to copy the key pair to the public instance:
+    ```sh
      scp -i <MyKeyPair.pem> <MyKeyPair.pem> ubuntu@<public_instance_ip>:~
-     ```
-   - Replace <public_instance_ip> with the public IP address of the public instance.
+    ```
+
+    - Replace <public_instance_ip> with the public IP address of the public instance and the <MyKeyPair.pem> with the keypair.
+
+    ![](./images/8.png)
 
 #### SSH from the Public Instance to the Private Instance
 
 3. *SSH into the Private Instance from the Public Instance*:
-   - On the public instance, change the permissions of the copied key pair:
-     ```sh
-     chmod 400 <MyKeyPair.pem>
-     ```
-   - Then, SSH into the private instance:
-     ```sh
-     ssh -i <MyKeyPair.pem> ubuntu@<private_instance_ip>
-     ```
-   - Replace <private_instance_ip> with the private IP address of the private instance.
+    - After coping the keypair into the public instance, ssh into public instance
+
+    ```sh
+    ssh -i <MyKeyPair.pem> ubuntu@<public_instance_ip>
+    ```
+    - change the file permissions of the copied key pair:
+   
+    ```sh
+    chmod 400 <MyKeyPair.pem>
+    ```
+    - ssh into the private instance from the public instance:
+   
+    ```sh
+    ssh -i <MyKeyPair.pem> ubuntu@<private_instance_ip>
+    ```
+
+    - Remember to Replace the <private_instance_ip> with the private IP address of the private instance.
+
+    ![](./images/9.png)
 
 ## Set up Node.js Applications
 
@@ -91,12 +129,14 @@ Connect to `node-app-1` and configure as follows:
 ### Create Node App 1
 
 Install npm:
+
 ```sh
 sudo apt update
 sudo apt install npm
 ```
 
-Then, 
+Then follow the command to set up the node application:
+
 ```bash
 mkdir Node-app
 cd Node-app
@@ -122,19 +162,17 @@ app.listen(port, () => {
 
 ### Create Node App 2
 
-Connect to the `Node-app-2` instance. 
-Here, do the similar steps as `Node-app-1`.
- 
+Connect to the `Node-app-2` instance by following the similar steps that we did for connecting the `Node-app-1`.  
 
 ### Start Node.js Applications
 Navigate to each Node.js application directory and run:
-For node-app-1:
+For *node-app-1*:
 
 ```bash
 export PORT=3001
 node index.js
 ```
-For node-app-2:
+For *node-app-2*:
 ```bash
 export PORT=3002
 node index.js
@@ -182,8 +220,7 @@ After extract the file, go to the nginx directory
 ```bash
 cd nginx-1.26.1
 ```
-
-Now is the time to configure Nginx that suits your need, this is where you put in the module you want to include in Nginx using the ./configure command. The full documentation is in here: Building Nginx from Sources. For now, I will give you the `minimum configure` option so you can build a good load balancer, reverse proxy, or webserver. Run this command to configure Nginx:
+Now is the time to configure Nginx that suits your need, this is where you put in the module you want to include in Nginx using the ./configure command. The full documentation is in here: Building Nginx from Sources. For now, I will give you the minimum configure option so you can build a good load balancer, reverse proxy, or webserver. Run this command to configure Nginx:
 
 ```bash
 ./configure \
@@ -236,8 +273,12 @@ events {}
 
 stream {
     upstream nodejs_backend {
-        server <Node-app-1_private-ip>:3001;
-        server <Node-app-2_private-ip>:3002;
+        # Weighted load balancing
+        server <Node-app-1 private-ip>:3001;
+        server <Node-app-2 private-ip>:3002;
+
+        # Shared memory zone for session persistence across worker processes
+        zone backend 64k;
     }
 
     server {
@@ -252,13 +293,13 @@ stream {
 }
 ```
 
-Replace the `pubic ip` of nodejs app according to `your ec2 instances`.
+Replace the `private ip` of nodejs app according to `your ec2 instances`.
 
 ## Verification
 
 1. Visit `http://<nginx-public-ip>` in a web browser. You should see a response from one of the Node.js applications.
 
-2. Refresh the browser or make multiple requests to observe the load balancing in action. You should see responses alternating between Node-app-1 and Node-app-2 running on different ports.
+2. Refresh the browser or make multiple requests to observe the load balancing in action. You should see responses alternating between `Node-app-1` and `Node-app-2` running on different ports.
 
     Example:
 
