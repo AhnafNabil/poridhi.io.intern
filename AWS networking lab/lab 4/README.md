@@ -6,25 +6,27 @@ In a cloud environment, a common security practice is to place sensitive resourc
 
 This documentation provides a step-by-step guide on how to set up and establish a secure SSH connection between a bastion server and a private instance.
 
+![alt text](./images/archi.png)
+
 ## Steps
 
 ### Step 1: Configure and setup AWS(vpc, subnet, route-table, Internet gateway, NAT gateway)
 
 1. Create a vpc named `my-vpc` with IPv4 CIDR block `10.0.0.0/16`
 
-![alt text](image.png)
+![alt text](./images/image.png)
 
 2. Create a public subnet named `public-subnet` with IPv4 CIDR block `10.0.1.0/24`
 3. Create a private subnet named `private-subnet` with IPv4 CIDR block `10.0.2.0/24`
 
-![alt text](image-1.png)
+![alt text](./images/image-1.png)
 
 4. Create a route table named `rt-public` and associate it with the `public-subnet`.
 5. Create a route table named `rt-private` and associate it with the `private-subnet`.
 6. Create an internet gateway named `igw` and attach it to the vpc.
 7. Create a NAT gateway named `ngw`, allocate a elastic ip, and attach it to the public subnet.
 
-![alt text](image-3.png)
+![alt text](./images/image-3.png)
 
 
 8. Edit routes of the router:
@@ -33,11 +35,11 @@ This documentation provides a step-by-step guide on how to set up and establish 
     - Private Route Table(rt-private):
         - Add a route with destination `0.0.0.0/0` and target `ngw`
 
-![alt text](image-2.png)
+![alt text](./images/image-2.png)
 
 Here, is the resource map:
 
-![alt text](image-4.png)
+![alt text](./images/image-4.png)
 
 ### Step 2: Launce EC2 instances
 
@@ -57,7 +59,7 @@ Here, is the resource map:
 4. Add a security group named `Private-Instance` with inbound rules:
     - Allow inbound SSH (port 22) from the bastion server's security group.
 
-![alt text](image-6.png)
+![alt text](./images/image-6.png)
 
 ### Step 3: Configure the Bastion Server
 
@@ -66,13 +68,13 @@ Here, is the resource map:
      ```bash
      ssh -i /path/to/key.pem ubuntu@<bastion-public-ip>
      ```
-     ![alt text](image-7.png)
+     ![alt text](./images/image-7.png)
 2. **Copy the pem file into the Bastion Server**:
     - Use SCP to copy the private key file to the bastion server:
     ```bash
     scp -i /path/to/key.pem /path/to/key.pem ubuntu@<bastion-public-ip>
     ```
-    ![alt text](image-8.png)
+    ![alt text](./images/image-8.png)
     
 
 ### Step 3: Establish the SSH Connection to the Private Instances
@@ -80,10 +82,10 @@ Here, is the resource map:
 1. **SSH from the Bastion Server to a Private Instance**:
    - From the bastion server, use SSH to connect to a private instance:
      ```bash
-     ssh -i ~/.ssh/id_rsa_bastion ubuntu@<private-instance-private-ip>
+     ssh -i ~/.ssh/key.pem ubuntu@<private-instance-private-ip>
      ```
 
-    ![alt text](image-9.png)
+    ![alt text](./images/image-9.png)
     So, we have successfully created a SSH connection, and ssh into the private instance.
 
 ## Conclusion
