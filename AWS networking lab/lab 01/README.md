@@ -131,4 +131,4 @@ Below is a visual representation of the VPC setup with subnets in `ap-southeast-
 
    ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2001/images/vpc-15.png)
 
-Congratulations on successfully creating your first VPC and launch an EC2 instance!
+Congratulations on successfully creating your first VPC and launching an EC2 instance!
