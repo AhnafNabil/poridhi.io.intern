@@ -85,7 +85,7 @@ Here, is the resource map:
      ssh -i ~/.ssh/key.pem ubuntu@<private-instance-private-ip>
      ```
 
-    ![alt text](./images/ssh.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%204/images/ssh.png)
     So, we have successfully created a SSH connection, and ssh into the private instance.
 
 ## Conclusion
