@@ -2,7 +2,7 @@
 
 This guide provides detailed steps to deploy `NGINX` on an EC2 instance using `systemd`. The process includes setting up and configuring AWS infrastructure, launching and configuring an EC2 instance, and deploying and managing NGINX.
 
-![alt text](image-10.png)
+![alt text](./images/image-10.png)
 
 ## Steps
 
@@ -12,21 +12,21 @@ This guide provides detailed steps to deploy `NGINX` on an EC2 instance using `s
 2. Create a public subnet named `public-subnet` with IPv4 CIDR block `10.0.1.0/24`
 3. Create a route table named `rt-public` and associate it with the `public-subnet`.
 
-   ![alt text](image-6.png)
+   ![alt text](./images/image-6.png)
 
 4. Create an internet gateway named `igw` and attach it to the vpc.
 
-   ![alt text](image-7.png)
+   ![alt text](./images/image-7.png)
 
 5. Edit routes of the router:
    - Public Route Table(rt-public):
       - Add a route with destination `0.0.0.0/0` and target `igw`
 
-   ![alt text](image-8.png)
+   ![alt text](./images/image-8.png)
 
 Here is the resource map:
 
-![alt text](image-1.png)
+![alt text](./images/image-1.png)
 
 
 ## Step 1: Set Up Your EC2 Instance
@@ -36,7 +36,7 @@ Here is the resource map:
    - Ensure that the instance is in the `public-subnet` that we have created.
    - Configure the security group to allow traffic on the port your Flask app will be running on (usually port 5000).
 
-   ![alt text](image-9.png)
+   ![alt text](./images/image-9.png)
 
 2. **Connect to your EC2 instance:**
    - Use SSH to connect to your EC2 instance:
@@ -52,7 +52,7 @@ Here is the resource map:
     sudo apt-get update
     sudo apt-get install nginx -y
     ```
-   ![alt text](image.png)
+   ![alt text](./images/image.png)
 
 2. **Create a systemd Service File:**
    - Create a custom systemd service file for NGINX if you want to customize the service management.
@@ -95,12 +95,12 @@ Here is the resource map:
     ```sh
     sudo systemctl status nginx
     ```
-   ![alt text](image-2.png)
+   ![alt text](./images/image-2.png)
 
 2. **Access NGINX:**
    - Open a web browser and navigate to the `public IP address` of your EC2 instance. You should see the default NGINX welcome page.
 
-   ![alt text](image-3.png)
+   ![alt text](./images/image-3.png)
 
 ---
 

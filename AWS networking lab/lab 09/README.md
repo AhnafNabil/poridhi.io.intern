@@ -3,7 +3,7 @@
 ## Overview
 This guide provides a comprehensive step-by-step process to deploy a simple `Flask application` on an EC2 instance using `systemd` for service management. The process involves setting up the necessary AWS infrastructure, launching an EC2 instance, installing Flask, and configuring it to run as a `systemd` service. By the end of this tutorial, you will have a fully functional Flask web server running on an EC2 instance within a properly configured VPC.
 
-![alt text](image-4.png)
+![alt text](./images/image-4.png)
 
 ## *Steps*
 
@@ -13,21 +13,21 @@ This guide provides a comprehensive step-by-step process to deploy a simple `Fla
 2. Create a public subnet named `public-subnet` with IPv4 CIDR block `10.0.1.0/24`
 3. Create a route table named `rt-public` and associate it with the `public-subnet`.
 
-   ![alt text](image-1.png)
+   ![alt text](./images/image-1.png)
 
 4. Create an internet gateway named `igw` and attach it to the vpc `(my-vpc)`.
 
-   ![alt text](image-2.png)
+   ![alt text](./images/image-2.png)
 
 5. Edit routes of the router:
    - Public Route Table`(rt-public)`:
       - Add a route with destination `0.0.0.0/0` and target `igw`
 
-   ![alt text](image-3.png)
+   ![alt text](./images/image-3.png)
 
 Here is the resource map:
 
-![alt text](image.png)
+![alt text](./images/image.png)
 
 
 ## Step 1: Set Up Your EC2 Instance
@@ -68,7 +68,7 @@ Here is the resource map:
    ```bash
    pip install Flask
    ```
-   ![alt text](image-6.png)
+   ![alt text](./images/image-6.png)
 
 5. **Create your Flask application:**
    - Create a directory for your Flask app, e.g., `myflaskapp`.
@@ -135,7 +135,7 @@ Here is the resource map:
    sudo systemctl status flaskapp
    ```
 
-   ![alt text](image-7.png)
+   ![alt text](./images/image-7.png)
 
 ### Step 5: Configure the Security Group
 
@@ -145,7 +145,7 @@ Here is the resource map:
    - Find the security group associated with your EC2 instance.
    - Edit the inbound rules to allow traffic on port 5000 from your desired IP ranges (e.g., 0.0.0.0/0 for all IPs, though this is not recommended for `production`. But for now it is ok).
 
-   ![alt text](image-8.png)
+   ![alt text](./images/image-8.png)
 
 ### Step 6: Access Your Flask Application
 
@@ -154,6 +154,6 @@ Here is the resource map:
    http://your-public-ip:5000
    ```
 
-   ![alt text](image-9.png)
+   ![alt text](./images/image-9.png)
 
 You should see "Hello, World!" displayed, confirming that your Flask application is running and accessible via the public IP of your EC2 instance. So, we have successfully deployed a flask application in aws ec2 using systemd
