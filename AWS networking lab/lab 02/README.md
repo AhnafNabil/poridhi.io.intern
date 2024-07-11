@@ -118,7 +118,7 @@ Route tables control the routing of network traffic within your VPC. Public rout
    - Select `public-subnet`.
    - Click "Save associations".
 
-   ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/10.png)
+   ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2002/images/3.png)
 
 ### 5. Create Security Group
 
