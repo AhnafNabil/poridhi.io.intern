@@ -204,7 +204,7 @@ EC2 instances are virtual servers in the cloud, providing scalable computing cap
      - **Security group:** Select `security-group-1`.
    - Click "Launch instance".
 
-   ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/19.png)
+    ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/19.png)
 
 2. **Launch Private EC2 Instance:**
    - Navigate back to "Instances" > "Launch instances".
