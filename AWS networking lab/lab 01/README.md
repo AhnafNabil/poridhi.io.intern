@@ -1,6 +1,7 @@
 # Launch An Ec2 Instance In A Virtual Private Cloud (vpc)
 
 ## Overview
+
 This guide will teach you how to set up a Virtual Private Cloud (VPC) from scratch and launch an EC2 instance within it. By the end of this guide, you will have created a VPC, set up a public subnet, configured routing with an Internet Gateway, and launched an EC2 instance.
 
 ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2001/images/lab-01-diagram.png)
