@@ -1,8 +1,6 @@
 # Deploying a Bastion Server in a Public Subnet
 
-## Introduction
-
-Ensuring the security of cloud data is a top priority for organizations utilizing AWS. One of the essential services provided by AWS to enhance security is the Virtual Private Cloud (VPC). A VPC allows users to create a private network within AWS, isolating and protecting resources. Within this VPC, a crucial security component is the bastion server. This server acts as a gateway, enabling secure access to resources in the private VPC environment from the internet. In this lab, we will deploy a bastion server in a public subnet.
+VPC allows users to create a private network within AWS, isolating and protecting resources. Within this VPC, a crucial security component is the bastion server. This server acts as a gateway, enabling secure access to resources in the private VPC environment from the internet. In this lab, we will deploy a bastion server in a public subnet.
 
 ![](./images/2.png)
 
