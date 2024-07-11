@@ -1,5 +1,7 @@
 # Deploying MySQL on EC2 Using Systemd
 
+## Overview
+
 This guide outlines the process of deploying MySQL on an Amazon EC2 instance using systemd for service management. The deployment process will be structured to ensure that the MySQL server is efficiently managed and automatically starts on system boot. The steps include setting up the VPC, subnet, security group, and configuring MySQL.
 
 ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2006/images/systemd-diagram.png)
