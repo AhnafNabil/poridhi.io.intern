@@ -8,6 +8,9 @@ This documentation provides a step-by-step guide on how to set up and establish 
 
 ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%204/images/archi.png)
 
+![alt text](image.png)
+
+
 ## Steps
 
 ### Step 1: Configure and setup AWS(vpc, subnet, route-table, Internet gateway, NAT gateway)
