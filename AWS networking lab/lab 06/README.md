@@ -2,7 +2,7 @@
 
 This guide outlines the process of deploying MySQL on an Amazon EC2 instance using systemd for service management. The deployment process will be structured to ensure that the MySQL server is efficiently managed and automatically starts on system boot. The steps include setting up the VPC, subnet, security group, and configuring MySQL.
 
-![alt text](./images/systemd-diagram.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2006/images/systemd-diagram.png)
 
 ## Prerequisites
 - AWS account with appropriate permissions
@@ -50,11 +50,11 @@ This guide outlines the process of deploying MySQL on an Amazon EC2 instance usi
    - **Outbound Rules:**
      - Allow all outbound traffic
 
-    ![alt text](./images/systemd-new-02.png)
+    ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2006/images/systemd-new-02.png)
 
 ## Network Diagram
 
-![alt text](./images/systemd-new-01.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2006/images/systemd-new-01.png)
 
 ### Step 2: Launch and Connect to EC2 Instance
 
@@ -81,9 +81,9 @@ This guide outlines the process of deploying MySQL on an Amazon EC2 instance usi
    ssh -i "my-key.pem" ubuntu@<Public_IP_of_Bastion_Host>
    ```
 
-   ![alt text](./images/systemd-new-03.png)
+   ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2006/images/systemd-new-03.png)
 
-   ![alt text](./images/systemd-new-04.png)
+   ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2006/images/systemd-new-04.png)
 
 4. **Copy the Key Pair to the Public Instance:**
     - On your local machine, run the following command to copy the key pair to the public instance:
@@ -94,7 +94,7 @@ This guide outlines the process of deploying MySQL on an Amazon EC2 instance usi
 
     Replace <public_instance_ip> with the public IP address of the public instance and the <My-key.pem> with the keypair.
 
-      ![alt text](./images/systemd-new-05.png)
+      ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2006/images/systemd-new-05.png)
 
 5. **Connect to the MySQL Instance from the Bastion Host**
 
@@ -116,9 +116,9 @@ This guide outlines the process of deploying MySQL on an Amazon EC2 instance usi
 
     - Remember to Replace the <private_instance_ip> with the private IP address of the Mysql instance.
 
-      ![alt text](./images/systemd-new-06.png)
+      ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2006/images/systemd-new-06.png)
 
-      ![alt text](./images/systemd-new-07.png)
+      ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2006/images/systemd-new-07.png)
 
 Now, We are currently within the private MySQL instance. Here we will deploy MySQL using systemd.
 
@@ -187,14 +187,14 @@ Now, We are currently within the private MySQL instance. Here we will deploy MyS
    sudo systemctl enable mysql
    ```
 
-   ![alt text](./images/systemd-new-08.png)
+   ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2006/images/systemd-new-08.png)
 
 3. **Verify MySQL Service Status**
    ```bash
    sudo systemctl status mysql
    ```
 
-   ![alt text](./images/systemd-new-09.png)
+   ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2006/images/systemd-new-09.png)
 
 ## Conclusion
 
