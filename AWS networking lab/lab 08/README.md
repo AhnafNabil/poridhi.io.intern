@@ -4,6 +4,15 @@ This guide provides detailed steps to deploy `NGINX` on an EC2 instance using `s
 
 ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2008/images/image-10.png)
 
+## What is systemd by the way?
+
+`Systemd` is a **system and service manager** for Linux operating systems. It is responsible for starting, stopping and managing system services and daemons. It provides a unified interface for managing system services and simplifies the process of configuring and managing system services. It also provides a number of features such as on-demand service activation, dependency-based service activation, and service unit files that describe the service and its configuration.
+
+## Prerequisites
+
+1. Log in to the live AWS environment using the lab account.
+2. Ensure you are in the `Singapore (ap-southeast-1)` region.
+
 ## Steps
 
 ## Step 1: Setup and configure AWS(vpc, subnet, route-table, Internet-Gateway)
@@ -34,7 +43,7 @@ Here is the resource map:
 1. **Launch an EC2 instance:**
    - Choose an appropriate Amazon Machine Image (AMI), such as `Ubuntu`.
    - Ensure that the instance is in the `public-subnet` that we have created.
-   - Configure the security group to allow traffic on the port your Flask app will be running on (usually port 5000).
+   - Configure the security group to allow traffic on the port your Flask app will be running on (usually port `5000`).
 
    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2008/images/image-9.png)
 

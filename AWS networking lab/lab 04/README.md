@@ -2,11 +2,16 @@
 
 ## Overview
 
-In a cloud environment, a common security practice is to place sensitive resources like EC2 instances in private subnets to minimize exposure to the internet. To access these private instances securely, you can use a bastion server (or jump box) situated in a public subnet. The bastion server acts as an intermediary for establishing SSH connections to instances in private subnets.
+In a *cloud environment*, a common security practice is to place *sensitive* resources like EC2 instances in private subnets to **minimize exposure** to the internet. To access these private instances securely, you can use a `bastion server` (or jump box) situated in a `public subnet`. The bastion server acts as an intermediary for establishing SSH connections to instances in private subnets.
 
 This documentation provides a step-by-step guide on how to set up and establish a secure SSH connection between a bastion server and a private instance.
 
 ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2004/images/archi.png)
+
+## Prerequisites
+
+1. Log in to the live AWS environment using the lab account.
+2. Ensure you are in the `Singapore (ap-southeast-1)` region.
 
 ## Steps
 

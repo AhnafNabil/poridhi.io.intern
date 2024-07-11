@@ -5,6 +5,11 @@ This guide provides a comprehensive step-by-step process to deploy a simple `Fla
 
 ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2009/images/image-4.png)
 
+## Prerequisites
+
+1. Log in to the live AWS environment using the lab account.
+2. Ensure you are in the `Singapore (ap-southeast-1)` region.
+
 ## *Steps*
 
 ## Step 1: Setup and configure AWS(vpc, subnet, route-table, Internet-Gateway)
