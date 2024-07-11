@@ -174,6 +174,8 @@ EC2 instances are virtual servers in the cloud, providing scalable computing cap
      - **Private key file format:** `.pem` or `.ppk`
      - Click "Create key pair".
 
+     *Note : Download and save the key in your desired directroy,we will need it later*
+
      ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/18.png)
 
    - **Network settings:** Click "Edit".
