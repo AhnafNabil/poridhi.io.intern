@@ -46,7 +46,7 @@
     - [Private-subnet-mysql](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/Two%20public%20subnet)
     - [Two public subnet](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/private-subnet-mysql)
 ---
--[AWS networking lab](https://github.com/Konami33/poridhi.io.intern/tree/main/AWS%20networking%20lab)
+- [AWS networking lab](https://github.com/Konami33/poridhi.io.intern/tree/main/AWS%20networking%20lab)
     - [Launch An Ec2 Instance In A Virtual Private Cloud (vpc)](https://github.com/Konami33/poridhi.io.intern/tree/main/AWS%20networking%20lab/lab%2001)
     - [Deploying a Bastion Server in a Public Subnet](https://github.com/Konami33/poridhi.io.intern/tree/main/AWS%20networking%20lab/lab%2002)
     - [Configuring a Basic VPC in AWS](https://github.com/Konami33/poridhi.io.intern/tree/main/AWS%20networking%20lab/lab%2003)
