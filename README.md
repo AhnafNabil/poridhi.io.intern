@@ -47,24 +47,13 @@
     - [Two public subnet](https://github.com/Konami33/poridhi.io.intern/tree/main/Basic%20AWS%20LAB/private-subnet-mysql)
 ---
 - [Kubernetes & Docker: The Container Masterclass](https://github.com/Konami33/poridhi.io.intern/tree/main/Kubernetes%20%26%20Docker%20-%20The%20Container%20Masterclass)
-    - [Chapter 1]()
-    - [Chapter 2]()
-    - [Chapter 3]()
-    - [Chapter 4]()  
-    - [Chapter 5]()
-    - [Chapter 6]()
-    - [Chapter 7]()
-    - [Chapter 8]()
-    - [Chapter 9]()
-    - [Chapter 10]()
-    - [Chapter 11]()
-    - [Chapter 12]()
-    - [Chapter 13]()
-    - [Chapter 14]()
+
 ---
 - [DevOps Tips](https://github.com/Konami33/poridhi.io.intern/tree/main/DevOps%20tips)
     - [Kubernetes](https://github.com/Konami33/poridhi.io.intern/tree/main/DevOps%20tips/Kubernetes)
     - [Linux](https://github.com/Konami33/poridhi.io.intern/tree/main/DevOps%20tips/Linux)
+---
+- [Lambda function in AWS](https://github.com/Galadon123/Automating-Lambda-Function-Deployment-with-Pulumi)
 ---
 - [Automation with Github Action]()
     - [Lab 1: Creating AWS Infrastructure with GitHub Actions and SSH Access](https://github.com/Konami33/poridhi.io.intern/tree/main/PULUMI/PULUMI%20python/lab-5)
@@ -77,3 +66,10 @@
 ---
 - [Automation with Jenkins]()
     - [Automating Docker Image Builds and Pushes to Docker Hub using Jenkins on AWS EC2](https://github.com/AhnafNabil/Jenkins-Test-Demo)
+
+---
+- [Ansible Labs]()
+    - [Lab 1: Automate Git-runner setup using Ansible](https://github.com/Konami33/Git-runner-using-ansible)
+    - [Lab 2: Automate deploying k3s using Ansible and Github action](https://github.com/Konami33/k3s-deployment)
+    - [Lab 3: Installing MySQL on an EC2 Instance Using Ansible](https://github.com/AhnafNabil/Ansible-Labs/tree/main/Ansible-Mysql)
+    - [Lab 4: Automating MySQL Installation on an EC2 Instance Using Ansible and GitHub Actions](https://github.com/AhnafNabil/Ansible-Labs/tree/main/Ansible-Mysql-Github-Actions)
