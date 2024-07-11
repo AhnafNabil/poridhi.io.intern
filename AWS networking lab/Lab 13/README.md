@@ -2,7 +2,7 @@
 
 In this lab, we will explore the process of setting up VPC peering in AWS, allowing seamless communication between two VPCs as if they were in the same network. VPC Peering is a vital networking capability that provides a secure and private connection between VPCs. 
 
-![alt text](./images/image.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image.png?raw=true)
 
 This hands-on guide will walk you through the steps of creating two custom VPCs, setting up subnets, configuring route tables, and establishing a peering connection. By the end of this lab, you will have a solid understanding of VPC peering and its practical applications.
 
@@ -28,31 +28,31 @@ Amazon Virtual Private Cloud (VPC) Peering is a networking service from Amazon W
     - **Tenancy**: Default
     - **IPv6 CIDR Block**: Select "No IPv6 CIDR Block"
 
-    ![alt text](./images/image-1.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-1.png?raw=true)
 
 ### Create a Public Subnet for App-VPC
 
 1. In the left-hand menu, click on "Subnets", then click "Create subnet".
 2. Select the VPC ID of `App-VPC`.
 
-    ![alt text](./images/image-2.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-2.png?raw=true)
 
 3. Configure the subnet with the following values:
     - **Name**: `App-Public-Subnet`
     - **Availability Zone**: `<ap-southeast-1a>`
     - **CIDR block**: `10.0.0 .0/24`
 
-    ![alt text](./images/image-3.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-3.png?raw=true)
 
 4. Click "Create" and make the subnet public by modifying the auto-assign IP settings.
     - From the Subnets page, select the subnet.
     - In the top right-hand corner of the page, click "Actions" > "Edit subnet settings".
 
-    ![alt text](./images/image-4.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-4.png?raw=true)
 
     - On the Edit subnet settings page, under "Auto-assign IP settings", check the box next to "Enable auto-assign public IPv4 address".
 
-    ![alt text](./images/image-5.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-5.png?raw=true)
 
 ### Create the Second Custom VPC
 
@@ -62,21 +62,21 @@ Amazon Virtual Private Cloud (VPC) Peering is a networking service from Amazon W
     - **Tenancy**: Default
     - **IPv6 CIDR Block**: Select "No IPv6 CIDR Block"
 
-    ![alt text](./images/image-6.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-6.png?raw=true)
 
 ### Create a Private Subnet for DB-VPC
 
 1. In the left-hand menu, click on "Subnets", then click "Create subnet".
 2. Select the VPC ID of `DB-VPC`.
 
-    ![alt text](./images/image-7.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-7.png?raw=true)
 
 3. Configure the subnet with the following values:
     - **Name**: `DB-Private-Subnet`
     - **Availability Zone**: `<ap-southeast-1a>`
     - **CIDR block**: `10.1.0.0/24`
 
-    ![alt text](./images/image-8.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-8.png?raw=true)
 
 ## Step 2: Create and Attach an Internet Gateway for APP-VPC
 
@@ -84,14 +84,14 @@ Amazon Virtual Private Cloud (VPC) Peering is a networking service from Amazon W
 2. Click "Create internet gateway".
 3. Name it `App-IGW` and click "Create internet gateway".
 
-    ![alt text](./images/image-9.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-9.png?raw=true)
 
 4. Attach the Internet Gateway to APP-VPC:
     - Select the newly created Internet Gateway.
     - Click on "Actions" > "Attach to VPC".
     - Choose `App-VPC` and click "Attach Internet Gateway".
 
-    ![alt text](./images/image-10.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-10.png?raw=true)
 
 ## Step 3: Create and Configure Route Tables
 
@@ -101,13 +101,13 @@ Amazon Virtual Private Cloud (VPC) Peering is a networking service from Amazon W
 2. Click "Create route table".
 3. Name it `public-RT` and select `App-VPC`.
 
-    ![alt text](./images/image-11.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-11.png?raw=true)
 
 4. Add a route to the Internet Gateway:
     - On the Routes tab, click "Edit routes".
     - Add a route with the destination `0.0.0.0/0` and target `App-IGW`.
 
-    ![alt text](./images/image-12.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-12.png?raw=true)
 
 ### Associate the Route Table with the Public Subnet
 
@@ -115,17 +115,17 @@ Amazon Virtual Private Cloud (VPC) Peering is a networking service from Amazon W
 2. Click "Edit subnet associations".
 3. Select `App-Public-Subnet` and click "Save".
 
-    ![alt text](./images/image-13.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-13.png?raw=true)
 
 ### Create a Route Table for the Private Subnet in DB-VPC
 
 1. Create a route table named `private-RT` under `DB-VPC`.
 
-     ![alt text](./images/image-14.png)
+     ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-14.png?raw=true)
 
 2. Associate it with `db-vpc-priv-subnet`.
 
-    ![alt text](./images/image-15.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-15.png?raw=true)
 
 3. No need to edit routes at this point.
 
@@ -138,12 +138,12 @@ Amazon Virtual Private Cloud (VPC) Peering is a networking service from Amazon W
     - Name: `App-instance`
     - Select `Ubuntu` AMI.
 
-    ![alt text](./images/image-16.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-16.png?raw=true)
 
     - Generate a key-pair. In our case, we named it `key`.
     - Save it in the local machine.
 
-    ![alt text](./images/image-17.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-17.png?raw=true)
 
 
 2. Follow the following network settings:
@@ -151,7 +151,7 @@ Amazon Virtual Private Cloud (VPC) Peering is a networking service from Amazon W
     - **Subnet**: `App-Public-Subnet`
     - **Auto-assign Public IP**: Enabled
 
-    ![alt text](./images/image-18.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-18.png?raw=true)
 
 ### Launch an EC2 Instance in DB-VPC
 
@@ -160,11 +160,11 @@ Amazon Virtual Private Cloud (VPC) Peering is a networking service from Amazon W
     - **Name**: `DB-instance`
     - Select `Ubuntu` AMI.
 
-    ![alt text](./images/image-19.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-19.png?raw=true)
 
     - Select the previously generated key-pair:
 
-    ![alt text](./images/image-20.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-20.png?raw=true)
 
     
 
@@ -174,7 +174,7 @@ Amazon Virtual Private Cloud (VPC) Peering is a networking service from Amazon W
     - **Auto-assign Public IP**: Disabled
     - Setup Inbound security group rules according to the following image.
 
-    ![alt text](./images/image-21.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-21.png?raw=true)
 
 ## Step 5: Test SSH Access Between Instances
 
@@ -193,13 +193,13 @@ Amazon Virtual Private Cloud (VPC) Peering is a networking service from Amazon W
     chmod 400 key.pem
     ```
 
-    ![alt text](./images/image-22.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-22.png?raw=true)
 
 
 
 5. Attempt to SSH into the `DB-VPC` EC2 instance `DB-instance` using its `private IP` address from the `App-VPC` instance. You should not be able to SSH or ping the DB server at this point because two VPCs cannot communicate with each other without a VPC Peering Connection.
 
-    ![alt text](./images/image-23.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-23.png?raw=true)
 
     It doesn't work as expected.
 
@@ -208,7 +208,7 @@ Amazon Virtual Private Cloud (VPC) Peering is a networking service from Amazon W
 1. Go to VPC > Peering Connections from the VPC dashboard in the left-hand menu.
 2. Click "Create Peering Connection".
 
-    ![alt text](./images/image-24.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-24.png?raw=true)
 
 3. Configure the peering connection with the following parameters:
     - **Peering connection name tag**: `my-peering-connection`
@@ -216,7 +216,7 @@ Amazon Virtual Private Cloud (VPC) Peering is a networking service from Amazon W
     - **VPC (Accepter)**: `DB-VPC`
     - **Select My Account and the Same Region**
 
-    ![alt text](./images/image-25.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-25.png?raw=true)
 
 4. Click "Create peering connection".
 
@@ -224,11 +224,11 @@ Amazon Virtual Private Cloud (VPC) Peering is a networking service from Amazon W
 
 1. The status of the connection will be “Pending Acceptance”.
 
-    ![alt text](./images/image-26.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-26.png?raw=true)
 
 2. Select the peering connection, then click "Actions" > "Accept Request". Now it is active.
 
-    ![alt text](./images/image-27.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-27.png?raw=true)
 
 ## Step 7: Update Route Tables
 
@@ -240,7 +240,7 @@ Amazon Virtual Private Cloud (VPC) Peering is a networking service from Amazon W
     - **Destination**: `10.1.0.0/16`
     - **Target**: Select the Peering Connection
 
-    ![alt text](./images/image-28.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-28.png?raw=true)
 
 ### Add Routes to the DB-VPC Route Table
 
@@ -250,7 +250,7 @@ Amazon Virtual Private Cloud (VPC) Peering is a networking service from Amazon W
     - **Destination**: `10.0.0.0/16`
     - **Target**: Select the Peering Connection
 
-    ![alt text](./images/image-29.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-29.png?raw=true)
 
 ## Step 8: Verify the Peering Connection
 
@@ -261,7 +261,7 @@ Amazon Virtual Private Cloud (VPC) Peering is a networking service from Amazon W
 
 2. Try to SSH into the EC2 instance in `DB-VPC` using its private IP address.
 
-    ![alt text](./images/image-30.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2013/images/image-30.png?raw=true)
 
 3. If successful, the VPC peering has been set up correctly.
 
