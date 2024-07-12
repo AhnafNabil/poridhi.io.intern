@@ -2,6 +2,8 @@
 
 In this lab, we will demonstrate how to launch an EC2 instance and deploy Redis using systemd. Redis is a powerful, open-source, in-memory data structure store used as a database, cache, and message broker. By the end of this lab, you will have a running Redis instance managed by systemd on an EC2 instance.
 
+![alt text](image-19.png)
+
 ## What is Redis?
 
 Redis is an advanced key-value store. It's often referred to as a data structure server because keys can contain strings, hashes, lists, sets, and sorted sets. Redis is commonly used for caching, session management, real-time analytics, and more.
