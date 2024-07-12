@@ -2,7 +2,7 @@
 
 In this lab, we will demonstrate how to launch an EC2 instance and deploy Redis using systemd. Redis is a powerful, open-source, in-memory data structure store used as a database, cache, and message broker. By the end of this lab, you will have a running Redis instance managed by systemd on an EC2 instance.
 
-![alt text](image-19.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-19.png?raw=true)
 
 ## What is Redis?
 
@@ -20,7 +20,7 @@ Redis is an advanced key-value store. It's often referred to as a data structure
    - **CIDR block**: `10.0.0.0/16`
    - **Name tag**: `My-VPC`
 
-   ![alt text](image.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image.png?raw=true)
 
 2. **Create a Public Subnet**:
    - Navigate to "Subnets" in the VPC dashboard.
@@ -30,7 +30,7 @@ Redis is an advanced key-value store. It's often referred to as a data structure
    - **Availability Zone**: `ap-southeast-1a`
    - **CIDR block**: `10.0.0.0/24`
 
-   ![alt text](image-1.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-1.png?raw=true)
 
 3. **Enable Auto-Assign Public IP**:
    - Select the newly created subnet.
@@ -38,7 +38,7 @@ Redis is an advanced key-value store. It's often referred to as a data structure
    - Check the box to enable auto-assign public IPv4 address.
    - Save the changes.
 
-   ![alt text](image-2.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-2.png?raw=true)
 
 4. **Create and Attach Internet Gateway**:
    - Navigate to "Internet Gateways" in the VPC dashboard.
@@ -46,13 +46,13 @@ Redis is an advanced key-value store. It's often referred to as a data structure
    - **Name tag**: `My-IG`
    - Click on "Create internet gateway".
 
-    ![alt text](image-3.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-3.png?raw=true)
 
    - Select the newly created internet gateway.
    - Click on "Actions" > "Attach to VPC".
    - Select `My-VPC` and attach the gateway.
 
-   ![alt text](image-4.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-4.png?raw=true)
 
 5. **Create and Associate Route Table**:
    - Navigate to "Route Tables" in the VPC dashboard.
@@ -61,20 +61,20 @@ Redis is an advanced key-value store. It's often referred to as a data structure
    - **VPC**: Select `My-VPC`
    - Click on "Create".
 
-    ![alt text](image-5.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-5.png?raw=true)
 
    - Select the newly created route table.
    - Click on "Actions" > "Edit routes".
    - Add a route with destination `0.0.0.0/0` and target the internet gateway (`My-IG`).
    - Save the changes.
 
-    ![alt text](image-6.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-6.png?raw=true)
 
    - Select the route table again.
    - Click on "Actions" > "Edit subnet associations".
    - Associate the route table with `My-Subnet`.
 
-   ![alt text](image-7.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-7.png?raw=true)
 
 ### Step 2: Create Security Group
 
@@ -85,7 +85,7 @@ Redis is an advanced key-value store. It's often referred to as a data structure
    - **VPC**: Select `My-VPC`.
    - **Description**: `My-SG`.
 
-   ![alt text](image-8.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-8.png?raw=true)
 
 2. **Inbound Rules**:
    - Click on "Inbound rules" > "Edit inbound rules".
@@ -95,7 +95,7 @@ Redis is an advanced key-value store. It's often referred to as a data structure
      - **Source**: Custom, `0.0.0.0/0` (for testing purposes; in a real environment, restrict to specific IPs)
    - Save the changes.
 
-   ![alt text](image-9.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-9.png?raw=true)
 
 3. **Outbound Rules**:
    - By default, all outbound traffic is allowed. No changes are needed unless you want to restrict it.
@@ -119,7 +119,7 @@ Redis is an advanced key-value store. It's often referred to as a data structure
      - **Security Group**: Select `My-SG`.
    
 
-   ![alt text](image-10.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-10.png?raw=true)
 
    - Launch the instance.
 
@@ -179,7 +179,7 @@ Redis is an advanced key-value store. It's often referred to as a data structure
 2. **Set supervised directive to systemd**:
     - Change `supervised no` to `supervised systemd`.
 
-    ![alt text](image-11.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-11.png?raw=true)
 
     This change configures Redis to use `systemd` for process supervision, which is necessary for managing Redis as a service.
 
@@ -206,7 +206,7 @@ Redis is an advanced key-value store. It's often referred to as a data structure
     ```sh
     sudo systemctl status redis
     ```
-    ![alt text](image-12.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-12.png?raw=true)
 
     This command checks the status of the Redis service, ensuring it is active and running.
 
@@ -224,7 +224,7 @@ Redis is an advanced key-value store. It's often referred to as a data structure
     redis-cli ping
     ```
 
-    ![alt text](image-14.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-14.png?raw=true)
 
     You should see `PONG` as the response, indicating that Redis is working correctly.
 
@@ -241,7 +241,7 @@ Redis is an advanced key-value store. It's often referred to as a data structure
 2. **Set a password for the default user**:
     - Find and uncomment `#requirepass foobared`, changing `foobared` to a secure password.
 
-    ![alt text](image-13.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-13.png?raw=true)
 
     This sets a password for the default user, enhancing security. We kept the password `foobared` as it is for now. 
 
@@ -252,7 +252,7 @@ Redis is an advanced key-value store. It's often referred to as a data structure
     ACL SETUSER username on >password allkeys allcommands
     ```
 
-    ![alt text](image-15.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-15.png?raw=true)
 
     Replace `username` and `password` with your credentials. This command creates a new user with permissions to execute all commands and access all keys in Redis. In our example, we set the username to minhaz and the password was `foobared`.
 
@@ -279,7 +279,7 @@ Redis is an advanced key-value store. It's often referred to as a data structure
     AUTH username password
     ```
 
-     ![alt text](image-15.png)
+     ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-15.png?raw=true)
 
     Use the `username` and `password` you set earlier to authenticate in Redis CLI.
 
@@ -296,12 +296,12 @@ Redis is an advanced key-value store. It's often referred to as a data structure
 2. **Bind Redis to public IP**:
     - Find the `bind` directive
     
-    ![alt text](image-16.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-16.png?raw=true)
     
     - Add your public IP address to it. For example:
       - `bind 0.0.0.0 ::`
 
-    ![alt text](image-17.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-17.png?raw=true)
 
     
 
@@ -323,7 +323,7 @@ Redis is an advanced key-value store. It's often referred to as a data structure
     redis-cli -h <Public-IP> -a <password> ping
     ```
 
-    ![alt text](image-18.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/AWS%20networking%20lab/Lab%2011/images/image-18.png?raw=true)
 
     Replace `<Public-IP>` with the public IP address of your EC2 instance. You should see `PONG` as the response, indicating that Redis is accessible from the public IP address.
 
