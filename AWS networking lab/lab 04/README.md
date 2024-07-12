@@ -2,11 +2,16 @@
 
 ## Overview
 
-In a cloud environment, a common security practice is to place sensitive resources like EC2 instances in private subnets to minimize exposure to the internet. To access these private instances securely, you can use a bastion server (or jump box) situated in a public subnet. The bastion server acts as an intermediary for establishing SSH connections to instances in private subnets.
+In a *cloud environment*, a common security practice is to place *sensitive* resources like EC2 instances in private subnets to **minimize exposure** to the internet. To access these private instances securely, you can use a `bastion server` (or jump box) situated in a `public subnet`. The bastion server acts as an intermediary for establishing SSH connections to instances in private subnets.
 
 This documentation provides a step-by-step guide on how to set up and establish a secure SSH connection between a bastion server and a private instance.
 
-![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%204/images/archi.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2004/images/archi.png)
+
+## Prerequisites
+
+1. Log in to the live AWS environment using the lab account.
+2. Ensure you are in the `Singapore (ap-southeast-1)` region.
 
 ## Steps
 
@@ -14,19 +19,19 @@ This documentation provides a step-by-step guide on how to set up and establish 
 
 1. Create a vpc named `my-vpc` with IPv4 CIDR block `10.0.0.0/16`
 
-![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%204/images/image.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2004/images/image.png)
 
 2. Create a public subnet named `public-subnet` with IPv4 CIDR block `10.0.1.0/24`
 3. Create a private subnet named `private-subnet` with IPv4 CIDR block `10.0.2.0/24`
 
-![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%204/images/image-1.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2004/images/image-1.png)
 
 4. Create a route table named `rt-public` and associate it with the `public-subnet`.
 5. Create a route table named `rt-private` and associate it with the `private-subnet`.
 6. Create an internet gateway named `igw` and attach it to the vpc.
 7. Create a NAT gateway named `ngw`, allocate a elastic ip, and attach it to the public subnet.
 
-![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%204/images/image-3.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2004/images/image-3.png)
 
 
 8. Edit routes of the router:
@@ -35,11 +40,11 @@ This documentation provides a step-by-step guide on how to set up and establish 
     - Private Route Table(rt-private):
         - Add a route with destination `0.0.0.0/0` and target `ngw`
 
-![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%204/images/image-2.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2004/images/image-2.png)
 
 Here, is the resource map:
 
-![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%204/images/image-4.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2004/images/image-4.png)
 
 ### Step 2: Launce EC2 instances
 
@@ -59,7 +64,7 @@ Here, is the resource map:
 4. Add a security group named `Private-Instance` with inbound rules:
     - Allow inbound SSH (port 22) from the bastion server's security group.
 
-![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%204/images/image-6.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2004/images/image-6.png)
 
 ### Step 3: Configure the Bastion Server
 
@@ -68,13 +73,13 @@ Here, is the resource map:
      ```bash
      ssh -i /path/to/key.pem ubuntu@<bastion-public-ip>
      ```
-     ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%204/images/image-7.png)
+     ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2004/images/image-7.png)
 2. **Copy the pem file into the Bastion Server**:
     - Use SCP to copy the private key file to the bastion server:
     ```bash
     scp -i /path/to/key.pem /path/to/key.pem ubuntu@<bastion-public-ip>
     ```
-    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%204/images/image-8.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2004/images/image-8.png)
     
 
 ### Step 3: Establish the SSH Connection to the Private Instances
@@ -85,7 +90,7 @@ Here, is the resource map:
      ssh -i ~/.ssh/key.pem ubuntu@<private-instance-private-ip>
      ```
 
-    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%204/images/ssh.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2004/images/ssh.png)
     So, we have successfully created a SSH connection, and ssh into the private instance.
 
 ## Conclusion
