@@ -1,30 +1,3 @@
-
-
-ssh -i "key.pem" ubuntu@13.215.206.209
-
-sudo apt update
-
-sudo apt install redis-server
-
-sudo nano /etc/redis/redis.conf
-
-sudo systemctl restart redis
-
-cat /etc/systemd/system/redis.service
-
-sudo systemctl status redis
-
-redis-cli
-
-sudo nano /etc/redis/redis.conf
-
-ACL setuser Minhaz allcommands allkeys on >minhaz123
-
-sudo systemctl restart redis
-
-
-
-
 # Deploy Redis on EC2 Using Systemd
 
 In this lab, we will demonstrate how to launch an EC2 instance and deploy Redis using systemd. Redis is a powerful, open-source, in-memory data structure store used as a database, cache, and message broker. By the end of this lab, you will have a running Redis instance managed by systemd on an EC2 instance.
