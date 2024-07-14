@@ -3,7 +3,7 @@
 ## Overview
 This guide provides a comprehensive step-by-step process to deploy a simple `FastAPI` on an EC2 instance using `systemd` for service management. The process involves setting up the necessary `AWS infrastructure`, launching an EC2 instance, installing `fastapi, uvicorn` and configuring it to run as a `systemd` service. By the end of this tutorial, you will have a fully functional fastapi web server running on an EC2 instance within a properly configured VPC.
 
-![alt text](./images/image-7.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2010/images/image-7.png)
 
 ## Prerequisites
 
@@ -16,20 +16,20 @@ This guide provides a comprehensive step-by-step process to deploy a simple `Fas
 
 1. Create a vpc named, e.g., `my-vpc` with IPv4 CIDR block `10.0.0.0/16`
 2. Create a public subnet named `public-subnet` with IPv4 CIDR block `10.0.1.0/24`
-    ![alt text](./images/image.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2010/images/image.png)
 3. Create a route table named `rt-public` and associate it with the `public-subnet`.
 
-   ![alt text](./images/image-1.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2010/images/image-1.png)
 
 4. Create an internet gateway named `igw` and attach it to the vpc `(my-vpc)`.
 
-   ![alt text](./images/image-2.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2010/images/image-2.png)
 
 5. Edit routes of the router:
    - Public Route Table`(rt-public)`:
       - Add a route with destination `0.0.0.0/0` and target `igw`
 
-   ![alt text](./images/image-3.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2010/images/image-3.png)
 
 Here is the resource map:
 
@@ -46,12 +46,12 @@ Here is the resource map:
    - Choose or create an appropriate key pair.
    - Choose an appropriate security group, such as `fast-api-sg`
 
-   ![alt text](./images/image-4.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2010/images/image-4.png)
 
 2. Edit the inbound rules:
    - Add a inbound rules that allows custom TCP at port 8000 as we will run our application at port 8000. You choose any port. Remember to modify that in the code.
 
-   ![alt text](./images/image-8.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2010/images/image-8.png)
 
 
 2. **Connect to your EC2 instance:**
@@ -68,7 +68,7 @@ Here is the resource map:
    sudo apt update
    sudo apt install python3.12-venv
    ```
-    ![alt text](./images/image-5.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2010/images/image-5.png)
 
 3. **Create FastAPI Application**:
    - Create a directory for your FastAPI application:
@@ -139,13 +139,13 @@ Here is the resource map:
       ```sh
       sudo systemctl status myfastapi.service
       ```
-   ![alt text](./images/image-9.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2010/images/image-9.png)
 
 8. **Access Your Application**:
 
    - Open your web browser and navigate to `http://<EC2_INSTANCE_PUBLIC_IP>:8000`.
 
-   ![alt text](image-6.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2010/images/image-6.png)
 
 Your FastAPI application should now be running and accessible through the specified port.
 So, we have deployed a simple FastAPI application on a AWS ec2 instance using systemd.
