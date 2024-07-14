@@ -69,7 +69,7 @@ An Internet Gateway allows instances in the VPC to communicate with the internet
    - Click on "Create internet gateway".
 
 2. **Create the Internet Gateway:**
-   - **Name tag:** `my-vpc-igw`
+   - **Name tag:** `my-IGW`
    - Click "Create internet gateway".
 
    ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/4.png)
@@ -97,6 +97,8 @@ A NAT Gateway allows instances in the private subnet to access the internet for 
    - **Elastic IP Allocation ID:** Click "Allocate Elastic IP" and then "Allocate".
    - Click "Create a NAT Gateway".
 
+    ![](./images/1.png)
+
 
 ### 5. Create Route Tables
 
@@ -121,7 +123,7 @@ Route tables control the routing of network traffic within your VPC. Public rout
 
    - Click "Add route".
    - **Destination:** `0.0.0.0/0`
-   - **Target:** Select the internet gateway `my-vpc-igw`.
+   - **Target:** Select the internet gateway `my-IGW`.
    - Click "Save changes".
 
    ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/8.png)
@@ -150,6 +152,10 @@ Route tables control the routing of network traffic within your VPC. Public rout
    - **Destination:** `0.0.0.0/0`
    - **Target:** Select the NAT Gateway `my-nat-gateway`.
    - Click "Save changes".
+
+   ![](./images/2.png)
+
+   
 
 
 7. **Associate Private Route Table with Private Subnet:**
@@ -210,6 +216,8 @@ Route tables control the routing of network traffic within your VPC. Public rout
      - **Port range:** `27017`
      - **Source:** `Anywhere` (0.0.0.0/0)
 
+     ![](./images/3.png)
+
 4. **Configure Outbound Rules:**
    - In "Outbound rules" section click on `Add rule`:
      - **Type:** `All traffic`
@@ -252,7 +260,7 @@ EC2 instances are virtual servers in the cloud, providing scalable computing cap
    - Navigate back to "Instances" > "Launch instances".
    - **Name:** `ec2-instance-2`
    - **Application and OS Images (Amazon Machine Image):** Select "Ubuntu Server 24.04 LTS".
-   - **Instance Type:** Select `t3.micro`.
+   - **Instance Type:** Select `t2.micro`.
    - **Key pair (login):** Click "Create new key pair".
      - **Key pair name:** `private-key-pair`
      - **Key pair type:** RSA
@@ -302,6 +310,8 @@ EC2 instances are virtual servers in the cloud, providing scalable computing cap
      scp -i "public-key-pair.pem" private-key-pair.pem ubuntu@<ec2-instance-1-public-IP>:/home/ubuntu/
      ```
 
+     ![](./images/4.png)
+
 ### 10. SSH from the Public EC2 Instance to the Private EC2 Instance
 
 1. **Set Permissions on the Private Key File:**
@@ -318,6 +328,8 @@ EC2 instances are virtual servers in the cloud, providing scalable computing cap
      ```sh
      ssh -i "/home/ubuntu/private-key-pair.pem" ubuntu@<ec2-instance-2-private-IP>
      ```
+
+     ![](./images/5.png)
 ### 11. Install and Run MongoDB Using systemd
 
 1. **Import the Public Key for the MongoDB Packages:**
@@ -344,16 +356,18 @@ EC2 instances are virtual servers in the cloud, providing scalable computing cap
    ```sh
    sudo systemctl start mongod
    ```
-   - **Explanation:** Starts the MongoDB service (`mongod`) using `systemctl`, the command-line tool for controlling `systemd` services.
+   - **Explanation:** Initiates the MongoDB service (`mongod`) using `systemctl`, which is the command-line tool for controlling `systemd` services.
 
 6. **Enable MongoDB to Start on Boot:**
    ```sh
    sudo systemctl enable mongod
    ```
-   - **Explanation:** Enables the MongoDB service to start automatically during system boot-up, ensuring it restarts after system reboots without manual intervention.
+   - **Explanation:** Configures MongoDB to launch automatically during system startup. This ensures MongoDB restarts after system reboots without manual intervention.
 
 7. **Check the Status of MongoDB:**
    ```sh
    sudo systemctl status mongod
    ```
-   - **Explanation:** Checks the current status of the MongoDB service (`mongod`). This command provides information about whether MongoDB is active, inactive, or encountering any issues.
+   - **Explanation:** Displays the current operational status of the MongoDB service (`mongod`). This command provides information about whether MongoDB is active, inactive, or facing any issues.
+
+   ![](./images/6.png)
