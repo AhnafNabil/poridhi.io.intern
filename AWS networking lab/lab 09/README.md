@@ -39,14 +39,17 @@ Here is the resource map:
 
 1. **Launch an EC2 instance:**
    - Choose an appropriate Amazon Machine Image (AMI), such as `Ubuntu`.
-   - Ensure that the instance is in the `public-subnet` that we have created.
-   - Configure the security group to allow traffic on the port your Flask app will be running on (usually port 5000).
+   - Choose the vpc `my-vpc` that we have created earlier.
+   - Ensure that the instance is in the `public-subnet`.
+   - Choose an appropriate instance type, such as `t2.micro`
+   - Choose or create an appropriate key pair.
+   - Choose or create an appropriate security group.
 
 2. **Connect to your EC2 instance:**
    - Use SSH to connect to your EC2 instance:
-     ```bash
-     ssh -i /path/to/your-key.pem ubuntu@your-public-ip
-     ```
+   ```bash
+   ssh -i /path/to/your-key.pem ubuntu@your-public-ip
+   ```
    - You can simply connect using AWS ec2 connect option. 
 
 ## Step 2: Install Flask and Create Your Flask Application
@@ -78,26 +81,26 @@ Here is the resource map:
 5. **Create your Flask application:**
    - Create a directory for your Flask app, e.g., `myflaskapp`.
    - Inside `myflaskapp`, create a file named `app.py` with the following content:
-     ```python
-     from flask import Flask
+   ```python
+   from flask import Flask
 
-     app = Flask(__name__)
+   app = Flask(__name__)
 
-     @app.route('/')
-     def hello():
-         return "Hello, World!"
+   @app.route('/')
+   def hello():
+      return "Hello, World!"
 
-     if __name__ == '__main__':
-         app.run(host='0.0.0.0')
-     ```
+   if __name__ == '__main__':
+      app.run(host='0.0.0.0')
+   ```
 
 ### Step 3: Create a `systemd` Service File
 
 1. **Create a new service file:**
    - Create a file named `flaskapp.service` in `/etc/systemd/system/`:
-     ```bash
-     sudo nano /etc/systemd/system/flaskapp.service
-     ```
+   ```bash
+   sudo nano /etc/systemd/system/flaskapp.service
+   ```
 
 2. **Add the following content to the service file:**
    ```ini
