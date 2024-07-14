@@ -2,7 +2,7 @@
 
 In this lab, we will deploy MongoDB on an EC2 instance using systemd for process management. We will set up a VPC with public and private subnets, launch EC2 instances, and configure security groups. MongoDB will be installed on a private instance, managed using systemd, and accessed through SSH from a public instance.
 
-
+![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2007/images/logo.png)
 
 ### Lab Objectives
 
@@ -97,7 +97,7 @@ A NAT Gateway allows instances in the private subnet to access the internet for 
    - **Elastic IP Allocation ID:** Click "Allocate Elastic IP" and then "Allocate".
    - Click "Create a NAT Gateway".
 
-    ![](./images/1.png)
+    ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2007/images/1.png)
 
 
 ### 5. Create Route Tables
@@ -153,7 +153,7 @@ Route tables control the routing of network traffic within your VPC. Public rout
    - **Target:** Select the NAT Gateway `my-nat-gateway`.
    - Click "Save changes".
 
-   ![](./images/2.png)
+   ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2007/images/2.png)
 
    
 
@@ -216,7 +216,7 @@ Route tables control the routing of network traffic within your VPC. Public rout
      - **Port range:** `27017`
      - **Source:** `Anywhere` (0.0.0.0/0)
 
-     ![](./images/3.png)
+     ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2007/images/3.png)
 
 4. **Configure Outbound Rules:**
    - In "Outbound rules" section click on `Add rule`:
@@ -310,7 +310,7 @@ EC2 instances are virtual servers in the cloud, providing scalable computing cap
      scp -i "public-key-pair.pem" private-key-pair.pem ubuntu@<ec2-instance-1-public-IP>:/home/ubuntu/
      ```
 
-     ![](./images/4.png)
+     ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2007/images/4.png)
 
 ### 10. SSH from the Public EC2 Instance to the Private EC2 Instance
 
@@ -329,7 +329,7 @@ EC2 instances are virtual servers in the cloud, providing scalable computing cap
      ssh -i "/home/ubuntu/private-key-pair.pem" ubuntu@<ec2-instance-2-private-IP>
      ```
 
-     ![](./images/5.png)
+     ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2007/images/5.png)
 ### 11. Install and Run MongoDB Using systemd
 
 1. **Import the Public Key for the MongoDB Packages:**
@@ -370,4 +370,4 @@ EC2 instances are virtual servers in the cloud, providing scalable computing cap
    ```
    - **Explanation:** Displays the current operational status of the MongoDB service (`mongod`). This command provides information about whether MongoDB is active, inactive, or facing any issues.
 
-   ![](./images/6.png)
+   ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2007/images/6.png)
