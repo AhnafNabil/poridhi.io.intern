@@ -4,7 +4,7 @@
 
 In this lab, we will deploy a MySQL server on an EC2 instance within a private subnet. The setup will ensure that the MySQL server is securely configured, protecting its data and operations.
 
-![alt text](images/systemd-diagram.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/systemd-diagram.png)
 
 Now, we're tasked with deploying a MySQL server on any EC2 instance within that private subnet. This means we'll need to take careful steps to ensure the MySQL server is securely configured to safeguard its data and operations. Let's dive into deploying the MySQL server in the private subnet.
 
@@ -23,12 +23,12 @@ Now, we're tasked with deploying a MySQL server on any EC2 instance within that 
    - **Availability Zone:** `ap-southeast-1a`
    - **Enable Auto-assign Public IPv4 Address**
 
-   ![alt text](./images/dc-01.png)
+   ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-01.png)
 
 4. **Create an Internet Gateway (IGW)**
    - Attach the IGW to the VPC.
 
-   ![alt text](./images/dc-02.png)
+   ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-02.png)
 
 5. **Create a NAT Gateway**
    - Go to the VPC Dashboard in the AWS Management Console.
@@ -38,24 +38,24 @@ Now, we're tasked with deploying a MySQL server on any EC2 instance within that 
    - Allocate an Elastic IP for the NAT Gateway.
    - Click "Create a NAT Gateway".
 
-   ![alt text](./images/dc-03.png)
+   ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-03.png)
 
 6. **Create and Configure Route Tables**
    - **Public Route Table:**
      - Add a route with `Destination: 0.0.0.0/0` and `Target: IGW`.
      - Associate the route table with the public subnet.
 
-     ![alt text](./images/dc-04.png)
+     ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-04.png)
 
-     ![alt text](./images/dc-05.png)
+     ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-05.png)
 
    - **Private Route Table:**
      - Add a route with `Destination: 0.0.0.0/0` and `Target: NAT Gateway ID (select the NAT Gateway created above)`.
      - Associate the route table with the private subnet.
 
-     ![alt text](./images/dc-06.png)
+     ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-06.png)
 
-     ![alt text](./images/dc-07.png)
+     ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-07.png)
 
 7. **Create a Security Group for MySQL**
    - **Inbound Rules:**
@@ -63,17 +63,17 @@ Now, we're tasked with deploying a MySQL server on any EC2 instance within that 
      - Protocol: TCP
      - Port: 3306
 
-     ![alt text](./images/dc-08.png)
+     ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-08.png)
 
    - **Outbound Rules:**
      - Allow all outbound traffic
 
-     ![alt text](./images/dc-09.png)
+     ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-09.png)
 
 
 ## Network Diagram
 
-![alt text](./images/dc-10.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-10.png)
 
 ### Step 2: Launch and Connect to EC2 Instance
 
@@ -91,7 +91,7 @@ Now, we're tasked with deploying a MySQL server on any EC2 instance within that 
    - **Security Group:** Select the MySQL security group 
    - **Key-pair:** Select the key pair created earlier
 
-   ![alt text](./images/dc-11.png)
+   ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-11.png)
 
 3. **Connect to the Bastion Host**
 
@@ -102,7 +102,7 @@ Now, we're tasked with deploying a MySQL server on any EC2 instance within that 
    ssh -i "my-key.pem" ubuntu@<Public_IP_of_Bastion_Host>
    ```
 
-   ![alt text](./images/dc-12.png)
+   ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-12.png)
 
 4. **Copy the Key Pair to the Public Instance:**
     - On your local machine, run the following command to copy the key pair to the public instance:
@@ -113,7 +113,7 @@ Now, we're tasked with deploying a MySQL server on any EC2 instance within that 
 
     Replace <public_instance_ip> with the public IP address of the public instance and the <My-key.pem> with the keypair.
 
-    ![alt text](./images/dc-13.png)
+    ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-13.png)
 
 
 5. **Connect to the MySQL Instance from the Bastion Host**
@@ -134,13 +134,13 @@ Now, we're tasked with deploying a MySQL server on any EC2 instance within that 
       ssh -i "my-key.pem" ubuntu@<Private_IP_of_MySQL_Instance>
       ```
 
-      ![alt text](./images/dc-14.png)
+      ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-14.png)
 
     - Remember to Replace the <private_instance_ip> with the private IP address of the Mysql instance.
 
 Now, We are currently within the private MySQL instance. Here we will deploy MySQL using docker compose.
 
-![alt text](./images/dc-15.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-15.png)
 
 3. **Update and Upgrade MySQL Server:**
    ```sh
@@ -229,7 +229,7 @@ Now, We are currently within the private MySQL instance. Here we will deploy MyS
 
    You should see an output listing the `mysql-db` container along with its status. The status should indicate that the container is up and running.
 
-   ![alt text](./images/dc-16.png)
+   ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-16.png)
 
 2. **Access the MySQL Container:**
    ```sh
@@ -238,7 +238,7 @@ Now, We are currently within the private MySQL instance. Here we will deploy MyS
 
    When prompted, enter the password (`poridhi_24`).
 
-   ![alt text](./images/dc-17.png)
+   ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-17.png)
 
 3. **Check MySQL Version:**
    ```sql
@@ -247,7 +247,7 @@ Now, We are currently within the private MySQL instance. Here we will deploy MyS
 
    This should display the MySQL version indicating that MySQL is running correctly.
 
-   ![alt text](./images/dc-18.png)
+   ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-18.png)
 
 4. **Verify Database and User:**
    - **Show Databases:**
@@ -283,7 +283,7 @@ Now, We are currently within the private MySQL instance. Here we will deploy MyS
    EXIT;
    ```
 
-   ![alt text](./images/dc-19.png)
+   ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2005/images/dc-19.png)
 
 ## Conclusion
 
