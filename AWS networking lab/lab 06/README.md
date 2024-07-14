@@ -25,8 +25,12 @@ This guide outlines the process of deploying MySQL on an Amazon EC2 instance usi
    - **Availability Zone:** `ap-southeast-1a`
    - **Enable Auto-assign Public IPv4 Address**
 
+   ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2006/images/dc-01.png)
+
 4. **Create an Internet Gateway (IGW)**
    - Attach the IGW to the VPC.
+
+   ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2006/images/dc-02.png) 
 
 5. **Create a NAT Gateway**
    - Go to the VPC Dashboard in the AWS Management Console.
@@ -36,13 +40,20 @@ This guide outlines the process of deploying MySQL on an Amazon EC2 instance usi
    - Allocate an Elastic IP for the NAT Gateway.
    - Click "Create a NAT Gateway".
 
+   ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2006/images/dc-03.png)
+
 6. **Create and Configure Route Tables**
    - **Public Route Table:**
      - Add a route with `Destination: 0.0.0.0/0` and `Target: IGW`.
      - Associate the route table with the public subnet.
+
+     ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2006/images/dc-04.png)
+
    - **Private Route Table:**
      - Add a route with `Destination: 0.0.0.0/0` and `Target: NAT Gateway ID (select the NAT Gateway created above)`.
      - Associate the route table with the private subnet.
+
+     ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2006/images/dc-06.png)
 
 7. **Create a Security Group for MySQL**
    - **Inbound Rules:**
@@ -73,6 +84,8 @@ This guide outlines the process of deploying MySQL on an Amazon EC2 instance usi
    - **Network:** Select the VPC and private subnet created earlier
    - **Security Group:** Select the MySQL security group 
    - **Key-pair:** Select the key pair created earlier
+
+   ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/AWS%20networking%20lab/lab%2006/images/dc-11.png)
 
 3. **Connect to the Bastion Host**
 
