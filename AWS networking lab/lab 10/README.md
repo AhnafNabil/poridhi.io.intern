@@ -48,12 +48,6 @@ Here is the resource map:
 
    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2010/images/image-4.png)
 
-2. Edit the inbound rules:
-   - Add a inbound rules that allows custom TCP at port 8000 as we will run our application at port 8000. You choose any port. Remember to modify that in the code.
-
-   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2010/images/image-8.png)
-
-
 2. **Connect to your EC2 instance:**
    - Use SSH to connect to your EC2 instance:
    ```bash
@@ -141,7 +135,15 @@ Here is the resource map:
       ```
    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2010/images/image-9.png)
 
-8. **Access Your Application**:
+1. **Allow inbound traffic to port 5000:**
+   - In the AWS Management Console, navigate to the EC2 dashboard.
+   - Select "Security Groups" from the left-hand menu.
+   - Find the security group associated with your EC2 instance.
+   - Edit the inbound rules to allow traffic on port 5000 from your desired IP ranges (e.g., 0.0.0.0/0 for all IPs, though this is not recommended for `production`. But for now it is ok).
+
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/AWS%20networking%20lab/lab%2010/images/image-8.png)
+
+### Step 6: Access Your Flask Application
 
    - Open your web browser and navigate to `http://<EC2_INSTANCE_PUBLIC_IP>:8000`.
 
