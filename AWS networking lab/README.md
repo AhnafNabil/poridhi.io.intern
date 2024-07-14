@@ -4,6 +4,7 @@
 - [Deploying a Bastion Server in a Public Subnet](https://github.com/Konami33/poridhi.io.intern/tree/main/AWS%20networking%20lab/lab%2002)
 - [Configuring a Basic VPC in AWS](https://github.com/Konami33/poridhi.io.intern/tree/main/AWS%20networking%20lab/lab%2003)
 - [Create a Secure SSH connection between a Bastion Server and a Private Instance](https://github.com/Konami33/poridhi.io.intern/tree/main/AWS%20networking%20lab/lab%2004)
+- [Deploying MySQL in a Private Subnet on AWS using Docker Compose](https://github.com/Konami33/poridhi.io.intern/tree/main/AWS%20networking%20lab/lab%2005)
 - [Deploying MySQL in EC2 Using Systemd](https://github.com/Konami33/poridhi.io.intern/tree/main/AWS%20networking%20lab/lab%2006)
 - [Deploy MONGODB in EC2 using Systemd](https://github.com/Konami33/poridhi.io.intern/tree/main/AWS%20networking%20lab/lab%2007)
 - [Deploy Nginx in EC2 using systemd](https://github.com/Konami33/poridhi.io.intern/tree/main/AWS%20networking%20lab/lab%2008)
