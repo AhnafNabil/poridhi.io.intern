@@ -1,18 +1,19 @@
-# Configuring a Basic VPC in AWS
+# DEPLOY MONGODB IN EC2 USING SYSTEMD
 
-This document guides you through the process of creating a Virtual Private Cloud (VPC) and associated resources within AWS. A VPC allows you to launch AWS resources into a virtual network that you have complete control over. By the end of this guide, you will have created a VPC with public and private subnets, route tables, an internet gateway, security groups, and EC2 instances. Additionally, you'll learn how to SSH into the public EC2 instance from your local machine and from the public EC2 instance to the private EC2 instance.
+In this lab, we will deploy MongoDB on an EC2 instance using systemd for process management. We will set up a VPC with public and private subnets, launch EC2 instances, and configure security groups. MongoDB will be installed on a private instance, managed using systemd, and accessed through SSH from a public instance.
 
-![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/diagram.png)
+![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2007/images/logo.png)
 
-## Objectives
+### Lab Objectives
 
-1. Create a VPC.
-2. Create a Public and Private Subnet.
-3. Create Routes and an Internet Gateway.
-4. Launch EC2 instances in the Subnets.
-5. Add a Security Group.
-6. SSH into the Public EC2 Instance.
-7. SSH from the Public EC2 Instance to the Private EC2 Instance.
+1. **Setup VPC and Subnets**
+2. **Setup Internet Gateway and NAT Gateway**
+3. **Launch EC2 Instances**
+4. **Create Security Groups**
+5. **SSH Access Configuration**
+6. **Install and Configure MongoDB**
+7. **Manage MongoDB with Systemd**
+
 
 
 ### 1. Create a VPC
@@ -31,8 +32,6 @@ A Virtual Private Cloud (VPC) provides an isolated network environment in AWS, e
      - **IPv6 CIDR block:** No IPv6 CIDR block
      - **Tenancy:** Default Tenancy
    - Click "Create VPC".
-
-   ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/vpc.png)
 
 ### 2. Create Subnets
 
@@ -83,7 +82,25 @@ An Internet Gateway allows instances in the VPC to communicate with the internet
 
    ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/5.png)
 
-### 4. Create Route Tables
+
+### 4. Create a NAT Gateway
+
+A NAT Gateway allows instances in the private subnet to access the internet for updates and other activities.
+
+1. **Navigate to NAT Gateways:**
+   - In the left-hand menu, select "NAT Gateways".
+   - Click on "Create NAT Gateway".
+
+2. **Create the NAT Gateway:**
+   - **Name:** `my-nat-gateway`
+   - **Subnet:** Select `public-subnet`.
+   - **Elastic IP Allocation ID:** Click "Allocate Elastic IP" and then "Allocate".
+   - Click "Create a NAT Gateway".
+
+    ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2007/images/1.png)
+
+
+### 5. Create Route Tables
 
 Route tables control the routing of network traffic within your VPC. Public route tables direct traffic to the Internet Gateway, while private route tables handle internal routing.
 
@@ -130,7 +147,18 @@ Route tables control the routing of network traffic within your VPC. Public rout
 
    ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/11.png)
 
-6. **Associate Private Route Table with Private Subnet:**
+6. **Add Route to the NAT Gateway:**
+   - Click "Add route".
+   - **Destination:** `0.0.0.0/0`
+   - **Target:** Select the NAT Gateway `my-nat-gateway`.
+   - Click "Save changes".
+
+   ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2007/images/2.png)
+
+   
+
+
+7. **Associate Private Route Table with Private Subnet:**
    - Select the `private-route-table`.
    - In the "Subnet associations" tab, click "Edit subnet associations".
    - Select `private-subnet`.
@@ -138,9 +166,9 @@ Route tables control the routing of network traffic within your VPC. Public rout
 
    ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/12.png)
 
-### 5. Create Security Group
+### 6. Create Security Groups
 
-Security groups act as a virtual firewall for your EC2 instances to control inbound and outbound traffic. They are essential for defining and enforcing network access rules.
+#### Security Group 1: Allow SSH and All Outbound Traffic
 
 1. **Navigate to Security Groups:**
    - In the left-hand menu, select "Security Groups".
@@ -154,26 +182,48 @@ Security groups act as a virtual firewall for your EC2 instances to control inbo
    ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/13.png)
 
 3. **Configure Inbound Rules:**
-   - In "Inbound rules" section click on `Add rule`>
-   - **Type:** `SSH`
-   - **Source:** `Anywhere` (0.0.0.0/0)
+   - In "Inbound rules" section click on `Add rule`:
+     - **Type:** `SSH`
+     - **Source:** `Anywhere` (0.0.0.0/0)
 
    ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/14.png)
 
 4. **Configure Outbound Rules:**
-   - In "Outbound rules" section click on `Add rule`>
-   - **Type:** `All traffic`
-   - **Destination:** `Anywhere` (0.0.0.0/0)
+   - In "Outbound rules" section click on `Add rule`:
+     - **Type:** `All traffic`
+     - **Destination:** `Anywhere` (0.0.0.0/0)
 
    ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/15.png)
 
-5. **Verify Resources:**
-   - In the left-hand menu, select "VPC".
-   - View the resources map of our vpc (`my-vpc`)
+#### Security Group 2: Allow SSH, MongoDB, and All Outbound Traffic
 
-   ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/16.png)
+1. **Navigate to Security Groups:**
+   - In the left-hand menu, select "Security Groups".
+   - Click on "Create security group".
 
-### 6. Launch EC2 Instances
+2. **Create the Security Group:**
+   - **Security group name:** `security-group-2`
+   - **Description:** `Allow SSH, MongoDB, and all outbound traffic`
+   - **VPC:** Select `my-vpc`
+
+3. **Configure Inbound Rules:**
+   - In "Inbound rules" section click on `Add rule`:
+     - **Type:** `SSH`
+     - **Source:** `Anywhere` (0.0.0.0/0)
+
+   - Click on `Add rule`:
+     - **Type:** `Custom TCP`
+     - **Port range:** `27017`
+     - **Source:** `Anywhere` (0.0.0.0/0)
+
+     ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2007/images/3.png)
+
+4. **Configure Outbound Rules:**
+   - In "Outbound rules" section click on `Add rule`:
+     - **Type:** `All traffic`
+     - **Destination:** `Anywhere` (0.0.0.0/0)
+
+### 7. Launch EC2 Instances
 
 EC2 instances are virtual servers in the cloud, providing scalable computing capacity. Launching instances in public and private subnets allows you to control access and network traffic.
 
@@ -210,7 +260,7 @@ EC2 instances are virtual servers in the cloud, providing scalable computing cap
    - Navigate back to "Instances" > "Launch instances".
    - **Name:** `ec2-instance-2`
    - **Application and OS Images (Amazon Machine Image):** Select "Ubuntu Server 24.04 LTS".
-   - **Instance Type:** Select `t3.micro`.
+   - **Instance Type:** Select `t2.micro`.
    - **Key pair (login):** Click "Create new key pair".
      - **Key pair name:** `private-key-pair`
      - **Key pair type:** RSA
@@ -228,9 +278,7 @@ EC2 instances are virtual servers in the cloud, providing scalable computing cap
 
    ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/20.png)
 
-### 7. SSH into the Public EC2 Instance
-
-SSH (Secure Shell) allows you to securely access your EC2 instances. We'll first connect to the public instance from your local machine.
+### 8. SSH from Local Machine to Public EC2 Instance
 
 1. **Set Permissions on the Key Pair:**
    - Open your terminal.
@@ -249,42 +297,77 @@ SSH (Secure Shell) allows you to securely access your EC2 instances. We'll first
      ssh -i "public-key-pair.pem" ubuntu@<ec2-instance-1-public-IP>
      ```
 
-     ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/32.png)
+### 9. Transfer the Private Key to the Public EC2 Instance
 
+1. **Navigate to the Directory Containing the Private Key on Your Local Machine:**
+   - Open a new terminal window or tab.
+   - Navigate to the directory containing your `private-key-pair.pem` file.
 
-### 8. SSH from the Public EC2 Instance to the Private EC2 Instance
-
-To access the private EC2 instance, we'll SSH from the public instance using the private key of the private instance.
-
-1. **Copy the content of public key from the  directory containing `private-key-pair.pem` file :**
-
-   ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/33.png)
-   
-
-2. **Create the Private Key File on the Public Instance:**
-
-   - Once connected to `ec2-instance-1`, create a file for the private key with `nano` or `vim` (text editor) in `ec2-instance-1`:
+2. **Transfer the Private Key Using SCP:**
+   - Run the following command to transfer the private key to the public EC2 instance (replace `<ec2-instance-1-public-IP>` with your instance's public IP address):
 
      ```sh
-     nano private-key-pair.pem
+     scp -i "public-key-pair.pem" private-key-pair.pem ubuntu@<ec2-instance-1-public-IP>:/home/ubuntu/
      ```
 
-     Paste the contents of your `private-key-pair.pem` file.
+     ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2007/images/4.png)
 
-2. **Set Permissions on the Private Key File:**
-   - Run the following command to set the correct permissions:
+### 10. SSH from the Public EC2 Instance to the Private EC2 Instance
+
+1. **Set Permissions on the Private Key File:**
+   - Once connected to `ec2-instance-1`, set the correct permissions:
+
      ```sh
-     chmod 400 private-key-pair.pem
+     chmod 400 /home/ubuntu/private-key-pair.pem
      ```
 
-3. **Connect to the Private EC2 Instance:**
-
+2. **Connect to the Private EC2 Instance:**
    - Obtain the private IP address of `ec2-instance-2` from the EC2 console.
-   - Run the following command to connect to the instance (replace `<ec2-instance-2-public-IP>` with your instance's private IP address):
+   - Run the following command to connect to the instance (replace `<ec2-instance-2-private-IP>` with your instance's private IP address):
+
      ```sh
-     ssh -i "private-key-pair.pem" ubuntu@<ec2-instance-2-public-IP>
+     ssh -i "/home/ubuntu/private-key-pair.pem" ubuntu@<ec2-instance-2-private-IP>
      ```
 
-     ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/34.png)
+     ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2007/images/5.png)
+### 11. Install and Run MongoDB Using systemd
 
-You have now successfully created a VPC, subnets, internet gateway, route tables, security group, launched EC2 instances, and established SSH connections to both the public and private instances.
+1. **Import the Public Key for the MongoDB Packages:**
+   ```sh
+   wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
+   ```
+
+2. **Create a List File for MongoDB:**
+   ```sh
+   echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+   ```
+
+3. **Update the Package Database:**
+   ```sh
+   sudo apt-get update
+   ```
+
+4. **Install MongoDB Packages:**
+   ```sh
+   sudo apt-get install -y mongodb-org
+   ```
+
+5. **Start MongoDB Using systemd:**
+   ```sh
+   sudo systemctl start mongod
+   ```
+   - **Explanation:** Initiates the MongoDB service (`mongod`) using `systemctl`, which is the command-line tool for controlling `systemd` services.
+
+6. **Enable MongoDB to Start on Boot:**
+   ```sh
+   sudo systemctl enable mongod
+   ```
+   - **Explanation:** Configures MongoDB to launch automatically during system startup. This ensures MongoDB restarts after system reboots without manual intervention.
+
+7. **Check the Status of MongoDB:**
+   ```sh
+   sudo systemctl status mongod
+   ```
+   - **Explanation:** Displays the current operational status of the MongoDB service (`mongod`). This command provides information about whether MongoDB is active, inactive, or facing any issues.
+
+   ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2007/images/6.png)

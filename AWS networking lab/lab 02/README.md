@@ -68,7 +68,7 @@ An Internet Gateway allows instances in the VPC to communicate with the internet
    - Click on "Create internet gateway".
 
 2. **Create the Internet Gateway:**
-   - **Name tag:** `my-vpc-igw`
+   - **Name tag:** `my-IGW`
    - Click "Create internet gateway".
 
    ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/4.png)
@@ -104,7 +104,7 @@ Route tables control the routing of network traffic within your VPC. Public rout
 
    - Click "Add route".
    - **Destination:** `0.0.0.0/0`
-   - **Target:** Select the internet gateway `my-vpc-igw`.
+   - **Target:** Select the internet gateway `my-IGW`.
    - Click "Save changes".
 
    ![](https://github.com/Galadon123/poridhi.io.intern/blob/main/AWS%20networking%20lab/lab%2003/images/8.png)
