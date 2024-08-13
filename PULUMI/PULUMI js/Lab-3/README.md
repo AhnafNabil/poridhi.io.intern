@@ -15,16 +15,41 @@ In this lab, you will extend your VPC setup by launching EC2 instances in both t
 
 By the end of this lab, you will have a fully functional VPC with EC2 instances in both the public and private subnets. The public instance will have direct Internet access, while the private instance will be isolated from direct Internet access, providing a secure environment for sensitive operations.
 
-![](./image.png)
+![](./images/image.jpg)
 
 ### Step 1: Configure AWS CLI
 
-1. **Configure AWS CLI**:
-   - Open Command Prompt or PowerShell and run:
-     ```sh
-     aws configure
-     ```
-   - Enter your AWS Access Key ID, Secret Access Key, default region (`us-east-1`), and default output format (`json`).
+### Install AWS CLI
+
+Before proceeding, ensure that the AWS CLI is installed on your local machine. Follow the instructions below based on your operating system:
+
+- **Windows**:
+  1. Download the AWS CLI MSI installer from the [official AWS website](https://aws.amazon.com/cli/).
+  2. Run the downloaded MSI installer and follow the instructions.
+
+- **Linux**:
+  ```sh
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  unzip awscliv2.zip
+  sudo ./aws/install
+  ```
+
+#### Configure AWS CLI
+
+After installing the AWS CLI, configure it with the necessary credentials. Run the following command and follow the prompts to configure it:
+
+```sh
+aws configure
+```
+
+- **Explanation**: This command sets up your AWS CLI with the necessary credentials, region, and output format.
+
+![](./images/5.png)
+
+You will find the `AWS Access key` and `AWS Seceret Access key` on Lab description page,where you generated the credentials
+
+![](./images/6.png)
+
 
 ### Step 2: Set Up a Pulumi Project
 
@@ -60,6 +85,8 @@ By the end of this lab, you will have a fully functional VPC with EC2 instances 
      chmod 400 MyKeyPair.pem
      ```
 
+     ![](./images/8.jpg)
+
 ### Step 3: Create the Pulumi Program
 
 1. **Open `index.js`**:
@@ -73,7 +100,10 @@ By the end of this lab, you will have a fully functional VPC with EC2 instances 
 
    // Create a VPC
    const vpc = new aws.ec2.Vpc("my-vpc", {
-       cidrBlock: "10.0.0.0/16"
+       cidrBlock: "10.0.0.0/16",
+       tags: {
+        Name: "my-vpc"
+       }
    });
 
    exports.vpcId = vpc.id;
@@ -87,7 +117,10 @@ By the end of this lab, you will have a fully functional VPC with EC2 instances 
        vpcId: vpc.id,
        cidrBlock: "10.0.1.0/24",
        availabilityZone: "us-east-1a",
-       mapPublicIpOnLaunch: true
+       mapPublicIpOnLaunch: true,
+       tags: {
+        Name: "public-subnet"
+       }
    });
 
    exports.publicSubnetId = publicSubnet.id;
@@ -100,7 +133,10 @@ By the end of this lab, you will have a fully functional VPC with EC2 instances 
    const privateSubnet = new aws.ec2.Subnet("private-subnet", {
        vpcId: vpc.id,
        cidrBlock: "10.0.2.0/24",
-       availabilityZone: "us-east-1a"
+       availabilityZone: "us-east-1a",
+       tags: {
+        Name: "private-subnet"
+       }
    });
 
    exports.privateSubnetId = privateSubnet.id;
@@ -111,7 +147,10 @@ By the end of this lab, you will have a fully functional VPC with EC2 instances 
    ```javascript
    // Create an Internet Gateway
    const igw = new aws.ec2.InternetGateway("internet-gateway", {
-       vpcId: vpc.id
+       vpcId: vpc.id,
+       tags: {
+        Name: "igw"
+       }
    });
 
    exports.igwId = igw.id;
@@ -122,7 +161,10 @@ By the end of this lab, you will have a fully functional VPC with EC2 instances 
    ```javascript
    // Create a route table
    const publicRouteTable = new aws.ec2.RouteTable("public-route-table", {
-       vpcId: vpc.id
+       vpcId: vpc.id,
+       tags: {
+        Name: "rt-public"
+       }
    });
 
    // Create a route in the route table for the Internet Gateway
@@ -150,7 +192,10 @@ By the end of this lab, you will have a fully functional VPC with EC2 instances 
    // Create the NAT Gateway
    const natGateway = new aws.ec2.NatGateway("nat-gateway", {
        subnetId: publicSubnet.id,
-       allocationId: eip.id
+       allocationId: eip.id,
+       tags: {
+        Name: "nat"
+       }
    });
 
    exports.natGatewayId = natGateway.id;
@@ -161,7 +206,10 @@ By the end of this lab, you will have a fully functional VPC with EC2 instances 
    ```javascript
    // Create a route table for the private subnet
    const privateRouteTable = new aws.ec2.RouteTable("private-route-table", {
-       vpcId: vpc.id
+       vpcId: vpc.id,
+       tags: {
+        Name: "rt-private"
+       }
    });
 
    // Create a route in the route table for the NAT Gateway
@@ -197,7 +245,7 @@ By the end of this lab, you will have a fully functional VPC with EC2 instances 
    });
 
    // Use the specified Ubuntu 24.04 LTS AMI
-   const amiId = "ami-04b70fa74e45c3917";
+   const amiId = "ami-060e277c0d4cce553";
 
    // Create an EC2 instance in the public subnet
    const publicInstance = new aws.ec2.Instance("public-instance", {
@@ -206,7 +254,10 @@ By the end of this lab, you will have a fully functional VPC with EC2 instances 
        ami: amiId,
        subnetId: publicSubnet.id,
        keyName: "MyKeyPair",
-       associatePublicIpAddress: true
+       associatePublicIpAddress: true,
+       tags: {
+        Name: "public-ec2"
+       }
    });
 
    exports.publicInstanceId = publicInstance.id;
@@ -234,7 +285,10 @@ By the end of this lab, you will have a fully functional VPC with EC2 instances 
         vpcSecurityGroupIds: [privateSecurityGroup.id],
         ami: amiId,
         subnetId: privateSubnet.id,
-        keyName: "MyKeyPair"
+        keyName: "MyKeyPair",
+        tags: {
+        Name: "private-ec2"
+        }
     });
 
     exports.privateInstanceId = privateInstance.id;
@@ -254,8 +308,12 @@ By the end of this lab, you will have a fully functional VPC with EC2 instances 
 1. **Check the Outputs**:
    - After the deployment completes, you should see the exported VPC ID, public subnet ID, private subnet ID, NAT Gateway ID, and instance IDs in the output.
 
+   ![](./images/1.png)
+
 2. **Verify in AWS Management Console**:
    - Go to the [AWS Management Console](https://aws.amazon.com/console/) and navigate to the VPC, Subnet, Internet Gateway, NAT Gateway, and EC2 sections to verify that the resources have been created as expected.
+
+   ![](./images/res.png)
 
 ### Summary
 
