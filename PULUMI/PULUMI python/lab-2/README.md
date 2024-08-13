@@ -11,7 +11,7 @@ In this lab, you will expand your AWS VPC setup by adding both public and privat
 5. **Create Public and Private Route Tables**: Manage routing for the subnets.
 6. **Create a NAT Gateway**: Enable instances in the private subnet to access the Internet securely.
 
-![alt text](./images/pulumi-diagram-new.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/PULUMI/PULUMI%20python/lab-2/images/pulumi-diagram-new.png)
 
 By the end of this lab, you will have a VPC with public and private subnets. The public subnet will have direct Internet access, while the private subnet will have outbound Internet access through a NAT Gateway. This setup is essential for securing resources while maintaining necessary Internet connectivity.
 
@@ -240,23 +240,23 @@ Review the changes that Pulumi will make and confirm by typing "yes".
 
 After the deployment completes, you should see the exported VPC ID, public subnet ID, private subnet ID, NAT Gateway ID, and route table IDs in the output.
 
-![alt text](./images/pulumi-python-01.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/PULUMI/PULUMI%20python/lab-2/images/pulumi-python-01.png)
 
-![alt text](./images/pulumi-python-02.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/PULUMI/PULUMI%20python/lab-2/images/pulumi-python-02.png)
 
 You can see the resources in the pulumi stack as well in the graph view.
 
-![alt text](./images/pulumi-python-03.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/PULUMI/PULUMI%20python/lab-2/images/pulumi-python-03.png)
 
 ### 5.2 Verify in AWS Management Console
 
 Go to the AWS Management Console and navigate to the VPC, Subnet, Internet Gateway, and NAT Gateway sections to verify that the resources have been created as expected.
 
-![alt text](./images/pulumi-python-04.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/PULUMI/PULUMI%20python/lab-2/images/pulumi-python-04.png)
 
 You can see the resource map in the vpc to check the connection between the resources.
 
-![alt text](./images/pulumi-python-05.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/PULUMI/PULUMI%20python/lab-2/images/pulumi-python-05.png)
 
 ## Summary
 
