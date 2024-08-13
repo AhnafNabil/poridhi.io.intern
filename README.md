@@ -9,7 +9,7 @@
     - [Lab 5: Use init.sql to automate database creation](https://github.com/Konami33/poridhi.io.intern/blob/main/MySQL-Lab/4/README.md)
     - [Lab 6: Mount Docker Volume to Store mysql data](https://github.com/Konami33/poridhi.io.intern/blob/main/MySQL-Lab/5/README.md)
 ---
--  [PULUMI](https://github.com/Konami33/poridhi.io.intern/tree/main/PULUMI)
+-  [PULUMI Labs](https://github.com/Konami33/poridhi.io.intern/tree/main/PULUMI)
     - [PULUMI python](https://github.com/Konami33/poridhi.io.intern/tree/main/PULUMI/PULUMI%20python)
     - [PULUMI js](https://github.com/Konami33/poridhi.io.intern/tree/main/PULUMI/PULUMI%20js)
 ---
@@ -70,7 +70,7 @@
 ---
 - [Lambda function in AWS](https://github.com/Galadon123/Automating-Lambda-Function-Deployment-with-Pulumi)
 ---
-- [Automation with Github Action]()
+- **Automation with Github Action**
     - [Lab 1: Creating AWS Infrastructure with GitHub Actions and SSH Access](https://github.com/Konami33/poridhi.io.intern/tree/main/PULUMI/PULUMI%20python/lab-5)
     - [Lab 2: Automating K3s cluster Deployment in AWS Using Pulumi and GitHub Actions](https://github.com/Konami33/k3s-deployment-automation)
     - [Lab 3: Automating Lambda Function Deployment with Pulumi and GitHub Actions](https://github.com/Galadon123/Lambda-Function-with-Pulumi-python)
