@@ -12,7 +12,7 @@ In this lab, we will expand our AWS VPC setup by adding both public and private 
 
 By the end of this lab, you will have a VPC with public and private subnets. The public subnet will have direct Internet access, while the private subnet will have outbound Internet access through a NAT Gateway. This setup is essential for securing resources while maintaining necessary Internet connectivity.
 
-![](./image.png)
+![alt text](./images/pulumi-diagram-new.png)
 
 ## Step 1: Configure AWS CLI
 
@@ -27,7 +27,7 @@ aws configure
 Provide the following details when prompted:
 - **AWS Access Key ID**: Your AWS access key.
 - **AWS Secret Access Key**: Your AWS secret key.
-- **Default region name**: The default region (e.g., `us-east-1`).
+- **Default region name**: The default region (e.g., `ap-southeast-1`).
 - **Default output format**: The default output format (`json`).
 
 ## Step 2: Set Up a Pulumi Project
@@ -68,6 +68,9 @@ const aws = require("@pulumi/aws");
 // Create a VPC
 const vpc = new aws.ec2.Vpc("my-vpc", {
     cidrBlock: "10.0.0.0/16",
+    tags: {
+        Name: "my-vpc"
+    }
 });
 
 exports.vpcId = vpc.id;
@@ -84,8 +87,11 @@ Add the following code to create a public subnet:
 const publicSubnet = new aws.ec2.Subnet("public-subnet", {
     vpcId: vpc.id,
     cidrBlock: "10.0.1.0/24",
-    availabilityZone: "us-east-1a",
+    availabilityZone: "ap-southeast-1a",
     mapPublicIpOnLaunch: true,
+    tags: {
+        Name: "my-public-subnet"
+    }
 });
 
 exports.publicSubnetId = publicSubnet.id;
@@ -102,7 +108,10 @@ Add the following code to create a private subnet:
 const privateSubnet = new aws.ec2.Subnet("private-subnet", {
     vpcId: vpc.id,
     cidrBlock: "10.0.2.0/24",
-    availabilityZone: "us-east-1a",
+    availabilityZone: "ap-southeast-1a",
+    tags: {
+        Name: "my-private-subnet"
+    }
 });
 
 exports.privateSubnetId = privateSubnet.id;
@@ -118,6 +127,9 @@ Add the following code to create an Internet Gateway (IGW):
 // Create an Internet Gateway
 const igw = new aws.ec2.InternetGateway("internet-gateway", {
     vpcId: vpc.id,
+    tags: {
+        Name: "my-internet-gateway"
+    }
 });
 
 exports.igwId = igw.id;
@@ -133,6 +145,9 @@ Add the following code to create a route table, add a route to the IGW, and asso
 // Create a route table
 const publicRouteTable = new aws.ec2.RouteTable("public-route-table", {
     vpcId: vpc.id,
+    tags: {
+        Name: "my-public-route-table"
+    }
 });
 
 // Create a route in the route table for the Internet Gateway
@@ -167,6 +182,9 @@ const eip = new aws.ec2.Eip("nat-eip", {
 const natGateway = new aws.ec2.NatGateway("nat-gateway", {
     subnetId: publicSubnet.id,
     allocationId: eip.id,
+    tags: {
+        Name: "my-nat-gateway"
+    }
 });
 
 exports.natGatewayId = natGateway.id;
@@ -182,6 +200,9 @@ Add the following code to create a route table for the private subnet and associ
 // Create a route table for the private subnet
 const privateRouteTable = new aws.ec2.RouteTable("private-route-table", {
     vpcId: vpc.id,
+    tags: {
+        Name: "my-private-route-table"
+    }
 });
 
 // Create a route in the route table for the NAT Gateway
@@ -220,10 +241,24 @@ Review the changes that Pulumi will make and confirm by typing "yes".
 
 After the deployment completes, you should see the exported VPC ID, public subnet ID, private subnet ID, NAT Gateway ID, and route table IDs in the output.
 
+![alt text](./images/pulumi-01.png)
+
+![alt text](./images/pulumi-02.png)
+
+You can see the resources in the pulumi stack as well in the graph view.
+
+![alt text](./images/pulumi-03.png)
+
 ### 5.2 Verify in AWS Management Console
 
-Go to the [AWS Management Console](https://aws.amazon.com/console/) and navigate to the VPC, Subnet, Internet Gateway, and NAT Gateway sections to verify that the resources have been created as expected.
+Go to the AWS Management Console and navigate to the VPC, Subnet, Internet Gateway, and NAT Gateway sections to verify that the resources have been created as expected.
+
+![alt text](./images/pulumi-04.png)
+
+You can see the resource map in the vpc to check the connection between the resources.
+
+![alt text](./images/pulumi-05.png)
 
 ## Summary
 
-By following these steps, you will have set up a VPC with one public subnet, one private subnet, a public route table, a private route table, an Internet Gateway, and a NAT Gateway using Pulumi and AWS CLI on Windows. If you encounter any issues or need further assistance, feel free to ask!
+By following these steps, you will have set up a VPC with one public subnet, one private subnet, a public route table, a private route table, an Internet Gateway, and a NAT Gateway using Pulumi and AWS CLI.
