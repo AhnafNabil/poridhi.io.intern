@@ -12,7 +12,7 @@ In this lab, you will learn how to set up a basic network infrastructure on AWS 
 
 By the end of this lab, you will have a VPC with one public subnet that can communicate with the Internet. This setup forms the foundation for more complex network architectures and is essential for running public-facing applications on AWS. The implementation will be done using JavaScript.
 
-![alt text](./images/image.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-1/images/image.png)
 
 ## Step 1: Install and Configure AWS CLI
 
@@ -28,7 +28,7 @@ Follow the instructions to install and configure AWS CLI:
      ```
    - Enter your AWS Access Key ID, Secret Access Key, default region (`ap-southeast-1`), and default output format (`json`).
    
-   ![alt text](./images/image-1.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-1/images/image-1.png)
 
 
 ## Step 2: Install Pulumi
@@ -52,7 +52,7 @@ Follow the instructions to install and configure AWS CLI:
      ```
    - Follow the prompts to set up your project.
 
-   ![alt text](./images/image-2.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-1/images/image-2.png)
 
 ## Step 4: Create the Pulumi Program
 
@@ -148,17 +148,17 @@ Follow the instructions to install and configure AWS CLI:
 1. **Check the Outputs**:
    - After the deployment completes, you should see the exported VPC ID, public subnet ID, and route table ID in the output.
 
-   ![alt text](./images/image-3.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-1/images/image-3.png)
 
 2. **Check the resouces in PULUMI**:
    - You can check the resources and other information in your pulumi project dashboard.
 
-   ![alt text](./images/image-4.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-1/images/image-4.png)
 
 2. **Verify in AWS Management Console**:
    - Go to the [AWS Management Console](https://aws.amazon.com/console/) and navigate to the VPC, Subnet, and Internet Gateway sections to verify that the resources have been created as expected.
 
-   ![alt text](./images/image-5.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-1/images/image-5.png)
 
 ## Tear down the deployment
 
@@ -180,7 +180,7 @@ Run the following command to destroy the stack:
 pulumi destroy
 ```
 
-![alt text](./images/image-6.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-1/images/image-6.png)
 
 This command will show a preview of the resources that will be destroyed and prompt you to confirm the operation. Type "yes" to confirm and proceed with the destruction of the resources.
 
@@ -192,10 +192,10 @@ If you no longer need the stack and want to remove it from Pulumi's state manage
 pulumi stack rm
 ```
 
-![alt text](./images/image-7.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-1/images/image-7.png)
 
 This will remove the stack from Pulumi's state file, but only do this if you are sure you no longer need to manage this stack.
 
 ### Summary
 
-By following these steps, you will have set up a VPC with one public subnet, a public route table, and an Internet Gateway using Pulumi and AWS CLI on Windows with JavaScript. If you encounter any issues or need further assistance, feel free to ask!
+By following these steps, you will have set up a VPC with one public subnet, a public route table, and an Internet Gateway using Pulumi and AWS CLI on Windows with JavaScript.

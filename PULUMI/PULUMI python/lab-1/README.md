@@ -10,7 +10,7 @@ In this lab, we will set up a basic network infrastructure on AWS using a Virtua
 4. **Creating an Internet Gateway (IGW)**: Enable communication between instances in your VPC and the Internet.
 5. **Creating a Public Route Table**: Set up a route table that routes traffic destined for the Internet to the IGW and associate it with the public subnet.
 
-![alt text](./images/image-1.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-1/images/image-1.png)
 
 By the end of this lab, you will have a VPC with a public subnet that can communicate with the Internet. This setup forms the foundation for more complex network architectures, essential for running public-facing applications on AWS.
 
@@ -34,7 +34,7 @@ Provide the following details when prompted:
 - **Default region name**: The default region (e.g., `ap-southeast-1`).
 - **Default output format**: The default output format (`json`).
 
-![alt text](./images/image-2.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-1/images/image-2.png)
 
 ## Step 2: Install Pulumi
 
@@ -61,7 +61,7 @@ cd pulumi-project
 pip3 install pulumi pulumi_aws
 ```
 
-![alt text](./images/image-4.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-1/images/image-4.png)
 
 2. Run the following command to initialize a new Pulumi project:
 
@@ -71,7 +71,7 @@ pulumi new aws-python
 
 Follow the prompts to set up your project, including choosing a project name, description, and stack name.
 
-![alt text](./images/image-5.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-1/images/image-5.png)
 
 ## Step 4: Create the Pulumi Program
 
@@ -186,13 +186,13 @@ Review the changes that Pulumi will make and confirm by typing "yes".
 
 After the deployment completes, you should see the exported VPC ID, public subnet ID, and route table ID in the output.
 
-![alt text](./images/image-6.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-1/images/image-6.png)
 
 ### 6.2 Verify in AWS Management Console
 
 Go to the AWS Management Console and navigate to the VPC, Subnet, and Internet Gateway sections to verify that the resources have been created as expected.
 
-![alt text](./images/image-7.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-1/images/image-7.png)
 
 ## Tear down the deployment
 
@@ -216,7 +216,7 @@ pulumi destroy
 
 This command will show a preview of the resources that will be destroyed and prompt you to confirm the operation. Type "yes" to confirm and proceed with the destruction of the resources.
 
-![alt text](./images/image-8.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-1/images/image-8.png)
 
 ### Step 3: Remove the Stack (Optional)
 
