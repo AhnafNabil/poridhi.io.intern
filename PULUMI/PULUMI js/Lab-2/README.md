@@ -142,7 +142,7 @@ This code creates an IGW and attaches it to the VPC, allowing instances in the V
 Add the following code to create a route table, add a route to the IGW, and associate it with the public subnet:
 
 ```javascript
-// Create a route table
+// Create a route table for the public subnet
 const publicRouteTable = new aws.ec2.RouteTable("public-route-table", {
     vpcId: vpc.id,
     tags: {
