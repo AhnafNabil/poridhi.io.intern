@@ -10,7 +10,7 @@ In this lab, we will set up a basic network infrastructure on AWS using a Virtua
 4. **Creating an Internet Gateway (IGW)**: Enable communication between instances in your VPC and the Internet.
 5. **Creating a Public Route Table**: Set up a route table that routes traffic destined for the Internet to the IGW and associate it with the public subnet.
 
-![alt text](image.png)
+![alt text](./images/image-1.png)
 
 By the end of this lab, you will have a VPC with a public subnet that can communicate with the Internet. This setup forms the foundation for more complex network architectures, essential for running public-facing applications on AWS.
 
@@ -31,8 +31,10 @@ aws configure
 Provide the following details when prompted:
 - **AWS Access Key ID**: Your AWS access key.
 - **AWS Secret Access Key**: Your AWS secret key.
-- **Default region name**: The default region (e.g., `us-east-1`).
+- **Default region name**: The default region (e.g., `ap-southeast-1`).
 - **Default output format**: The default output format (`json`).
+
+![alt text](./images/image-2.png)
 
 ## Step 2: Install Pulumi
 
@@ -47,13 +49,21 @@ Download and install the Pulumi CLI by following the instructions from the [Pulu
 Create a directory for your project and navigate into it:
 
 ```sh
-mkdir my-vpc-project
-cd my-vpc-project
+mkdir pulumi-project
+cd pulumi-project
 ```
 
 ### 3.2 Initialize a New Pulumi Project
 
-Run the following command to initialize a new Pulumi project:
+1. Pulumi and the required Pulumi packages (like pulumi_aws) are installed:
+
+```sh
+pip3 install pulumi pulumi_aws
+```
+
+![alt text](./images/image-4.png)
+
+2. Run the following command to initialize a new Pulumi project:
 
 ```sh
 pulumi new aws-python
@@ -61,13 +71,15 @@ pulumi new aws-python
 
 Follow the prompts to set up your project, including choosing a project name, description, and stack name.
 
+![alt text](./images/image-5.png)
+
 ## Step 4: Create the Pulumi Program
 
-### 4.1 Open `__main__.py`
+### 4.1 Open `__main__.py` file
 
 Open the `__main__.py` file in your project directory. This is where you will write the code to define your AWS infrastructure.
 
-### 4.2 Create the VPC
+### 4.2 Create VPC
 
 Add the following code to create a VPC:
 
@@ -76,7 +88,10 @@ import pulumi
 import pulumi_aws as aws
 # Create a VPC
 vpc = aws.ec2.Vpc("my-vpc",
-    cidr_block="10.0.0.0/16"
+    cidr_block="10.0.0.0/16",
+    tags={
+        "Name": "my-vpc"
+    }
 )
 pulumi.export("vpc_id", vpc.id)
 ```
@@ -92,8 +107,11 @@ Add the following code to create a public subnet:
 public_subnet = aws.ec2.Subnet("public-subnet",
     vpc_id=vpc.id,
     cidr_block="10.0.1.0/24",
-    availability_zone="us-east-1a",
-    map_public_ip_on_launch=True
+    availability_zone="ap-southeast-1a",
+    map_public_ip_on_launch=True,
+    tags={
+        "Name": "public-subnet"
+    }
 )
 
 pulumi.export("public_subnet_id", public_subnet.id)
@@ -108,7 +126,10 @@ Add the following code to create an Internet Gateway (IGW):
 ```python
 # Create an Internet Gateway
 igw = aws.ec2.InternetGateway("internet-gateway",
-    vpc_id=vpc.id
+    vpc_id=vpc.id,
+    tags={
+        "Name": "igw"
+    }
 )
 
 pulumi.export("igw_id", igw.id)
@@ -123,7 +144,10 @@ Add the following code to create a route table, add a route to the IGW, and asso
 ```python
 # Create a route table
 public_route_table = aws.ec2.RouteTable("public-route-table",
-    vpc_id=vpc.id
+    vpc_id=vpc.id,
+    tags={
+        "Name": "rt-public"
+    }
 )
 
 # Create a route in the route table for the Internet Gateway
@@ -162,9 +186,13 @@ Review the changes that Pulumi will make and confirm by typing "yes".
 
 After the deployment completes, you should see the exported VPC ID, public subnet ID, and route table ID in the output.
 
+![alt text](./images/image-6.png)
+
 ### 6.2 Verify in AWS Management Console
 
-Go to the [AWS Management Console](https://aws.amazon.com/console/) and navigate to the VPC, Subnet, and Internet Gateway sections to verify that the resources have been created as expected.
+Go to the AWS Management Console and navigate to the VPC, Subnet, and Internet Gateway sections to verify that the resources have been created as expected.
+
+![alt text](./images/image-7.png)
 
 ## Tear down the deployment
 
@@ -175,7 +203,7 @@ To tear down (or destroy) the deployment created with Pulumi, you need to use th
 Ensure you are in the directory where your Pulumi project is located. Open Command Prompt or PowerShell and navigate to your project directory:
 
 ```sh
-cd my-vpc-project
+cd pulumi-project
 ```
 
 ### Step 2: Destroy the Pulumi Stack
@@ -188,16 +216,18 @@ pulumi destroy
 
 This command will show a preview of the resources that will be destroyed and prompt you to confirm the operation. Type "yes" to confirm and proceed with the destruction of the resources.
 
+![alt text](./images/image-8.png)
+
 ### Step 3: Remove the Stack (Optional)
 
 If you no longer need the stack and want to remove it from Pulumi's state management, you can run the following command after destroying the resources:
 
 ```sh
-pulumi stack rm
+pulumi stack rm dev
 ```
 
 This will remove the stack from Pulumi's state file, but only do this if you are sure you no longer need to manage this stack.
 
 ## Summary
 
-By following these steps, you will have set up a VPC with one public subnet, a public route table, and an Internet Gateway using Pulumi and AWS CLI on Windows. If you encounter any issues or need further assistance, feel free to ask!
+By following these steps, you will have set up a VPC with one public subnet, a public route table, and an Internet Gateway using Pulumi and AWS CLI.
