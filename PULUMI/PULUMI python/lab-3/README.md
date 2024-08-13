@@ -19,16 +19,40 @@ By the end of this lab, you will have a fully functional VPC with EC2 instances 
 
 Here is a visual representation of the architecture:
 
-![alt text](image.png)
+![](https://github.com/Konami33/poridhi.io.intern/blob/main/PULUMI/PULUMI%20js/Lab-3/images/image.jpg)
 
 ## Step 1: Configure AWS CLI
 
-1. **Configure AWS CLI**:
-   - Open Command Prompt or PowerShell and run:
-     ```sh
-     aws configure
-     ```
-   - Enter your AWS Access Key ID, Secret Access Key, default region (`us-east-1`), and default output format (`json`).
+### Install AWS CLI
+
+Before proceeding, ensure that the AWS CLI is installed on your local machine. Follow the instructions below based on your operating system:
+
+- **Windows**:
+  1. Download the AWS CLI MSI installer from the [official AWS website](https://aws.amazon.com/cli/).
+  2. Run the downloaded MSI installer and follow the instructions.
+
+- **Linux**:
+  ```sh
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  unzip awscliv2.zip
+  sudo ./aws/install
+  ```
+
+#### Configure AWS CLI
+
+After installing the AWS CLI, configure it with the necessary credentials. Run the following command and follow the prompts to configure it:
+
+```sh
+aws configure
+```
+
+- **Explanation**: This command sets up your AWS CLI with the necessary credentials, region, and output format.
+
+![](https://github.com/Konami33/poridhi.io.intern/blob/main/PULUMI/PULUMI%20js/Lab-3/images/5.png)
+
+You will find the `AWS Access key` and `AWS Seceret Access key` on Lab description page,where you generated the credentials
+
+![](https://github.com/Konami33/poridhi.io.intern/blob/main/PULUMI/PULUMI%20js/Lab-3/images/6.png)
 
 ## Step 2: Set Up a Pulumi Project
 
@@ -64,6 +88,8 @@ Here is a visual representation of the architecture:
      chmod 400 MyKeyPair.pem
      ```
 
+     ![](https://github.com/Konami33/poridhi.io.intern/blob/main/PULUMI/PULUMI%20js/Lab-3/images/8.jpg)
+
 ## Step 3: Create the Pulumi Program
 
 1. **Open `__main__.py`**:
@@ -77,7 +103,10 @@ Here is a visual representation of the architecture:
 
    # Create a VPC
    vpc = aws.ec2.Vpc("my-vpc",
-       cidr_block="10.0.0.0/16"
+       cidr_block="10.0.0.0/16",
+       tags= {
+        "Name":  "my-vpc"
+       }
    )
 
    pulumi.export("vpc_id", vpc.id)
@@ -90,8 +119,11 @@ Here is a visual representation of the architecture:
    public_subnet = aws.ec2.Subnet("public-subnet",
        vpc_id=vpc.id,
        cidr_block="10.0.1.0/24",
-       availability_zone="us-east-1a",
-       map_public_ip_on_launch=True
+       availability_zone="ap-southeast-1a",
+       map_public_ip_on_launch=True,
+       tags= {
+        "Name":  "public-subnet"
+       }
    )
 
    pulumi.export("public_subnet_id", public_subnet.id)
@@ -104,7 +136,10 @@ Here is a visual representation of the architecture:
    private_subnet = aws.ec2.Subnet("private-subnet",
        vpc_id=vpc.id,
        cidr_block="10.0.2.0/24",
-       availability_zone="us-east-1a"
+       availability_zone="ap-southeast-1a",
+       tags= {
+        "Name":  "private-subnet"
+       }
    )
 
    pulumi.export("private_subnet_id", private_subnet.id)
@@ -115,7 +150,10 @@ Here is a visual representation of the architecture:
    ```python
    # Create an Internet Gateway
    igw = aws.ec2.InternetGateway("internet-gateway",
-       vpc_id=vpc.id
+       vpc_id=vpc.id,
+       tags= {
+        "Name":  "igw"
+       }
    )
 
    pulumi.export("igw_id", igw.id)
@@ -126,7 +164,10 @@ Here is a visual representation of the architecture:
    ```python
    # Create a route table
    public_route_table = aws.ec2.RouteTable("public-route-table",
-       vpc_id=vpc.id
+       vpc_id=vpc.id,
+       tags= {
+        "Name":  "rt-public"
+       }
    )
 
    # Create a route in the route table for the Internet Gateway
@@ -154,7 +195,10 @@ Here is a visual representation of the architecture:
    # Create the NAT Gateway
    nat_gateway = aws.ec2.NatGateway("nat-gateway",
        subnet_id=public_subnet.id,
-       allocation_id=eip.id
+       allocation_id=eip.id,
+       tags= {
+        "Name":  "nat"
+       }
    )
 
    pulumi.export("nat_gateway_id", nat_gateway.id)
@@ -165,7 +209,10 @@ Here is a visual representation of the architecture:
    ```python
    # Create a route table for the private subnet
    private_route_table = aws.ec2.RouteTable("private-route-table",
-       vpc_id=vpc.id
+       vpc_id=vpc.id,
+       tags= {
+        "Name":  "rt-private"
+       }
    )
 
    # Create a route in the route table for the NAT Gateway
@@ -201,7 +248,7 @@ Here is a visual representation of the architecture:
    )
 
    # Use the specified Ubuntu 24.04 LTS AMI
-   ami_id = 'ami-04b70fa74e45c3917'
+   ami_id = 'ami-060e277c0d4cce553'
 
    # Create an EC2 instance in the public subnet
    public_instance = aws.ec2.Instance("public-instance",
@@ -210,7 +257,10 @@ Here is a visual representation of the architecture:
        ami=ami_id,
        subnet_id=public_subnet.id,
        key_name="MyKeyPair",
-       associate_public_ip_address=True
+       associate_public_ip_address=True,
+       tags= {
+        "Name":  "public-ec2"
+       }
    )
 
    pulumi.export("public_instance_id", public_instance.id)
@@ -238,7 +288,10 @@ Here is a visual representation of the architecture:
         vpc_security_group_ids=[private_security_group.id],
         ami=ami_id,
         subnet_id=private_subnet.id,
-        key_name="MyKeyPair"
+        key_name="MyKeyPair",
+        tags= {
+        "Name":  "private-ec2"
+        }
     )
 
     pulumi.export("private_instance_id", private_instance.id)
@@ -258,8 +311,12 @@ Here is a visual representation of the architecture:
 1. **Check the Outputs**:
    - After the deployment completes, you should see the exported VPC ID, public subnet ID, private subnet ID, NAT Gateway ID, and instance IDs in the output.
 
+   ![](https://github.com/Konami33/poridhi.io.intern/blob/main/PULUMI/PULUMI%20js/Lab-3/images/1.png)
+
 2. **Verify in AWS Management Console**:
    - Go to the [AWS Management Console](https://aws.amazon.com/console/) and navigate to the VPC, Subnet, Internet Gateway, NAT Gateway, and EC2 sections to verify that the resources have been created as expected.
+
+   ![](https://github.com/Konami33/poridhi.io.intern/blob/main/PULUMI/PULUMI%20js/Lab-3/images/res.png)
 
 ## Summary
 
