@@ -15,7 +15,7 @@ In this lab, you will extend your VPC setup by launching EC2 instances in both t
 
 By the end of this lab, you will have a fully functional VPC with EC2 instances in both the public and private subnets. The public instance will have direct Internet access, while the private instance will be isolated from direct Internet access, providing a secure environment for sensitive operations.
 
-![](./images/image.jpg)
+![](https://github.com/Konami33/poridhi.io.intern/blob/main/PULUMI/PULUMI%20js/Lab-3/images/image.jpg)
 
 ### Step 1: Configure AWS CLI
 
@@ -44,11 +44,11 @@ aws configure
 
 - **Explanation**: This command sets up your AWS CLI with the necessary credentials, region, and output format.
 
-![](./images/5.png)
+![](https://github.com/Konami33/poridhi.io.intern/blob/main/PULUMI/PULUMI%20js/Lab-3/images/5.png)
 
 You will find the `AWS Access key` and `AWS Seceret Access key` on Lab description page,where you generated the credentials
 
-![](./images/6.png)
+![](https://github.com/Konami33/poridhi.io.intern/blob/main/PULUMI/PULUMI%20js/Lab-3/images/6.png)
 
 
 ### Step 2: Set Up a Pulumi Project
@@ -85,7 +85,7 @@ You will find the `AWS Access key` and `AWS Seceret Access key` on Lab descripti
      chmod 400 MyKeyPair.pem
      ```
 
-     ![](./images/8.jpg)
+     ![](https://github.com/Konami33/poridhi.io.intern/blob/main/PULUMI/PULUMI%20js/Lab-3/images/8.jpg)
 
 ### Step 3: Create the Pulumi Program
 
@@ -308,12 +308,12 @@ You will find the `AWS Access key` and `AWS Seceret Access key` on Lab descripti
 1. **Check the Outputs**:
    - After the deployment completes, you should see the exported VPC ID, public subnet ID, private subnet ID, NAT Gateway ID, and instance IDs in the output.
 
-   ![](./images/1.png)
+   ![](https://github.com/Konami33/poridhi.io.intern/blob/main/PULUMI/PULUMI%20js/Lab-3/images/1.png)
 
 2. **Verify in AWS Management Console**:
    - Go to the [AWS Management Console](https://aws.amazon.com/console/) and navigate to the VPC, Subnet, Internet Gateway, NAT Gateway, and EC2 sections to verify that the resources have been created as expected.
 
-   ![](./images/res.png)
+   ![](https://github.com/Konami33/poridhi.io.intern/blob/main/PULUMI/PULUMI%20js/Lab-3/images/res.png)
 
 ### Summary
 
