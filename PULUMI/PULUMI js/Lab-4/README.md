@@ -13,7 +13,7 @@ In this lab, you will learn how to set up a Virtual Private Cloud (VPC) with bot
 
 This lab will give you hands-on experience with AWS networking concepts and demonstrate how to securely access resources in a private subnet through a public subnet instance using JavaScript.
 
-![alt text](./images/image-1.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-1.png)
 
 ### Step 1: Configure AWS CLI
 
@@ -24,7 +24,7 @@ This lab will give you hands-on experience with AWS networking concepts and demo
      ```
    - Enter your AWS Access Key ID, Secret Access Key, default region (`us-east-1`), and default output format (`json`).
 
-   ![alt text](./images/image-3.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-3.png)
 
 ### Step 2: Set Up a Pulumi Project
 
@@ -42,7 +42,7 @@ This lab will give you hands-on experience with AWS networking concepts and demo
      ```
    - Follow the prompts to set up your project.
 
-   ![alt text](./images/image-4.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-4.png)
 
 3. **Create a Key Pair**:
    - Run the following command to create a new key pair:
@@ -62,7 +62,7 @@ This lab will give you hands-on experience with AWS networking concepts and demo
      chmod 400 MyKeyPair.pem
      ```
 
-    ![alt text](./images/image-5.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-5.png)
 
 ### Step 3: Create the Pulumi Program
 
@@ -279,13 +279,13 @@ This lab will give you hands-on experience with AWS networking concepts and demo
      ```
    - Review the changes and confirm by typing "yes".
 
-   ![alt text](./images/image-2.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-2.png)
 
 2. **Check the PULUMI outputs and resources**:
     - Goto your pulumi project dashboard and check for the outputs:
-    ![alt text](./images/image-6.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-6.png)
     - You can also check the resources created:
-    ![alt text](./images/image-7.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-7.png)
 
 
 ### Step 5: Access the Public Instance via SSH
@@ -297,7 +297,7 @@ This lab will give you hands-on experience with AWS networking concepts and demo
      ```
    - Replace `<public_instance_ip>` with the public IP address of the public instance, which you can find in the Pulumi output or the AWS Management Console.
 
-   ![alt text](./images/image-8.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-8.png)
 
 ### Step 6: Copy the Key Pair to the Public Instance
 
@@ -308,7 +308,7 @@ This lab will give you hands-on experience with AWS networking concepts and demo
      ```
    - Replace `<public_instance_ip>` with the public IP address of the public instance.
 
-   ![alt text](./images/image-9.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-9.png)
 
 ### Step 7: SSH from the Public Instance to the Private Instance
 
@@ -323,7 +323,7 @@ This lab will give you hands-on experience with AWS networking concepts and demo
      ```
    - Replace `<private_instance_ip>` with the private IP address of the private instance, which you can find in the Pulumi output or the AWS Management Console.
 
-   ![alt text](./images/image-10.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-10.png)
 
 ### Summary
 
