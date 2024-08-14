@@ -302,4 +302,4 @@ This lab provides hands-on experience with AWS networking concepts and demonstra
 
 ### Summary
 
-By following these steps, you have set up a VPC with one public subnet and one private subnet, launched EC2 instances in both subnets, and used SSH to connect from the public subnet instance to the private subnet instance using Pulumi and AWS CLI on Windows. This lab provides a practical understanding of AWS networking and security practices. If you encounter any issues or need further assistance, feel free to ask!
+By following these steps, you have set up a VPC with one public subnet and one private subnet, launched EC2 instances in both subnets, and used SSH to connect from the public subnet instance to the private subnet instance using Pulumi and AWS CLI. 
