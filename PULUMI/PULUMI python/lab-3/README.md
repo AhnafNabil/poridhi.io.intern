@@ -320,4 +320,4 @@ You will find the `AWS Access key` and `AWS Seceret Access key` on Lab descripti
 
 ## Summary
 
-By following these steps, you will have set up a VPC with one public subnet, one private subnet, a public route table, a private route table, an Internet Gateway, and a NAT Gateway, and configured EC2 instances in both subnets using Pulumi and AWS CLI on Windows. This setup ensures that your public instance can communicate with the Internet, while your private instance remains isolated and uses the NAT Gateway for secure outbound connections. If you encounter any issues or need further assistance, feel free to ask!
+By following these steps, you will have set up a VPC with one public subnet, one private subnet, a public route table, a private route table, an Internet Gateway, and a NAT Gateway, and configured EC2 instances in both subnets using Pulumi and AWS CLI on Windows. This setup ensures that your public instance can communicate with the Internet, while your private instance remains isolated and uses the NAT Gateway for secure outbound connections.
