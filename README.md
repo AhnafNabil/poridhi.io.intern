@@ -9,7 +9,7 @@
     - [Lab 5: Use init.sql to automate database creation](https://github.com/Konami33/poridhi.io.intern/blob/main/MySQL-Lab/4/README.md)
     - [Lab 6: Mount Docker Volume to Store mysql data](https://github.com/Konami33/poridhi.io.intern/blob/main/MySQL-Lab/5/README.md)
 ---
--  [PULUMI](https://github.com/Konami33/poridhi.io.intern/tree/main/PULUMI)
+-  [PULUMI Labs](https://github.com/Konami33/poridhi.io.intern/tree/main/PULUMI)
     - [PULUMI python](https://github.com/Konami33/poridhi.io.intern/tree/main/PULUMI/PULUMI%20python)
     - [PULUMI js](https://github.com/Konami33/poridhi.io.intern/tree/main/PULUMI/PULUMI%20js)
 ---
@@ -70,7 +70,7 @@
 ---
 - [Lambda function in AWS](https://github.com/Galadon123/Automating-Lambda-Function-Deployment-with-Pulumi)
 ---
-- [Automation with Github Action]()
+- **Automation with Github Action**
     - [Lab 1: Creating AWS Infrastructure with GitHub Actions and SSH Access](https://github.com/Konami33/poridhi.io.intern/tree/main/PULUMI/PULUMI%20python/lab-5)
     - [Lab 2: Automating K3s cluster Deployment in AWS Using Pulumi and GitHub Actions](https://github.com/Konami33/k3s-deployment-automation)
     - [Lab 3: Automating Lambda Function Deployment with Pulumi and GitHub Actions](https://github.com/Galadon123/Lambda-Function-with-Pulumi-python)
@@ -79,12 +79,14 @@
     - [Lab 6: Auto-Deploy Go App on AWS EC2 by Building a Docker Image and Publish it to Dockerhub with CI/CD Pipeline using GitHub Actions](https://github.com/Konami33/GO-app-with-github-action?fbclid=IwZXh0bgNhZW0CMTAAAR35Tfe2GqGV9WY8TEPyRV_qU2jSvuWAVhGWfFi7mn-pOCS2vFlQqq5-yMQ_aem_aXNmyzg0AaJpAN86BVHVOw)
     - [Lab 7: Setting Up CI/CD Pipeline for Flask Application on AWS EC2 with GitHub Actions](https://github.com/Galadon123/Flask-app-with-github-action/tree/main?fbclid=IwZXh0bgNhZW0CMTAAAR2SlRy2GR41lt7WbXgOO9S_hRU55wf1SyPuVx1CFxqReYiXV25OaZNwVb0_aem_kubsbf6BUT_nPmKkT5sWZg)
 ---
-- [Automation with Jenkins]()
-    - [Automating Docker Image Builds and Pushes to Docker Hub using Jenkins on AWS EC2](https://github.com/AhnafNabil/Jenkins-Test-Demo)
+- [Automation with Jenkins](https://github.com/AhnafNabil/Jenkins-Labs)
 
 ---
-- [Ansible Labs]()
-    - [Lab 1: Automate Git-runner setup using Ansible](https://github.com/Konami33/Git-runner-using-ansible)
-    - [Lab 2: Automate deploying k3s using Ansible and Github action](https://github.com/Konami33/k3s-deployment)
-    - [Lab 3: Installing MySQL on an EC2 Instance Using Ansible](https://github.com/AhnafNabil/Ansible-Labs/tree/main/Ansible-Mysql)
-    - [Lab 4: Automating MySQL Installation on an EC2 Instance Using Ansible and GitHub Actions](https://github.com/AhnafNabil/Ansible-Labs/tree/main/Ansible-Mysql-Github-Actions)
+
+- [Ansible Labs](https://github.com/Konami33/Ansible-Labs)
+
+---
+
+- [Terraform Labs](https://github.com/Minhaz00/Terraform-Labs)
+
+---
