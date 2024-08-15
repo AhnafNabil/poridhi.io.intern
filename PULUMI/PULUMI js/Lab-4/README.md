@@ -1,6 +1,4 @@
-## Lab 4: SSH from Public Subnet Instance to Private Subnet Instance Using JavaScript
-
-### Introduction
+# SSH from Public Subnet Instance to Private Subnet Instance
 
 In this lab, you will learn how to set up a Virtual Private Cloud (VPC) with both public and private subnets, launch EC2 instances in each subnet, and establish secure communication between these instances using JavaScript with Pulumi. Specifically, you will:
 
@@ -15,7 +13,7 @@ In this lab, you will learn how to set up a Virtual Private Cloud (VPC) with bot
 
 This lab will give you hands-on experience with AWS networking concepts and demonstrate how to securely access resources in a private subnet through a public subnet instance using JavaScript.
 
-![](./image.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-1.png)
 
 ### Step 1: Configure AWS CLI
 
@@ -26,13 +24,15 @@ This lab will give you hands-on experience with AWS networking concepts and demo
      ```
    - Enter your AWS Access Key ID, Secret Access Key, default region (`us-east-1`), and default output format (`json`).
 
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-3.png)
+
 ### Step 2: Set Up a Pulumi Project
 
 1. **Set Up a Pulumi Project**:
    - Create a new directory for your project and navigate into it:
      ```sh
-     mkdir lab4-vpc-project
-     cd lab4-vpc-project
+     mkdir lab4
+     cd lab4
      ```
 
 2. **Initialize a New Pulumi Project**:
@@ -41,6 +41,8 @@ This lab will give you hands-on experience with AWS networking concepts and demo
      pulumi new aws-javascript
      ```
    - Follow the prompts to set up your project.
+
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-4.png)
 
 3. **Create a Key Pair**:
    - Run the following command to create a new key pair:
@@ -60,6 +62,8 @@ This lab will give you hands-on experience with AWS networking concepts and demo
      chmod 400 MyKeyPair.pem
      ```
 
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-5.png)
+
 ### Step 3: Create the Pulumi Program
 
 1. **Open `index.js`**:
@@ -71,39 +75,49 @@ This lab will give you hands-on experience with AWS networking concepts and demo
    const pulumi = require("@pulumi/pulumi");
    const aws = require("@pulumi/aws");
 
-   // Create a VPC
-   const vpc = new aws.ec2.Vpc("my-vpc", {
-       cidrBlock: "10.0.0.0/16"
-   });
+    // Create a VPC
+    const vpc = new aws.ec2.Vpc("my-vpc", {
+        cidrBlock: "10.0.0.0/16",
+        tags: {
+            Name: "my-vpc"
+        }
 
-   exports.vpcId = vpc.id;
-   ```
+    });
+
+    exports.vpcId = vpc.id;
+    ```
 
 3. **Create the Public Subnet**:
    - A public subnet is one that has a route to an Internet Gateway, enabling instances within it to communicate with the Internet.
    ```javascript
-   // Create a public subnet
-   const publicSubnet = new aws.ec2.Subnet("public-subnet", {
-       vpcId: vpc.id,
-       cidrBlock: "10.0.1.0/24",
-       availabilityZone: "us-east-1a",
-       mapPublicIpOnLaunch: true
-   });
+    // Create a public subnet
+    const publicSubnet = new aws.ec2.Subnet("public-subnet", {
+        vpcId: vpc.id,
+        cidrBlock: "10.0.1.0/24",
+        availabilityZone: "ap-southeast-1a",
+        mapPublicIpOnLaunch: true,
+        tags: {
+            Name: "public-subnet"
+        }
+    });
 
-   exports.publicSubnetId = publicSubnet.id;
+    exports.publicSubnetId = publicSubnet.id;
    ```
 
 4. **Create the Private Subnet**:
    - A private subnet does not have a route to an Internet Gateway, preventing instances within it from directly communicating with the Internet.
    ```javascript
    // Create a private subnet
-   const privateSubnet = new aws.ec2.Subnet("private-subnet", {
-       vpcId: vpc.id,
-       cidrBlock: "10.0.2.0/24",
-       availabilityZone: "us-east-1a"
-   });
+    const privateSubnet = new aws.ec2.Subnet("private-subnet", {
+        vpcId: vpc.id,
+        cidrBlock: "10.0.2.0/24",
+        availabilityZone: "ap-southeast-1a",
+        tags: {
+            Name: "private-subnet"
+        }
+    });
 
-   exports.privateSubnetId = privateSubnet.id;
+    exports.privateSubnetId = privateSubnet.id;
    ```
 
 5. **Create the Internet Gateway**:
@@ -111,7 +125,10 @@ This lab will give you hands-on experience with AWS networking concepts and demo
    ```javascript
    // Create an Internet Gateway
    const igw = new aws.ec2.InternetGateway("internet-gateway", {
-       vpcId: vpc.id
+        vpcId: vpc.id,
+        tags: {
+            Name: "igw"
+        }
    });
 
    exports.igwId = igw.id;
@@ -122,7 +139,10 @@ This lab will give you hands-on experience with AWS networking concepts and demo
    ```javascript
    // Create a route table
    const publicRouteTable = new aws.ec2.RouteTable("public-route-table", {
-       vpcId: vpc.id
+       vpcId: vpc.id,
+       tags: {
+            Name: "rt-public"
+        }
    });
 
    // Create a route in the route table for the Internet Gateway
@@ -161,7 +181,10 @@ This lab will give you hands-on experience with AWS networking concepts and demo
    ```javascript
    // Create a route table for the private subnet
    const privateRouteTable = new aws.ec2.RouteTable("private-route-table", {
-       vpcId: vpc.id
+       vpcId: vpc.id,
+        tags: {
+            Name: "rt-private"
+        }
    });
 
    // Create a route in the route table for the NAT Gateway
@@ -197,7 +220,7 @@ This lab will give you hands-on experience with AWS networking concepts and demo
    });
 
    // Use the specified Ubuntu 24.04 LTS AMI
-   const amiId = "ami-04b70fa74e45c3917";
+   const amiId = "ami-060e277c0d4cce553";
 
    // Create an EC2 instance in the public subnet
    const publicInstance = new aws.ec2.Instance("public-instance", {
@@ -206,7 +229,10 @@ This lab will give you hands-on experience with AWS networking concepts and demo
        ami: amiId,
        subnetId: publicSubnet.id,
        keyName: "MyKeyPair",
-       associatePublicIpAddress: true
+       associatePublicIpAddress: true,
+       tags: {
+            Name: "public-ec2"
+        }
    });
 
    exports.publicInstanceId = publicInstance.id;
@@ -234,10 +260,14 @@ This lab will give you hands-on experience with AWS networking concepts and demo
         vpcSecurityGroupIds: [privateSecurityGroup.id],
         ami: amiId,
         subnetId: privateSubnet.id,
-        keyName: "MyKeyPair"
+        keyName: "MyKeyPair",
+        tags: {
+            Name: "private-ec2"
+        }
     });
 
     exports.privateInstanceId = privateInstance.id;
+    exports.privateInstanceIp = privateInstance.privateIp;
     ```
 
 ### Step 4: Deploy the Pulumi Stack
@@ -249,6 +279,15 @@ This lab will give you hands-on experience with AWS networking concepts and demo
      ```
    - Review the changes and confirm by typing "yes".
 
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-2.png)
+
+2. **Check the PULUMI outputs and resources**:
+    - Goto your pulumi project dashboard and check for the outputs:
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-6.png)
+    - You can also check the resources created:
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-7.png)
+
+
 ### Step 5: Access the Public Instance via SSH
 
 1. **SSH into the Public Instance**:
@@ -258,6 +297,8 @@ This lab will give you hands-on experience with AWS networking concepts and demo
      ```
    - Replace `<public_instance_ip>` with the public IP address of the public instance, which you can find in the Pulumi output or the AWS Management Console.
 
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-8.png)
+
 ### Step 6: Copy the Key Pair to the Public Instance
 
 1. **Copy the Key Pair to the Public Instance**:
@@ -266,6 +307,8 @@ This lab will give you hands-on experience with AWS networking concepts and demo
      scp -i MyKeyPair.pem MyKeyPair.pem ubuntu@<public_instance_ip>:~
      ```
    - Replace `<public_instance_ip>` with the public IP address of the public instance.
+
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-9.png)
 
 ### Step 7: SSH from the Public Instance to the Private Instance
 
@@ -280,6 +323,8 @@ This lab will give you hands-on experience with AWS networking concepts and demo
      ```
    - Replace `<private_instance_ip>` with the private IP address of the private instance, which you can find in the Pulumi output or the AWS Management Console.
 
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20js/Lab-4/images/image-10.png)
+
 ### Summary
 
-By following these steps, you will have set up a VPC with one public subnet and one private subnet, launched EC2 instances in both subnets, and used SSH to connect from the public subnet instance to the private subnet instance using Pulumi and AWS CLI on Windows with JavaScript. If you encounter any issues or need further assistance, feel free to ask!
+By following these steps, you will have set up a VPC with one public subnet and one private subnet, launched EC2 instances in both subnets, and used SSH to connect from the public subnet instance to the private subnet instance using Pulumi and AWS CLI on Windows with JavaScript.

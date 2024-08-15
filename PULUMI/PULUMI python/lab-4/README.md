@@ -1,6 +1,4 @@
-## Lab 4: SSH from Public Subnet Instance to Private Subnet Instance
-
-### Introduction
+# SSH from Public Subnet Instance to Private Subnet Instance
 
 In this lab, you will set up a Virtual Private Cloud (VPC) in AWS with both public and private subnets, launch EC2 instances in each subnet, and establish secure communication between these instances. Specifically, you will:
 
@@ -15,7 +13,7 @@ In this lab, you will set up a Virtual Private Cloud (VPC) in AWS with both publ
 
 This lab provides hands-on experience with AWS networking concepts and demonstrates how to securely access resources in a private subnet through a public subnet instance.
 
-![alt text](image.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-4/images/image-1.png)
 
 ### Step 1: Configure AWS CLI
 
@@ -26,21 +24,29 @@ This lab provides hands-on experience with AWS networking concepts and demonstra
      ```
    - Enter your AWS Access Key ID, Secret Access Key, default region (`us-east-1`), and default output format (`json`).
 
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-4/images/image-3.png)
+
 ### Step 2: Set Up a Pulumi Project
 
 1. **Set Up a Pulumi Project**:
    - Create a new directory for your project and navigate into it:
      ```sh
-     mkdir lab4-vpc-project
-     cd lab4-vpc-project
+     mkdir lab4
+     cd lab4
      ```
 
 2. **Initialize a New Pulumi Project**:
-   - Run the following command to create a new Pulumi project:
-     ```sh
-     pulumi new aws-python
-     ```
-   - Follow the prompts to set up your project.
+
+- Pulumi and the required Pulumi packages (like pulumi_aws) are installed:
+
+    ```sh
+    pip3 install pulumi pulumi_aws
+    ```
+- Run the following command to create a new Pulumi project:
+    ```sh
+    pulumi new aws-python
+    ```
+- Follow the prompts to set up your project.
 
 3. **Create a Key Pair**:
    - Run the following command to create a new key pair:
@@ -59,6 +65,8 @@ This lab provides hands-on experience with AWS networking concepts and demonstra
      ```sh
      chmod 400 MyKeyPair.pem
      ```
+
+     ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-4/images/image-5.png)
 
 ### Step 3: Create the Pulumi Program
 
@@ -236,6 +244,7 @@ This lab provides hands-on experience with AWS networking concepts and demonstra
             key_name="MyKeyPair"
         )
     pulumi.export("private_instance_id", private_instance.id)
+    pulumi.export("private_instance_ip", private_instance.private_ip)
     ```
 ### Step 4: Deploy the Pulumi Stack
 
@@ -246,6 +255,14 @@ This lab provides hands-on experience with AWS networking concepts and demonstra
      ```
    - Review the changes and confirm by typing "yes".
 
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-4/images/image-2.png)
+
+2. **Verify the Resources**:
+    - Goto your pulumi project dashboard and check for the outputs:
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-4/images/image-6.png)
+    - You can also check the resources created:
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-4/images/image-7.png)
+
 ### Step 5: Access the Public Instance via SSH
 
 1. **SSH into the Public Instance**:
@@ -255,6 +272,8 @@ This lab provides hands-on experience with AWS networking concepts and demonstra
      ```
    - Replace `<public_instance_ip>` with the public IP address of the public instance, which you can find in the Pulumi output or the AWS Management Console.
 
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-4/images/image-8.png)
+
 ### Step 6: Copy the Key Pair to the Public Instance
 
 1. **Copy the Key Pair to the Public Instance**:
@@ -263,6 +282,8 @@ This lab provides hands-on experience with AWS networking concepts and demonstra
      scp -i MyKeyPair.pem MyKeyPair.pem ubuntu@<public_instance_ip>:~
      ```
    - Replace `<public_instance_ip>` with the public IP address of the public instance.
+
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-4/images/image-9.png)
 
 ### Step 7: SSH from the Public Instance to the Private Instance
 
@@ -277,6 +298,8 @@ This lab provides hands-on experience with AWS networking concepts and demonstra
      ```
    - Replace `<private_instance_ip>` with the private IP address of the private instance, which you can find in the Pulumi output or the AWS Management Console.
 
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-4/images/image-10.png)
+
 ### Summary
 
-By following these steps, you have set up a VPC with one public subnet and one private subnet, launched EC2 instances in both subnets, and used SSH to connect from the public subnet instance to the private subnet instance using Pulumi and AWS CLI on Windows. This lab provides a practical understanding of AWS networking and security practices. If you encounter any issues or need further assistance, feel free to ask!
+By following these steps, you have set up a VPC with one public subnet and one private subnet, launched EC2 instances in both subnets, and used SSH to connect from the public subnet instance to the private subnet instance using Pulumi and AWS CLI. 
