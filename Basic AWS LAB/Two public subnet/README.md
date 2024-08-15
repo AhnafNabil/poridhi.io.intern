@@ -4,9 +4,9 @@ This documentation outlines the process to set up a VPC with two public subnets,
 
 ## Scenario
 
-![alt text](./images/Public-two.jpeg)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/Basic%20AWS%20LAB/Two%20public%20subnet/images/Public-two.jpeg)
 
-You are tasked with deploying a web application that uses Flask as the backend and MySQL as the database. To achieve this, you will create a Virtual Private Cloud (VPC) in AWS to ensure network isolation and security. Within this VPC, you will set up two public subnets: one for the Flask application and another for the MySQL database.
+You are tasked with **deploying a web application that uses Flask as the backend** and **MySQL as the database**. To achieve this, you will have to create a Virtual Private Cloud (VPC) in AWS to ensure network isolation and security. Within this VPC, you will set up two public subnets: one for the Flask application and another for the MySQL database.
 
 Each subnet will host an EC2 instance:
 - The first instance will run the MySQL database, also containerized using Docker.
@@ -136,9 +136,9 @@ This architecture ensures that the application and database are isolated yet can
    - Security group name: `public-sg-1`.
    - Add rules to allow SSH (port 22) and HTTP (port 80) access.
      - Type: `SSH`, Protocol: `TCP`, Port Range: `22`, Source: `0.0.0.0/0` (Anywhere) or restrict as needed.
-     - Type: `All traffic`, Protocol: `All`, Port Range: `All`, Source: `0.0.0.0/0` (Anywhere).
+     - Type: `All traffic`, Protocol: `All`, Port Range: `All`, Source: `0.0.0.0/0` (Anywhere). (**NOTE:** This is not recommended to allow `All traffic`. But for learning purpose, it is ok for now.)
 
-    ![alt text](./images/inbound-rules.PNG)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/Basic%20AWS%20LAB/Two%20public%20subnet/images/inbound-rules.PNG)
 
    - Click **Review and Launch**.
 
@@ -164,9 +164,9 @@ This architecture ensures that the application and database are isolated yet can
    - Security group name: `public-sg-2`.
    - Add rules to allow SSH (port 22) and HTTP (port 80) access.
      - Type: `SSH`, Protocol: `TCP`, Port Range: `22`, Source: `0.0.0.0/0` (Anywhere) or restrict as needed.
-     - Type: `All traffic`, Protocol: `All`, Port Range: `All`, Source: `0.0.0.0/0` (Anywhere).
+     - Type: `All traffic`, Protocol: `All`, Port Range: `All`, Source: `0.0.0.0/0` (Anywhere). (**NOTE:** This is not recommended to allow `All traffic`. But for learning purpose, it is ok for now.)
 
-    ![alt text](./images/inbound-rules-flask.PNG)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/Basic%20AWS%20LAB/Two%20public%20subnet/images/inbound-rules-flask.PNG)
 
    - Click **Review and Launch**.
 
@@ -178,9 +178,9 @@ This architecture ensures that the application and database are isolated yet can
 
 ## Resource Map
 
-![alt text](./images/final-4.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/Basic%20AWS%20LAB/Two%20public%20subnet/images/final-4.png)
 
-![alt text](./images/final-5.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/Basic%20AWS%20LAB/Two%20public%20subnet/images/final-5.png)
 
 You have now successfully created a VPC with the following components:
 - A VPC named `my-vpc`.
@@ -459,7 +459,7 @@ This will build the Docker image and run the Flask application on port 5000.
     ping <Flask_Instance_Public_IP>
     ```
 
-![alt text](./images/public-ping.PNG)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/Basic%20AWS%20LAB/Two%20public%20subnet/images/public-ping.PNG)
     
 
 2. *Ping the Flask Instance (Private IP)*:
@@ -467,7 +467,7 @@ This will build the Docker image and run the Flask application on port 5000.
     ping <Flask_Instance_Private_IP>
     ```
 
-![alt text](./images/private-ping.PNG)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/Basic%20AWS%20LAB/Two%20public%20subnet/images/private-ping.PNG)
     
 
 #### From the Flask Instance
@@ -482,7 +482,7 @@ This will build the Docker image and run the Flask application on port 5000.
     ping <MySQL_Instance_Private_IP>
     ```
 
-![alt text](./images/final3.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/Basic%20AWS%20LAB/Two%20public%20subnet/images/final3.png)
 
 ## Testing the API
 
@@ -523,13 +523,13 @@ This will build the Docker image and run the Flask application on port 5000.
    ```
 
    Expected Output:
-    ![alt text](./images/final-1.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/Basic%20AWS%20LAB/Two%20public%20subnet/images/final-1.png)
 
 7. **Check that Mysql Database Table is updating**:
 
     Connect to your MySQL instance and check that the `users` table is being updated correctly.
 
-    ![alt text](./images/users-table.PNG)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/Basic%20AWS%20LAB/Two%20public%20subnet/images/users-table.PNG)
 
 ## Test Flask API from Web Browser
 
@@ -539,7 +539,7 @@ This will build the Docker image and run the Flask application on port 5000.
 
 Expected Output:
 
-![alt text](./images/final.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/Basic%20AWS%20LAB/Two%20public%20subnet/images/final.png)
 
 ## Issues
 
