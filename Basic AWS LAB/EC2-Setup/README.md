@@ -3,7 +3,7 @@
 ## Overview
 This guide will teach you how to set up a Virtual Private Cloud (VPC) from scratch and launch an EC2 instance within it. By the end of this guide, you will have created a VPC, set up a public subnet, configured routing with an Internet Gateway, and launched an EC2 instance.
 
-![alt text](./images/arch-diagram.png)
+![alt text](https://github.com/AhnafNabil/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/EC2-Setup/images/arch-diagram.png?raw=true)
 
 ## Learning Objectives
 1. Create a VPC with CIDR 10.0.0.0/16
