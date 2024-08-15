@@ -4,7 +4,7 @@ This documentation outlines the process to set up a VPC with two public subnets,
 
 ## Scenario
 
-![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/Basic%20AWS%20LAB/Two%20public%20subnet/images/arch.jpg)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/Basic%20AWS%20LAB/Two%20public%20subnet/images/Public-two.jpeg)
 
 You are tasked with **deploying a web application that uses Flask as the backend** and **MySQL as the database**. To achieve this, you will have to create a Virtual Private Cloud (VPC) in AWS to ensure network isolation and security. Within this VPC, you will set up two public subnets: one for the Flask application and another for the MySQL database.
 

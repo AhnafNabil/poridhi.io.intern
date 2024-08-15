@@ -6,7 +6,7 @@ This document provides a step-by-step guide to set up an AWS environment with tw
 
 We will create a VPC with two subnets: a public subnet for a Flask application and a private subnet for a MySQL database. The public subnet will have internet access via an IGW, and the private subnet will access the internet through a NAT Gateway. Security groups will be configured to control traffic, and connectivity will be tested by pinging the MySQL instance from the Flask instance.
 
-![WhatsApp Image 2024-08-15 at 12 52 53_026ae705](https://github.com/user-attachments/assets/675e0f61-911a-4d69-8dda-18cd19507a8f)
+![](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/arch.jpg?raw=true)
 
 
 ## Set Up Your VPC with All configuration.
