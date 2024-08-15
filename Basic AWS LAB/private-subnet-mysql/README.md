@@ -47,7 +47,6 @@ We will create a VPC with two subnets: a public subnet for a Flask application a
    - Add a route to the route table that routes all internet traffic (`0.0.0.0/0`) to the NAT Gateway.
    - Associate the route table with the private subnet.
 
-   ![Private Subnet Route Table](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/12345.png?raw=true)
 
 ### Step 3: Launch EC2 Instances
 
@@ -69,8 +68,6 @@ We will create a VPC with two subnets: a public subnet for a Flask application a
      - Create a VPC endpoint for the required AWS service.
      - Select your VPC and the private subnet where your MySQL instance resides.
      - Configure the endpoint policy.
-
-   ![MySQL Security Group](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/diagram-export-6-10-2024-1_17_08-AM.png?raw=true)
 
    
 
