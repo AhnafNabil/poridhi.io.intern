@@ -20,7 +20,7 @@ We will create a VPC with two subnets: a public subnet for a Flask application a
    - Create a public subnet with a CIDR block of `10.0.1.0/24` within the VPC.
    - Create a private subnet with a CIDR block of `10.0.2.0/24` within the VPC.
 
-   ![Step 1: VPC and Subnets](./images/123.png)
+   ![Step 1: VPC and Subnets](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/123.png?raw=true)
 
 ### Step 2: Set Up Route Tables
 
@@ -33,7 +33,7 @@ We will create a VPC with two subnets: a public subnet for a Flask application a
    - Add a route to the route table that routes all internet traffic (`0.0.0.0/0`) to the IGW.
    - Associate the route table with the public subnet.
 
-   ![Public Subnet Route Table](./images/1234.png)
+   ![Public Subnet Route Table](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/1234.png?raw=true)
 
 3. **Create a NAT Gateway**:
 
@@ -47,7 +47,7 @@ We will create a VPC with two subnets: a public subnet for a Flask application a
    - Add a route to the route table that routes all internet traffic (`0.0.0.0/0`) to the NAT Gateway.
    - Associate the route table with the private subnet.
 
-   ![Private Subnet Route Table](./images/12345.png)
+   ![Private Subnet Route Table](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/12345.png?raw=true)
 
 ### Step 3: Launch EC2 Instances
 
@@ -70,7 +70,7 @@ We will create a VPC with two subnets: a public subnet for a Flask application a
      - Select your VPC and the private subnet where your MySQL instance resides.
      - Configure the endpoint policy.
 
-   ![MySQL Security Group](./images/diagram-export-6-10-2024-1_17_08-AM.png)
+   ![MySQL Security Group](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/diagram-export-6-10-2024-1_17_08-AM.png?raw=true)
 
    
 
@@ -81,14 +81,14 @@ We will create a VPC with two subnets: a public subnet for a Flask application a
    - Allow inbound traffic on port 22 (SSH) from your IP.
    - Allow inbound traffic on all ports from any IP.
 
-   ![MySQL Security Group](./images/flask-app-security-group.png)
+   ![MySQL Security Group](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/flask-app-security-group.png?raw=true)
 
 2. **Create a Security Group for the MySQL Database (Private Instance)**:
 
    - Allow inbound traffic on port 3306 (MySQL) from the security group of the Flask application.
    - Allow inbound traffic on port 22 (SSH) from the public subnet CIDR block.
 
-   ![MySQL Security Group](./images/my-sql-security-group.png)
+   ![MySQL Security Group](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/my-sql-security-group.png?raw=true)
 
 ### Step 5: Verify Configuration
 
@@ -97,8 +97,8 @@ We will create a VPC with two subnets: a public subnet for a Flask application a
    - Ensure the public subnet's route table routes traffic to the IGW.
    - Ensure the private subnet's route table routes traffic to the NAT Gateway.
 
-   ![Resource Map](./images/res-map-1.png)
-   ![Resource Map](./images/res-map-2.png)
+   ![Resource Map](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/res-map-1.png?raw=true)
+   ![Resource Map](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/res-map-2.png?raw=true)
 
 ## Mysql Database Launch on Private Subnet Instance
 
@@ -368,7 +368,7 @@ This will build the Docker image and run the Flask application on port 5000.
 
    - The ping will fail because the MySQL security group does not initially allow ICMP traffic.
 
-   ![](./images/b.png)
+   ![](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/b.png?raw=true)
 
 
 2. **Update MySQL Security Group to Allow ICMP**:
@@ -376,7 +376,7 @@ This will build the Docker image and run the Flask application on port 5000.
    - Navigate to the MySQL security group settings.
    - Edit the inbound rules to add an ICMP rule allowing traffic from the Flask application's security group or a specific IP range.
 
-   ![MySQL Security Group ICMP Rule](./images/add-icmp-protocol-to-ping-mysql.png)
+   ![MySQL Security Group ICMP Rule](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/add-icmp-protocol-to-ping-mysql.png?raw=true)
 
 3. **Test Ping from Flask Application to MySQL (After Allowance)**:
 
@@ -389,7 +389,7 @@ This will build the Docker image and run the Flask application on port 5000.
 
    - The ping should now succeed, confirming that the ICMP traffic is allowed.
 
-   ![MySQL Security Group ICMP Rule](./images/a.png)
+   ![MySQL Security Group ICMP Rule](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/a.png?raw=true)
 
 ## Testing the API
 
@@ -404,7 +404,7 @@ This will build the Docker image and run the Flask application on port 5000.
    ```sh
    curl -X POST -H "Content-Type: application/json" -d '{"name": "Fazlul Karim", "email": "fazlulkarim@gmail.com"}' http://<flask-instance-public-IP>:5000/users
    ```
-   ![](./images/f.png)
+   ![](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/f.png?raw=true)
 
 3. **Get all users**:
 
@@ -412,7 +412,7 @@ This will build the Docker image and run the Flask application on port 5000.
    curl http://<flask-instance-public-IP>:5000/users
    ```
 
-   ![](./images/e.png)
+   ![](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/e.png?raw=true)
 
 4. **Get user by ID**:
 
@@ -432,7 +432,7 @@ This will build the Docker image and run the Flask application on port 5000.
    curl -X DELETE http://<flask-instance-public-IP>:5000/users/4
    ```
 
-   ![](./images/d.png)
+   ![](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/d.png?raw=true)
 
 ## Test Flask API from Web Browser
 
@@ -442,5 +442,5 @@ This will build the Docker image and run the Flask application on port 5000.
 
 Expected Output:
 
-![alt text](./images/final-output.png)
+![alt text](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/final-output.png?raw=true)
 
