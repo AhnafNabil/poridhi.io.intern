@@ -5,7 +5,7 @@ Flask is a lightweight and flexible web framework for Python, ideal for building
 
 In this guide, we'll demonstrate how to integrate SQLAlchemy with Flask to create a REST API connected to a MySQL database. Additionally, we'll utilize Docker to deploy the entire setup as containers, providing a consistent and isolated environment for development and production.
 
-![](./images/3.png)
+![](./images/yasin.jpg)
 
 ### Project Directory Details
 
@@ -272,7 +272,7 @@ flask_mysql_docker/
 
    Expected Output:
 
-   ![](./images/2.png)
+   ![](https://github.com/Konami33/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/Flask-Restapi-SQLAlchemy/images/2.png)
 ### Step 8: Verify Connection
 
 1. **Check if the Flask API is running**:
@@ -283,7 +283,7 @@ flask_mysql_docker/
 
    Expected Output:
 
-   ![](./images/1.png)
+   ![](https://github.com/Konami33/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/Flask-Restapi-SQLAlchemy/images/1.png)
 
 ### Step 9: Testing the API
 
@@ -319,7 +319,7 @@ flask_mysql_docker/
 
    Expected Output:
 
-   ![](./images/out-1.png)
+   ![](https://github.com/Konami33/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/Flask-Restapi-SQLAlchemy/images/out-1.png)
 
 ### Step 10: Testing the Application from Web Browser by using Public IP of EC2 Instance
 
@@ -338,11 +338,11 @@ flask_mysql_docker/
      - Source: Anywhere (0.0.0.0/0)
    - Save the rules.
 
-   ![](./images/7.png)
+   ![](https://github.com/Konami33/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/Flask-Restapi-SQLAlchemy/images/7.png)
 
 3. **Get the Public IP of EC2 instance**
 
-![](./images/4.png)
+![](https://github.com/Konami33/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/Flask-Restapi-SQLAlchemy/images/4.png)
 
 Your EC2 instance is now accessible on port 5000 from anywhere.
 
@@ -354,7 +354,7 @@ Your EC2 instance is now accessible on port 5000 from anywhere.
 
 Expected Output:
 
-![](./images/17.png)
+![](https://github.com/Konami33/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/Flask-Restapi-SQLAlchemy/images/17.png)
 
 This guide should help you set up a Flask REST API with SQLAlchemy, connected to a MySQL database, all running within
 

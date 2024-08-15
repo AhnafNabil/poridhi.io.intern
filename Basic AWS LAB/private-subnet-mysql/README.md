@@ -23,7 +23,9 @@ We will create a VPC with two subnets: a public subnet for a Flask application a
    - Create a public subnet with a CIDR block of `10.0.1.0/24` within the VPC.
    - Create a private subnet with a CIDR block of `10.0.2.0/24` within the VPC.
 
-   ![Step 1: VPC and Subnets](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/123.png?raw=true)
+
+![Step 1: VPC and Subnets](https://github.com/Minhaz00/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/private-subnet-mysql/images/123.png?raw=true)
+
 
 ### Step 2: Set Up Route Tables
 
