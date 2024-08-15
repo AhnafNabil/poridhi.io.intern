@@ -5,7 +5,7 @@ Flask is a lightweight and flexible web framework for Python, ideal for building
 
 In this guide, we'll demonstrate how to integrate SQLAlchemy with Flask to create a REST API connected to a MySQL database. Additionally, we'll utilize Docker to deploy the entire setup as containers, providing a consistent and isolated environment for development and production.
 
-![](https://github.com/Konami33/poridhi.io.intern/blob/main/Basic%20AWS%20LAB/Flask-Restapi-SQLAlchemy/images/3.png)
+![](./images/yasin.jpg)
 
 ### Project Directory Details
 
