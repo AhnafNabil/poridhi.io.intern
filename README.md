@@ -18,8 +18,9 @@
 ---
 - [k3s in AWS](https://github.com/Konami33/poridhi.io.intern/tree/main/k3s%20in%20AWS)
     - [Lab 1: k3s-deployment-in-aws](https://github.com/Konami33/poridhi.io.intern/tree/main/k3s%20in%20AWS/1.%20k3s-deployment-in-aws)
-    - [Lab 2: Automating K3s cluster Deployment in AWS Using Pulumi and GitHub Actions](https://github.com/Konami33/k3s-deployment-automation)
+    - [Lab 2: Automating K3s cluster Deployment in AWS Using Pulumi and GitHub Actions](https://github.com/Konami33/k3s-deployment)
 ---
+
 - [Monitoring using Grafana](https://github.com/Konami33/poridhi.io.intern/tree/main/Monitoring%20using%20Grafana)
     - [Lab 1: Monitoring-Login-Endpoint](https://github.com/Konami33/poridhi.io.intern/tree/main/Monitoring%20using%20Grafana/Monitoring-Login-Endpoint)
     - [Lab 2: Flask MySQL latency](https://github.com/Konami33/poridhi.io.intern/tree/main/Monitoring%20using%20Grafana/Flask-mysql-latency)

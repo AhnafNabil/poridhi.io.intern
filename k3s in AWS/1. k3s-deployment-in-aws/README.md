@@ -1,4 +1,4 @@
-# Deploying K3s on AWS EC2
+# Deploying K3s on AWS EC2 and Deploy Nginx web server on k3s
 
 In this lab, we will deploy a k3s kubernetes cluster on aws EC2.
 
@@ -172,7 +172,7 @@ ping <worker-2_node_ip>
 
 So, we have configured master node and two worker node. Lets deploy some application on k3s kubernetes distribution.
 
-## Exaple task: Deploy a nginx web server on k3s kubenetes distribution.
+## Example task: Deploy a nginx web server on k3s kubenetes distribution.
 
 ## Creating a K3s Kubernetes Cluster
 
