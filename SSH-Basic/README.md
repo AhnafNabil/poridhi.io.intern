@@ -3,7 +3,9 @@
 ## Overview
 SSH (Secure Shell) is a protocol for securely connecting to remote systems over a network. Using public/private key pairs for authentication is a more secure method than password-based authentication.
 
-We will work on a scenario like this, suppose you have four EC2 instances: one public-facing **bastion server** and **three private server**. You want to SSH into each private server by first connecting to the bastion server and then hopping to the private servers.
+![alt text](./images/image-1.png)
+
+We will work on a scenario like this, suppose we have four EC2 instances: one public-facing **bastion server** and **three private server**. We want to SSH into each private servers.
 
 ## Before starting, why Use SSH Keys?
 
@@ -13,15 +15,23 @@ We will work on a scenario like this, suppose you have four EC2 instances: one p
 
 ## Step by Step guide
 
-### Step 1: Create Infrastructure(Servers)
+### Step 1: Create Infrastructure(Optional if you have your servers up and running)
 
-For this setup, we will need a Publicly accessible **Bastion server**, and three private servers. We can create these servers in AWS. We can manually create the servers by login in to the AWS management console or we can create the servers and other necessary resouces using PULUMI or Terraform. Here is the step to create the resources and servers in aws using PULUMI.
+For this setup, we will need a Publicly accessible **Bastion server**, and three private servers. We can create these servers in AWS. We can manually create the servers by login in to the AWS management console or we can create the servers and other necessary resouces using PULUMI or Terraform. 
+
+Here is our overall architecture:
+
+![alt text](./images/image.png)
+
+Steps to create the resources and servers in aws using PULUMI.
 
 1. **Configure AWS CLI in your local machine**
 
   ```sh
   aws configure
   ```
+
+  ![alt text](./images/image-2.png)
 
 2. **Setup PULUMI for your project**
 
@@ -45,35 +55,39 @@ For this setup, we will need a Publicly accessible **Bastion server**, and three
   ```
   - Follow the prompts to set up your project.
 
+  ![alt text](./images/image-3.png)
+
 3. **Create a Key Pair for your SERVER's**:
 
 We will use specific keys for SSHing into servers. So, we have to create 4 key pairs as we have 4 servers. This is for more secure connection. You can also create a single key pair as well.
 
 - Bastion-server key generation
 
-```sh
-aws ec2 create-key-pair --key-name BastionServer --query 'KeyMaterial' --output text > BastionServer.pem
-chmod 400 BastionServer.pem
-```
+    ```sh
+    aws ec2 create-key-pair --key-name BastionServer --query 'KeyMaterial' --output text > BastionServer.pem
+    chmod 400 BastionServer.pem
+    ```
 - Private-server1 key generation
 
-```sh
-aws ec2 create-key-pair --key-name PrivateServer1 --query 'KeyMaterial' --output text > PrivateServer1.pem
-chmod 400 PrivateServer1.pem
-```
+    ```sh
+    aws ec2 create-key-pair --key-name PrivateServer1 --query 'KeyMaterial' --output text > PrivateServer1.pem
+    chmod 400 PrivateServer1.pem
+    ```
 
 - Private-server1 key generation
 
-```sh
-aws ec2 create-key-pair --key-name PrivateServer2 --query 'KeyMaterial' --output text > PrivateServer2.pem
-chmod 400 PrivateServer2.pem
-```
+    ```sh
+    aws ec2 create-key-pair --key-name PrivateServer2 --query 'KeyMaterial' --output text > PrivateServer2.pem
+    chmod 400 PrivateServer2.pem
+    ```
 - Private-server1 key generation
 
-```sh
-aws ec2 create-key-pair --key-name PrivateServer3 --query 'KeyMaterial' --output text > PrivateServer3.pem
-chmod 400 PrivateServer3.pem
-```
+    ```sh
+    aws ec2 create-key-pair --key-name PrivateServer3 --query 'KeyMaterial' --output text > PrivateServer3.pem
+    chmod 400 PrivateServer3.pem
+    ```
+
+![alt text](./images/image-4.png)
 
 **NOTE:** Make sure to set the correct permission for the keys
 
@@ -278,10 +292,12 @@ exports.privateInstance3PrivateIp = privateInstance3.privateIp;
 
 6. **Deploy the Pulumi Stack:**
 
-```sh
-pulumi up
-```
+    ```sh
+    pulumi up
+    ```
   - Review the changes and confirm by typing "yes".
+
+![alt text](./images/image-5.png)
 
 7. Check the Pulumi output for successfull creation of the Infrastructure
 
@@ -291,25 +307,37 @@ pulumi up
 When using the direct SSH command, you have to typically do something like this
 
 1. **First, SSH into the Bastion Server:**
+
    ```bash
    ssh -i BastionServer ubuntu@<bastion-public-ip>
    ```
 
 2. **Copy the Key files into Bastion Server:**
 
-```sh
-scp -i BastionServer.pem PrivateServer1.pem PrivateServer2.pem PrivateServer3.pem privateubuntu@<bastion-public-ip>:~/.ssh/
-```
+    ```sh
+    scp -i BastionServer.pem PrivateServer1.pem PrivateServer2.pem PrivateServer3.pem privateubuntu@<bastion-public-ip>:~/.ssh/
+    ```
+
+![alt text](./images/image-6.png)
 
 This command will securely copy the key files into Bastion server using the bastion server key file. After copying the file make sure to set the correct file permission.
 
-2. **Then, SSH from the Bastion Server to a Private Instances:**
+3. **Change the file permission of the key files:**
+
+    ```bash
+    chmod 400 PrivateServer1.pem
+    chmod 400 PrivateServer2.pem
+    chmod 400 PrivateServer3.pem
+    ```
+
+4. **Then, SSH from the Bastion Server to a Private Instances:**
 
    ```bash
    ssh -i ~/.ssh/PrivateServer1.pem ubuntu@<private-instance1-ip>
    ssh -i ~/.ssh/PrivateServer2.pem ubuntu@<private-instance2-ip>
    ssh -i ~/.ssh/PrivateServer3.pem ubuntu@<private-instance3-ip>
    ```
+![alt text](./images/image-7.png)
 
 ### Issues with This Approach:
 
@@ -351,6 +379,7 @@ Host private-server3
     IdentityFile /root/code/Infra-for-ssh/PrivateServer2.pem
     ProxyJump bastion
 ```
+![alt text](./images/image-8.png)
 
 **NOTE:**
 - Configure the `HostName` with correct IP or DNS name.
@@ -368,24 +397,36 @@ Host private-server3
 With the above configuration, you can now SSH into any of your instances with simple commands from your **local machine**:
 
 - **SSH into the Bastion Server:**
+
   ```bash
   ssh bastion
   ```
 
+  ![alt text](./images/image-9.png)
+
 - **SSH into Private Server 1:**
+
   ```bash
   ssh private-server1
   ```
 
+  ![alt text](./images/image-10.png)
+
 - **SSH into Private Server 2:**
+
   ```bash
   ssh private-server2
   ```
 
 - **SSH into Private Server 3:**
+
   ```bash
   ssh private-server3
   ```
+
+So, we have successfully done our SSH using ssh config file. 
+
+![alt text](./images/image-11.png)
 
 ### Benefits of Using an SSH Config File
 
@@ -397,13 +438,14 @@ With the above configuration, you can now SSH into any of your instances with si
 
 ### Security Note
 
-Ensure that your `~/.ssh/config` file is secure by setting appropriate permissions:
+- Ensure that your `~/.ssh/config` file is secure by setting appropriate permissions:
 
-```bash
-chmod 600 ~/.ssh/config
-```
-
+    ```bash
+    chmod 600 ~/.ssh/config
+    ```
 This will prevent unauthorized users from viewing or modifying your SSH configuration.
+
+- If you want to push your project into github, make sure to write the keyfiles in the `.gitignore` file.
 
 ### Conclusion
 
