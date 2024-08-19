@@ -3,7 +3,7 @@
 ## Overview
 SSH (Secure Shell) is a protocol for securely connecting to remote systems over a network. Using public/private key pairs for authentication is a more secure method than password-based authentication.
 
-![alt text](./images/image-1.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-1.png)
 
 We will work on a scenario like this, suppose we have four EC2 instances: one public-facing **bastion server** and **three private server**. We want to SSH into each private servers.
 
@@ -21,7 +21,7 @@ For this setup, we will need a Publicly accessible **Bastion server**, and three
 
 Here is our overall architecture:
 
-![alt text](./images/image.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image.png)
 
 Steps to create the resources and servers in aws using PULUMI.
 
@@ -31,7 +31,7 @@ Steps to create the resources and servers in aws using PULUMI.
   aws configure
   ```
 
-  ![alt text](./images/image-2.png)
+  ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-2.png)
 
 2. **Setup PULUMI for your project**
 
@@ -55,7 +55,7 @@ Steps to create the resources and servers in aws using PULUMI.
   ```
   - Follow the prompts to set up your project.
 
-  ![alt text](./images/image-3.png)
+  ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-3.png)
 
 3. **Create a Key Pair for your SERVER's**:
 
@@ -87,7 +87,7 @@ We will use specific keys for SSHing into servers. So, we have to create 4 key p
     chmod 400 PrivateServer3.pem
     ```
 
-![alt text](./images/image-4.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-4.png)
 
 **NOTE:** Make sure to set the correct permission for the keys
 
@@ -297,7 +297,7 @@ exports.privateInstance3PrivateIp = privateInstance3.privateIp;
     ```
   - Review the changes and confirm by typing "yes".
 
-![alt text](./images/image-5.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-5.png)
 
 7. Check the Pulumi output for successfull creation of the Infrastructure
 
@@ -318,7 +318,7 @@ When using the direct SSH command, you have to typically do something like this
     scp -i BastionServer.pem PrivateServer1.pem PrivateServer2.pem PrivateServer3.pem privateubuntu@<bastion-public-ip>:~/.ssh/
     ```
 
-![alt text](./images/image-6.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-6.png)
 
 This command will securely copy the key files into Bastion server using the bastion server key file. After copying the file make sure to set the correct file permission.
 
@@ -337,7 +337,7 @@ This command will securely copy the key files into Bastion server using the bast
    ssh -i ~/.ssh/PrivateServer2.pem ubuntu@<private-instance2-ip>
    ssh -i ~/.ssh/PrivateServer3.pem ubuntu@<private-instance3-ip>
    ```
-![alt text](./images/image-7.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-7.png)
 
 ### Issues with This Approach:
 
@@ -379,7 +379,7 @@ Host private-server3
     IdentityFile /root/code/Infra-for-ssh/PrivateServer2.pem
     ProxyJump bastion
 ```
-![alt text](./images/image-8.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-8.png)
 
 **NOTE:**
 - Configure the `HostName` with correct IP or DNS name.
@@ -402,7 +402,7 @@ With the above configuration, you can now SSH into any of your instances with si
   ssh bastion
   ```
 
-  ![alt text](./images/image-9.png)
+  ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-9.png)
 
 - **SSH into Private Server 1:**
 
@@ -410,7 +410,7 @@ With the above configuration, you can now SSH into any of your instances with si
   ssh private-server1
   ```
 
-  ![alt text](./images/image-10.png)
+  ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-10.png)
 
 - **SSH into Private Server 2:**
 
@@ -426,7 +426,7 @@ With the above configuration, you can now SSH into any of your instances with si
 
 So, we have successfully done our SSH using ssh config file. 
 
-![alt text](./images/image-11.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-11.png)
 
 ### Benefits of Using an SSH Config File
 
