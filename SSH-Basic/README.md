@@ -19,7 +19,7 @@ For this setup, we will need a Publicly accessible **Bastion server**, and three
 
 Here is our overall architecture:
 
-![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-14.png)
 
 Steps to create the resources and servers in aws using PULUMI.
 
