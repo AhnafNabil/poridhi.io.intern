@@ -1,0 +1,22 @@
+Host bastion
+    HostName 18.143.101.33
+    User ubuntu
+    IdentityFile /root/code/Infra-for-ssh/BastionServer.pem
+
+Host private-server1
+    HostName 10.0.2.91
+    User ubuntu
+    IdentityFile /root/code/Infra-for-ssh/PrivateServer1.pem
+    ProxyJump bastion
+
+Host private-server2
+    HostName 10.0.2.225
+    User ubuntu
+    IdentityFile /root/code/Infra-for-ssh/PrivateServer2.pem
+    ProxyJump bastion
+
+Host private-server3
+    HostName 10.0.2.202
+    User ubuntu
+    IdentityFile /root/code/Infra-for-ssh/PrivateServer2.pem
+    ProxyJump bastion
