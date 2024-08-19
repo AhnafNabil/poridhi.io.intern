@@ -13,9 +13,7 @@ We will work on a scenario like this, suppose we have four EC2 instances: one pu
 
 - **Convenience:** Once set up, SSH keys allow you to log in to a server without needing to type a password.
 
-## Step by Step guide
-
-### Step 1: Create Infrastructure(Optional if you have your servers up and running)
+## Create Infrastructure(Optional if you have your servers up and running)
 
 For this setup, we will need a Publicly accessible **Bastion server**, and three private servers. We can create these servers in AWS. We can manually create the servers by login in to the AWS management console or we can create the servers and other necessary resouces using PULUMI or Terraform. 
 
@@ -302,7 +300,7 @@ exports.privateInstance3PrivateIp = privateInstance3.privateIp;
 7. Check the Pulumi output for successfull creation of the Infrastructure
 
 
-## Step 2: Traditional way: SSH into the private instances via Bastion server
+## Traditional way: SSH into the private instances via Bastion server
 
 When using the direct SSH command, you have to typically do something like this
 
@@ -338,6 +336,40 @@ This command will securely copy the key files into Bastion server using the bast
    ssh -i ~/.ssh/PrivateServer3.pem ubuntu@<private-instance3-ip>
    ```
 ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-7.png)
+
+### Set the hostname of the servers(Optional)
+
+You can set the hostname of the servers by these commands:
+
+- Bastion Server
+
+    ```sh
+    sudo hostnamectl set-hostname bastion-server
+    ```
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-12.png)
+
+- Private Server 1
+
+    ```sh
+    sudo hostnamectl set-hostname private-server1
+    ```
+- Private Server 2
+
+    ```sh
+    sudo hostnamectl set-hostname private-server2
+    ```
+
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-13.png)
+
+
+- Private Server 3
+
+    ```sh
+    sudo hostnamectl set-hostname private-server3
+    ```
+
+You can again ssh into the servers to check if hostname is correctly setup or not.
+
 
 ### Issues with This Approach:
 
