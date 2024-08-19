@@ -475,7 +475,7 @@ So, we have successfully done our SSH using ssh config file.
     ```bash
     chmod 600 ~/.ssh/config
     ```
-This will prevent unauthorized users from viewing or modifying your SSH configuration.
+    This will prevent unauthorized users from viewing or modifying your SSH configuration.
 
 - If you want to push your project into github, make sure to write the keyfiles in the `.gitignore` file.
 
