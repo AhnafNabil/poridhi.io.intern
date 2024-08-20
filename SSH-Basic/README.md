@@ -304,23 +304,23 @@ exports.privateInstance3PrivateIp = privateInstance3.privateIp;
 
 When using the direct SSH command, you have to typically do something like this
 
-1. **First, SSH into the Bastion Server:**
-
-   ```bash
-   ssh -i BastionServer ubuntu@<bastion-public-ip>
-   ```
-
-2. **Copy the Key files into Bastion Server:**
+1. **Copy the Key files from your local directory to Bastion Server:**
 
     ```sh
     scp -i BastionServer.pem PrivateServer1.pem PrivateServer2.pem PrivateServer3.pem privateubuntu@<bastion-public-ip>:~/.ssh/
     ```
 
+2. **SSH into the Bastion Server to check the files:**
+
+   ```bash
+   ssh -i BastionServer.pem ubuntu@<bastion-public-ip>
+   ```
+
 ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-6.png)
 
 This command will securely copy the key files into Bastion server using the bastion server key file. After copying the file make sure to set the correct file permission.
 
-3. **Change the file permission of the key files:**
+3. **Change the file permission of the key files in the bastion server:**
 
     ```bash
     chmod 400 PrivateServer1.pem
@@ -330,9 +330,19 @@ This command will securely copy the key files into Bastion server using the bast
 
 4. **Then, SSH from the Bastion Server to a Private Instances:**
 
+- private-server1
+
    ```bash
    ssh -i ~/.ssh/PrivateServer1.pem ubuntu@<private-instance1-ip>
+   ```
+- private-server2
+
+   ```bash
    ssh -i ~/.ssh/PrivateServer2.pem ubuntu@<private-instance2-ip>
+   ```
+- private-server3
+
+   ```bash
    ssh -i ~/.ssh/PrivateServer3.pem ubuntu@<private-instance3-ip>
    ```
 ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-7.png)
@@ -381,7 +391,9 @@ You can again ssh into the servers to check if hostname is correctly setup or no
 
 ## Simplifying with an SSH Config File
 
-You can solve these issues by configuring the `~/.ssh/config` file. This file allows you to define shortcuts and advanced SSH options, making the SSH process smoother and more efficient.
+You can solve these issues by configuring the `~/.ssh/config` file. This file allows you to define shortcuts and advanced SSH options, making the SSH process smoother and more efficient. 
+
+Create a `config` file in the `~/.ssh/` directory.
 
 ### Step 1: Set Up the SSH Config File
 
@@ -389,26 +401,26 @@ Here’s an example `~/.ssh/config` file that simplifies the SSH process for thi
 
 ```sh
 Host bastion
-    HostName 18.143.101.33
+    HostName <bastion-server-ip>
     User ubuntu
-    IdentityFile /root/code/Infra-for-ssh/BastionServer.pem
+    IdentityFile <path-to-your-key-file>/BastionServer.pem
 
 Host private-server1
-    HostName 10.0.2.91
+    HostName <private-server1-ip>
     User ubuntu
-    IdentityFile /root/code/Infra-for-ssh/PrivateServer1.pem
+    IdentityFile <path-to-your-key-file>/PrivateServer1.pem
     ProxyJump bastion
 
 Host private-server2
-    HostName 10.0.2.225
+    HostName <private-server2-ip>
     User ubuntu
-    IdentityFile /root/code/Infra-for-ssh/PrivateServer2.pem
+    IdentityFile <path-to-your-key-file>/PrivateServer2.pem
     ProxyJump bastion
 
 Host private-server3
-    HostName 10.0.2.202
+    HostName <private-server3-ip>
     User ubuntu
-    IdentityFile /root/code/Infra-for-ssh/PrivateServer2.pem
+    IdentityFile <path-to-your-key-file>/PrivateServer2.pem
     ProxyJump bastion
 ```
 ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-8.png)
@@ -477,7 +489,7 @@ So, we have successfully done our SSH using ssh config file.
     ```
     This will prevent unauthorized users from viewing or modifying your SSH configuration.
 
-- If you want to push your project into github, make sure to write the keyfiles in the `.gitignore` file.
+- If you want to push your project into github, make sure to write the keyfiles name in the `.gitignore` file.
 
 ### Conclusion
 
