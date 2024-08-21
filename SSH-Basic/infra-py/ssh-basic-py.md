@@ -21,9 +21,11 @@ Here is our overall architecture:
 
 ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-15.png)
 
-Steps to create the resources and servers in aws using PULUMI.
+### Steps to create the resources and servers in aws using PULUMI.
 
-1. **Configure AWS CLI in your local machine**
+1. **Configure AWS CLI**
+
+- Configure AWS CLI in your local machine with the necessary infromation.
 
   ```sh
   aws configure
@@ -35,29 +37,36 @@ Steps to create the resources and servers in aws using PULUMI.
 
 - Login into pulumi with your access token
 
-  ```sh
-  pulumi login
-  ```
+    ```sh
+    pulumi login
+    ```
 
 - Create an empty directory ( e.g., `Infra-for-ssh`)
 
-  ```sh
-  mkdir Infra-for-ssh
-  cd Infra-for-ssh
-  ```
+    ```sh
+    mkdir Infra-for-ssh
+    cd Infra-for-ssh
+    ```
 
-- Run the following command to create a new Pulumi project:
+- Install python (venv)
 
-  ```sh
-  pulumi new aws-python
-  ```
-  - Follow the prompts to set up your project.
+    ```sh
+    sudo apt update
+    sudo apt install python3.8-venv
+    ```
 
-  ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-16.png)
+- Run the following command to create to initialize a new Pulumi project:
+
+    ```sh
+    pulumi new aws-python
+    ```
+    Follow the prompts to set up your project.
+
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-16.png)
 
 3. **Create a Key Pair for your SERVER's**:
 
-We will use specific keys for SSHing into servers. So, we have to create 4 key pairs as we have 4 servers. This is for more secure connection. You can also create a single key pair as well.
+    We will use specific keys for SSHing into servers. So, we have to create 4 key pairs as we have 4 servers. This is for more secure connection. You can also create a single key pair as well.
 
 - Bastion-server key generation
 
@@ -85,9 +94,9 @@ We will use specific keys for SSHing into servers. So, we have to create 4 key p
     chmod 400 PrivateServer3.pem
     ```
 
-![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-17.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-17.png)
 
-**NOTE:** Make sure to set the correct permission for the keys
+    **NOTE:** Make sure to set the correct permission for the keys
 
 4. **Open `__main__.py` file in the project directory**
 
