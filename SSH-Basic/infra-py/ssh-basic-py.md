@@ -25,13 +25,15 @@ Here is our overall architecture:
 
 1. **Configure AWS CLI**
 
-- Configure AWS CLI in your local machine with the necessary infromation.
+- Configure AWS CLI in your local machine with necessary infromation.
 
   ```sh
   aws configure
   ```
 
   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-2.png)
+
+  Make sure to type the Default region: `ap-southeast-1`
 
 2. **Setup PULUMI for your project**
 
