@@ -15,7 +15,7 @@ We will work on a scenario like this, suppose we have four EC2 instances: one pu
 
 ## Create Infrastructure(Optional if you have your servers up and running)
 
-For this setup, we will need a Publicly accessible **Bastion server**, and three private servers. We can create these servers in AWS. We can manually create the servers by login in to the AWS management console or we can create the servers and other necessary resouces using PULUMI or Terraform. 
+For this setup, we will need a Publicly accessible **Bastion server**, and three private servers. We can create these servers in AWS. We can manually create the servers by login in to the AWS management console or we can create the servers and other necessary resouces using PULUMI or Terraform. For this lab, we will use `PULUMI JS` as Infrastructure as code. 
 
 Here is our overall architecture:
 
