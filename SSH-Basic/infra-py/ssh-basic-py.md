@@ -33,7 +33,7 @@ Here is our overall architecture:
 
   ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-2.png)
 
-  Make sure to type the Default region: `ap-southeast-1`
+  Choose the Default region: `ap-southeast-1`
 
 2. **Setup PULUMI for your project**
 
