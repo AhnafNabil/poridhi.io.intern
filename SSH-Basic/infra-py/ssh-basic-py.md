@@ -85,7 +85,7 @@ We will use specific keys for SSHing into servers. So, we have to create 4 key p
     chmod 400 PrivateServer3.pem
     ```
 
-![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-4.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/SSH-Basic/images/image-17.png)
 
 **NOTE:** Make sure to set the correct permission for the keys
 
