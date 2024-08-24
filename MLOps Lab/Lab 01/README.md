@@ -1,4 +1,4 @@
-# Ray Labs: Infra Deployment with Pulumi + Manual deployment of ray clusters + XGBoost Model Tranining
+# Infra Deployment with Pulumi + Manual deployment of ray clusters
 
 ## Description/Introduction:
 
