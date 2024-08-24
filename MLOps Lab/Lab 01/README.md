@@ -8,7 +8,7 @@ For our practical use case, we will be running a simple linear regression model.
 
 By the end of this lab, you will have hands-on experience with Pulumi, Ray clusters, and running machine learning models on the cloud, equipping you with valuable skills for your cloud and machine learning journey.
 
-![alt text](./images/image.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image.png)
 
 ## MLOps Objectives of this Lab:
 
@@ -19,7 +19,7 @@ By the end of this lab, you will have hands-on experience with Pulumi, Ray clust
 - Collaborate and version control
 - Address scalability and security
 
-![alt text](./images/image-1.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-1.png)
 
 ## Setting up the Local Environment:
 
@@ -93,7 +93,7 @@ To install AWS CLI using pip and configure it, follow these steps:
 1. Log into the AWS console
 2. Search for “Key pairs” 
     
-    ![alt text](./images/image-2.png)
+    ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-2.png)
     
 3. In the Key pair (login) section, click Create new key pair.
 4. In the Create key pair window, for the Key pair name, type `raycluster-aws`
@@ -101,7 +101,7 @@ To install AWS CLI using pip and configure it, follow these steps:
 6. For the private key file format, choose either .pem or .ppk, depending on if you will use PuTTY or OpenSSH to connect to the EC2 instance later on. Note: Use .pem for a mac device; use .ppk for a Windows device.
 7. Click Create key pair.
 
-![alt text](./images/image-3.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-3.png)
 
 h. Your `raycluster-aws.pem` or .ppk key pair file should have downloaded. You will use this file later in the lab.
 
@@ -111,7 +111,7 @@ Clone the following repo in your local machine where the script and configuratio
 
 https://github.com/tahhnik/raycluster-awsdeployment-pypulumi
 
-[GitHub - tahhnik/xgboost-ray-train-ml-workflow-notebooks](./images/https://github.com/tahhnik/xgboost-ray-train-ml-workflow-notebooks/tree/main)
+[GitHub - tahhnik/xgboost-ray-train-ml-workflow-notebooks](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/https://github.com/tahhnik/xgboost-ray-train-ml-workflow-notebooks/tree/main)
 
 # What is Ray?
 
@@ -123,7 +123,7 @@ Ray is an open-source unified framework for distributed computing, and scaling A
 
 Ray works by **creating a cluster of nodes** and **scheduling tasks** across them. It uses ***dynamic task*** ***scheduling***, ***a shared memory object store*** for efficient data sharing, supports the actor model for stateful computations, and has native support for Python and Java. It's a powerful tool for distributed computing, providing efficient task scheduling, data sharing, and support for stateful computations.
 
-![alt text](./images/image-4.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-4.png)
 
 In this lab, we’ll create a ray cluster with 3 nodes, 
 
@@ -132,7 +132,7 @@ In this lab, we’ll create a ray cluster with 3 nodes,
 
 Supported by the compute and networking infrastructure of AWS
 
-![alt text](./images/image-5.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-5.png)
 
 ## Infrastructure Needed to set up Ray Cluster and ML Workflow on AWS:
 
@@ -183,7 +183,7 @@ Finally, *we’ll deploy the model and **monitor the inferencing with Ray monito
 
 Pulumi is an open-source infrastructure-as-code software that allows users to manage cloud infrastructure resources using programming languages such as Go, JavaScript, TypeScript, Python, Java, C#, and YAML. It supports deployment to various cloud providers like AWS, Azure, Google Cloud, and Kubernetes
 
-![alt text](./images/image-6.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-6.png)
 
 ### **Step 1: Install Pulumi**
 
@@ -207,13 +207,13 @@ To set up a Pulumi Cloud account and log in to the CLI, follow these steps:
 
 #### Create a Pulumi Cloud Account
 
-1. **Navigate to the Pulumi Cloud Console**:  [***https://app.pulumi.com***](./images/https://app.pulumi.com)
+1. **Navigate to the Pulumi Cloud Console**:  [***https://app.pulumi.com***](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/https://app.pulumi.com)
 2. **Create an account** if you don't already have one.
 3. **Create and copy the personal access token**
     
     You can find your account’s personal access tokens on the below section,
     
-![alt text](./images/image-7.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-7.png)
 
 #### Configure Your Pulumi CLI
 
@@ -273,23 +273,23 @@ Provide the aws:region name “ap-southeast-1” (we’ll be using ap-southeast-
 
 Then it would initiate the project setup and install some dependencies.
 
-![alt text](./images/image-8.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-8.png)
 
 After finishing setup, you can list all the contents in the directory and you can see that the files for newly created Pulumi project is there. 
 
-![alt text](./images/image-9.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-9.png)
 
 #### Setting up the Pulumi Deployment Script
 
 At first, go back to the directory which we have cloned from GitHub at the first place. 
 
-Open the [**`ray-cluster-awsdeployment-config.py`](./images/http://ray-cluster-awsdeployment-config.py)** and copy it.
+Open the [**`ray-cluster-awsdeployment-config.py`](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/http://ray-cluster-awsdeployment-config.py)** and copy it.
 
 Now, head back to the pulumi project directory and open the `__main__.py` file with your code editor.
 
 Replace the code with previously copied code from **`ray-cluster-awsdeployment-config.py`**
 
-![alt text](./images/image-10.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-10.png)
 
 This Pulumi code creates a VPC, an Internet Gateway, a public subnet, a route table, a security group, a head node, and worker nodes for a Ray cluster. The head node is responsible for starting the Ray cluster, while the worker nodes connect to the cluster using the head node's private IP address. Now, let’s look at the networking and compute configurations  in the Pulumi script **`__main__.py`**,
 
@@ -375,7 +375,7 @@ The security group in the script is configured to allow traffic on specific port
 - Each bucket is configured to be private and has versioning enabled.
 - The unique names for the buckets are specified directly in the code, add unique names to the places (e.g: your own name or other words)
 
-![alt text](./images/image-11.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-11.png)
 
 ### Export Outputs
 
@@ -392,7 +392,7 @@ pulumi preview
 
 As you can see, we have all of the components listed in there ready to be deployed and provisioned,
 
-![alt text](./images/image-12.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-12.png)
 
 ### Step 5: Deploy the Infrastructure
 
@@ -404,15 +404,15 @@ pulumi up
 
 When prompted, select yes and the deployment will start,
 
-![alt text](./images/image-13.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-13.png)
 
 The deployment may take 2-3 minutes to complete. After deployment, it’d show that all the network, compute and storage components are created,
 
-![alt text](./images/image-14.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-14.png)
 
 You can check them out by going back to the AWS console where the networking components, EC2 instances and S3 buckets are created, (search with EC2, S3, VPC to get to those windows)
 
-![alt text](./images/image-15.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-15.png)
 
 You can also check the created the S3 buckets by searching S3 on the search bar and going to the S3 window.
 
@@ -428,7 +428,7 @@ We have set up the AWS components needed to set up the Ray cluster with IaaC but
     
     From the list of instances in the EC2 console, find the instance with the head node’s private ip shown in pulumi export from terminal.  Right-click on the instance and click Connect.On the Connect to instance page, select the SSH client tab.
     
-    ![alt text](./images/image-16.png)
+    ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-16.png)
     
     1. On the SSH client tab, directly underneath Example:, copy the connection command to your clipboard. (You can optionally paste it into a text editor to keep it handy.)
     
@@ -440,7 +440,7 @@ We have set up the AWS components needed to set up the Ray cluster with IaaC but
     
     Here ubuntu@ip-10-0-10-166 is the head node, 
     
-    ![alt text](./images/image-17.png)
+    ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-17.png)
     
 
 In this session, 
@@ -497,7 +497,7 @@ In this session,
     
     After installation, the following stats will emerge,
     
-    ![alt text](./images/image-18.png)
+    ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-18.png)
     
     To check the status of the Ray cluster, run the following command,
     
@@ -507,7 +507,7 @@ In this session,
     
     The cluster will start and the following stats will show on terminal,
     
-    ![alt text](./images/image-19.png)
+    ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-19.png)
     
     You can check if the dashboard and ray processes are running on the desired ports with the commands shown in the above image. 
     
@@ -523,11 +523,11 @@ In this session,
     
     Now, open another tab on your browser and go to `localhost:8265` , you can see that the Ray dashboard is running there,
     
-    ![alt text](./images/image-20.png)
+    ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-20.png)
     
     Go to the cluster tab, you’d see that only 1 node is alive and that is your head node. The other 2 nodes is missing, because we haven’t attached them the cluster yet.
     
-    ![alt text](./images/image-21.png)
+    ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-21.png)
     
 
 Now, let’s connect the worker nodes to the cluster running on head node.
@@ -541,7 +541,7 @@ Open individual terminal windows for the instances, and perform the following op
     1. **Do not clone the GitHub repository mentioned in the head node setup**.
     2. Rest of the operations should be as same as the head node
 
-![alt text](./images/image-22.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-22.png)
 
 1. **Connect with the head node**
     
@@ -563,13 +563,13 @@ Open individual terminal windows for the instances, and perform the following op
     
     After connecting to the cluster, the following logs will be shown,
     
-    ![alt text](./images/image-23.png)
+    ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-23.png)
 
 1. **Observe that the nodes are connected to the cluster on dashboard** 
     
     Now, head back to the Ray dashboard running on localhost’s port 8265 on the browser, and you would find that the worker nodes are added to cluster, (you can also check the status of the cluster with the command **`ray status`** on any node)
     
-    ![alt text](./images/image-24.png)
+    ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-24.png)
     
     Now that our Ray cluster is running, we can submit jobs and perform tasks on it through Ray Core API and Ray AI runtime libraries. Ray AI runtime libraries have integrations of almost all the popular ML libraries like PyTorch, TensorFlow, Sci-Kit Learn, XGBoost and others. It also has built in support for tools like Prometheus, Grafana, MLFlow, Tensorboard etc. 
     
@@ -598,7 +598,7 @@ Try to open another terminal window for this task as the terminal have to be on 
     
     And, jupyter lab will be started on port 8888,
     
-    ![alt text](./images/image-25.png)
+    ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-25.png)
     
 
 1. **Port Forward the Jupyter Lab to your local machine’s port 8888**
@@ -611,6 +611,6 @@ ssh -i key-pair-poridhi-poc.pem -N -f -L 8888:localhost:8888 ubuntu@your-head-no
 
 Go to the URL provided in the terminal session where the Jupyter Lab is running and you will be able to access the Jupyter Lab,
 
-![alt text](./images/image-26.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/MLOps%20Lab/Lab%2001/images/image-26.png)
 
 All the necessary files for our problem are already in this working directory.
