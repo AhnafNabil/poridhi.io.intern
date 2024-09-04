@@ -91,8 +91,8 @@ This command prompts you for your AWS Access Key ID, Secret Access Key, region, 
 Create a new directory for your project and navigate into it:
 
 ```sh
-mkdir aws-k3s-infra
-cd aws-k3s-infra
+mkdir aws-pulumi-infra
+cd aws-pulumi-infra
 ```
 
 ### Install python `venv`
