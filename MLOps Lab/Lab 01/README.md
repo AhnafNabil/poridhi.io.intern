@@ -272,6 +272,12 @@ security_group = aws.ec2.SecurityGroup("micro-sec-group",
             to_port=8265,
             cidr_blocks=["0.0.0.0/0"],
         ),
+        aws.ec2.SecurityGroupIngressArgs(
+            protocol='tcp',
+            from_port=1024,
+            to_port=65535,
+            cidr_blocks=['0.0.0.0/0'],
+        ),
     ],
     egress=[
         aws.ec2.SecurityGroupEgressArgs(
