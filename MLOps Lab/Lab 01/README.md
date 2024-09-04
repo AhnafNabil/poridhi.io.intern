@@ -87,47 +87,45 @@ This command prompts you for your AWS Access Key ID, Secret Access Key, region, 
 
 ##  Step 2: Set Up a Pulumi Project
 
-1. **Set Up a new directory**:
-- Create a new directory for your project and navigate into it:
+### Set Up a new directory
+Create a new directory for your project and navigate into it:
 
-    ```sh
-    mkdir aws-k3s-infra
-    cd aws-k3s-infra
-    ```
+```sh
+mkdir aws-k3s-infra
+cd aws-k3s-infra
+```
 
-2. **Install python `venv`**:
+### Install python `venv`
 
-    ```sh 
-    sudo apt update
-    sudo apt install python3.8-venv
-    ```
+```sh 
+sudo apt update
+sudo apt install python3.8-venv
+```
 
-3. **Initialize a New Pulumi Project**:
-- Run the following command to create a new Pulumi project:
+### Initialize a New Pulumi Project
+Run the following command to create a new Pulumi project:
 
-    ```sh
-    pulumi new aws-python
-    ```
-    Follow the prompts to set up your project.
+```sh
+pulumi new aws-python
+```
+Follow the prompts to set up your project.
 
-    ![alt text](./images/image-2.png)
+![alt text](./images/image-2.png)
 
-4. **Create Key Pair**:
+### Create Key Pair
 
-- Create a new key pair for our instances using the following command:
+Create a new key pair for our instances using the following command:
 
-    ```sh
-    aws ec2 create-key-pair --key-name key-pair-poridhi-poc --query 'KeyMaterial' --output text > key-pair-poridhi-poc.pem
-    ```
+```sh
+aws ec2 create-key-pair --key-name key-pair-poridhi-poc --query 'KeyMaterial' --output text > key-pair-poridhi-poc.pem
+```
 
-    These commands will create key pair for nginx instance and for k3s cluster(master, worker1, worker2)
+These commands will create key pair for our instances.
 
-5. **Set File Permissions of the key files**:
-
-- **For Linux**:
-    ```sh
-    chmod 400 key-pair-poridhi-poc.pem
-    ```
+### Set File Permissions of the key files
+```sh
+chmod 400 key-pair-poridhi-poc.pem
+```
 
 ### Write Code for infrastructure creation
 
@@ -197,7 +195,6 @@ This command prompts you for your AWS Access Key ID, Secret Access Key, region, 
 #### Export Outputs
 
 1. The private IP addresses of the head node and worker nodes are exported as Pulumi outputs, along with the names of the S3 buckets.
-
 
 
 Now, **Open `__main__.py` file in your project directory**:
@@ -334,9 +331,45 @@ pulumi.export('head_node_private_ip', head_node.private_ip)
 for i, worker_node in enumerate(worker_nodes):
     pulumi.export(f'worker_node_{i}_private_ip', worker_node.private_ip)
 
+
+# Create specific S3 buckets with unique names
+staging_data_store_bucket = aws.s3.Bucket("stagingdatastorebucket-unique-name",
+    acl="private",  # Example ACL configuration
+    versioning=aws.s3.BucketVersioningArgs(
+        enabled=True,
+    ),
+)
+
+feature_store_bucket = aws.s3.Bucket("featurestorebucket-unique-name",
+    acl="private",  # Example ACL configuration
+    versioning=aws.s3.BucketVersioningArgs(
+        enabled=True,
+    ),
+)
+
+model_store_bucket = aws.s3.Bucket("modelstorebucket-unique-name",
+    acl="private",  # Example ACL configuration
+    versioning=aws.s3.BucketVersioningArgs(
+        enabled=True,
+    ),
+)
+
+results_store_bucket = aws.s3.Bucket("resultsstorebucket-unique-name",
+    acl="private",  # Example ACL configuration
+    versioning=aws.s3.BucketVersioningArgs(
+        enabled=True,
+    ),
+)
+
+# Export the names of the created buckets
+pulumi.export('staging_data_store_bucket_name', staging_data_store_bucket.id)
+pulumi.export('feature_store_bucket_name', feature_store_bucket.id)
+pulumi.export('model_store_bucket_name', model_store_bucket.id)
+pulumi.export('results_store_bucket_name', results_store_bucket.id)
 ```
 
 This Pulumi code creates a VPC, an Internet Gateway, a public subnet, a route table, a security group, a head node, and worker nodes for a Ray cluster. 
+
 
 ### Preview the deployment plan
 
@@ -348,10 +381,9 @@ pulumi preview
 
 This will show all the components ready to be deployed and provisioned.
 
-
 ### Deploy the Pulumi Stack
 
-**Deploy the stack**:
+Deploy the stack using the following command:
 
 ```sh
 pulumi up
