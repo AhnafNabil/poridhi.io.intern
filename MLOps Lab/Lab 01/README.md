@@ -424,7 +424,7 @@ You can varify the creteated resources such as VPC, Subnet, EC2 instance using A
 
     ![alt text](./images/image-5.png)
 
-## SSH simplification using SSH Config File
+## Step 3: SSH simplification using SSH Config File
 
 We can solve the issues of using the long command with instance-ip and key-pair every time we want to ssh into our instance by configuring the `~/.ssh/config` file. This file allows you to define shortcuts and advanced SSH options, making the SSH process smoother and more efficient. 
 
@@ -472,7 +472,7 @@ ssh worker2
 
 Using these commands we can easily SSH into the desided instance without mentioning the IP or DNS names of the instances as well as the key-pair.
 
-## Set the hostname of the instances
+## Step 4: Set the hostname of the instances
 
 We can set the hostname for our instances by using the `hostnamectl` command. This will help us to easily identify at which instance we are now after we ssh into any instance.
 
@@ -505,7 +505,7 @@ We can set the hostname for our instances by using the `hostnamectl` command. Th
 
 
 
-## Setting up The Ray Cluster in EC2 instance
+## Step 5: Setting up The Ray Cluster in EC2 instance
 
 We have set up the AWS components needed to set up the Ray cluster with IaaC but the installation of Ray and its dependencies will be installed manually to contextualize better. Eventually, the head node and the worker nodes of the Ray cluster would be added manually.
 
