@@ -283,12 +283,22 @@ security_group = aws.ec2.SecurityGroup("micro-sec-group",
     ],
 )
 
+# User data to install Python 3.9
+instances_user_data = """#!/bin/bash
+sudo apt-get update
+sudo apt-get install -y software-properties-common
+sudo add-apt-repository -y ppa:deadsnakes/ppa
+sudo apt-get update
+sudo apt-get install -y python3.9 python3.9-venv python3.9-dev
+"""
+
 # Create the head node
 head_node = aws.ec2.Instance('head-node',
     instance_type='t3.medium',
     ami='ami-01811d4912b4ccb26',  # Replace with the correct AMI ID
     vpc_security_group_ids=[security_group.id],
     subnet_id=subnet.id,
+    user_data=instances_user_data,
     key_name='key-pair-poridhi-poc',  # Replace with your key pair name
     ebs_block_devices=[
         aws.ec2.InstanceEbsBlockDeviceArgs(
@@ -305,12 +315,14 @@ head_node = aws.ec2.Instance('head-node',
 
 # Create worker nodes
 worker_nodes = []
+
 for i in range(2):
     worker_node = aws.ec2.Instance(f'worker-node-{i+1}',
         instance_type='t3.small',
         ami='ami-01811d4912b4ccb26',  # Replace with the correct AMI ID
         vpc_security_group_ids=[security_group.id],
         subnet_id=subnet.id,
+        user_data=instances_user_data,
         key_name='key-pair-poridhi-poc',  # Replace with your key pair name
         ebs_block_devices=[
             aws.ec2.InstanceEbsBlockDeviceArgs(
