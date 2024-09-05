@@ -4,7 +4,7 @@ In this lab, we will explore the deployment and monitoring of a machine learning
 
 Once the model is successfully deployed, monitoring its performance and the underlying infrastructure becomes crucial. To achieve this, we will set up `Prometheus` and `Grafana` two powerful tools for **logging, monitoring, and visualizing system metrics**. Prometheus will be configured to scrape metrics from the Ray cluster, and Grafana will provide visual dashboards to help us observe the health and performance of our deployment.
 
-![](./images/grafana3.drawio.svg)
+![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/grafana3.drawio.svg)
 
 By the end of this lab, you will have hands-on experience with deploying a machine learning model using Ray Serve and setting up a robust monitoring system with Prometheus and Grafana.
 
@@ -420,7 +420,7 @@ Review the changes and confirm by typing `yes`.
    ```sh
    ray status
    ```
-   ![](./images/image-15.png)
+   ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-15.png)
 
    > **Note:** It may take a few minutes for all nodes to connect and the cluster to become fully operational after deployment. Be patient while the system initializes.
 
@@ -447,7 +447,7 @@ In some cases, certain directories or files may have restricted permissions or b
    sudo chown -R ubuntu:ubuntu /tmp/ray/*
    ```
 
-    ![](./images/image-16.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-16.png)
 
    This ensures the `ubuntu` user has the necessary permissions to manage Ray processes, which often store temporary files in this location.
 
@@ -460,18 +460,18 @@ Let’s create an IAM role with the necessary permissions for EC2 instances to w
 - Go to the IAM console and create a new role.
 - Select trusted entity type as `AWS service` and usecase as `EC2` as we are creating the role for EC2 instances.
 
-    ![](./images/image-17.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-17.png)
 
 - Give a name to the role and click `Create role`.
 
-    ![](./images/image-18.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-18.png)
 
 ### Attach Policy for Permissions
 
 - On the role summary page, under the "Permissions" tab, click on the "Add permissions" button.
 - Choose `Create inline policy`.
 
-    ![](./images/image-19.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-19.png)
 
 - Attach the following `json` file in the policy editor:
 
@@ -504,7 +504,7 @@ Let’s create an IAM role with the necessary permissions for EC2 instances to w
     ```
     Replace the bucket names with your actual bucket names.
 
-  ![](./images/image-20.png)
+  ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-20.png)
 
 ### Attach the Role to EC2 instances
 
@@ -512,11 +512,11 @@ Let’s create an IAM role with the necessary permissions for EC2 instances to w
 - Select the instances you created (`headnode`, `worker1`, `worker2`), to attach the role.
 - Click on Actions > Security > Modify IAM Role.
 
-    ![](./images/image-21.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-21.png)
 
 - In the dropdown list, you should see the role you created. Select it and click `Update IAM Role`.
 
-    ![](./images/image-22.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-22.png)
 
 - Repeat these steps for worker nodes also.
 
@@ -535,7 +535,7 @@ Let’s create an IAM role with the necessary permissions for EC2 instances to w
     ```
 3. You should see the **MLflow** dashboard.
 
-    ![](./images/image-5.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-5.png)
 
 
 ## Run the first notebook using python file
@@ -956,7 +956,7 @@ print(predictions)
     MODEL_STORAGE_PATH=<s3://modelstorebucket-unique-name-321-4ed9a50/>
     ```
 
-    ![](./images/image-23.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-23.png)
 
 ### Run the python file
 
@@ -972,25 +972,25 @@ Run the second python file:
 python3 notebook2.py
 ```
 
-![](./images/image-24.png)
+![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-24.png)
 
 ## Set up Ray Serve Application for Serving the Model
 
 1. Go to the `MLOPS-LAB-3` directory of the cloned repository.
 2. Edit the `xgboost_test_s3actions.py` file.
 
-    ![](./images/image.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image.png)
 
 3. Edit the marked portion of the code according to your values.
 
     - Relplace the `S3_BUCKET` name.
     - Replace the `S3_FILE_KEY` name.
 
-    ![](./images/image-1.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-1.png)
 
     - You will find the values in the AWS S3 Bucket console.
 
-    ![](./images/image-2.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-2.png)
 
 4. Deploy the ray application which possesses the trained model with the following command
 
@@ -1000,11 +1000,11 @@ python3 notebook2.py
 
     You will get a output like this, showing the successfull deployment of the app.
 
-    ![](./images/image-3.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-3.png)
 
 5. Go to the `Ray Dashboard > Serve`, and check the deployed app status
 
-    ![](./images/image-4.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-4.png)
 
 
 ## Open MLflow dashboard 
@@ -1013,11 +1013,11 @@ After completly running the python scripts for, open the MLflow dashboard to see
 
 - MLFlow provides experiment tracking, allowing you to monitor the training process, log metrics, and manage model versions. It is crucial for experiment reproducibility and performance evaluation.
 
-    ![](./images/image-14.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-14.png)
 
 - Check the Registered Models.
 
-    ![](./images/image-6.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-6.png)
 
 ## Setting up Prometheus:
 
@@ -1035,11 +1035,11 @@ After completly running the python scripts for, open the MLflow dashboard to see
     ```sh
     sudo prometheus --config.file=/tmp/ray/session_latest/metrics/prometheus/prometheus.yml
     ```
-    ![](./images/image-9.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-9.png)
 
 3. If you see any `address already in use` error:
 
-    ![](./images/image-7.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-7.png)
     
     You can kill the process using the following command:
 
@@ -1048,7 +1048,7 @@ After completly running the python scripts for, open the MLflow dashboard to see
     sudo kill PID
     ```
 
-    ![](./images/image-8.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-8.png)
 
 4. Go to the prometheus dashboard
 
@@ -1057,7 +1057,7 @@ After completly running the python scripts for, open the MLflow dashboard to see
     ```
     If you go the Status → Targets, you would find the target endpoints which are referring to the metrices exported by Ray cluster and its components like the model we have deployed.
 
-    ![](./images/image-10.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-10.png)
 
 ## Setting up Grafana for Visualizing the Metrices
 
@@ -1081,7 +1081,7 @@ Grafana will be used to visualize the model and system metrices like the cluster
     /usr/sbin/grafana-server --homepath=/usr/share/grafana --config=/tmp/ray/session_latest/metrics/grafana/grafana.ini web
     ```
 
-    ![](./images/image-11.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-11.png)
 
 4. Now go to the Grafana Dashboard
 
@@ -1096,11 +1096,11 @@ Grafana will be used to visualize the model and system metrices like the cluster
     passoword: admin
     ```
 
-    ![](./images/image-12.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-12.png)
 
 5. You will see all the necessary metrics about the components of the Ray Cluster are visualized in the default dashboard.
 
-    ![](./images/image-13.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-13.png)
 
 
 ## Test Out the Deployment and Clean Up
@@ -1117,3 +1117,6 @@ Grafana will be used to visualize the model and system metrices like the cluster
     pulumi destroy
     ```
 
+## Conclusion
+
+In this lab, you've successfully deployed a machine learning model using Ray Serve and set up a comprehensive monitoring system with Prometheus and Grafana. You've learned how to serve a model, test its deployment, and monitor its performance alongside the infrastructure's health. With Prometheus and Grafana, you can ensure that your models and infrastructure are performing optimally, enabling you to make data-driven decisions for future improvements.
