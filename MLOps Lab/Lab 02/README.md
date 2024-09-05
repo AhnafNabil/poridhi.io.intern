@@ -2,7 +2,7 @@
 
 Welcome to this lab. In this we will deep dive into infrastructure deployment using Pulumi, an open-source infrastructure as code project. We will also **automate** the deployment of Ray clusters. Ray is a high-performance distributed execution framework targeted at large-scale machine learning and reinforcement learning applications.
 
-By the end of this lab, you will have hands-on experience with Pulumi, howt to automate the Ray cluster deployment.
+By the end of this lab, you will have hands-on experience with Pulumi, how to automate the Ray cluster deployment.
 
 ## Overall Architecture
 
@@ -774,4 +774,4 @@ In some cases, certain directories or files may have restricted permissions or b
 
 ## Conclusion
 
-In this lab, we successfully leveraged Pulumi to automate the deployment of critical AWS infrastructure components and Ray Cluster Deployment, setting the stage for efficient and scalable machine learning operations. By automating the creation of VPCs, subnets, EC2 instances, security groups, and S3 buckets, we laid a robust foundation for deploying a distributed Ray cluster. This hands-on experience not only simplifies the infrastructure setup but also empowers you to focus on building and scaling your machine learning applications with Ray.
+In this lab, we successfully leveraged Pulumi to automate the deployment of critical AWS infrastructure components and Ray Cluster Deployment, setting the stage for efficient and scalable machine learning operations. By automating the creation of VPCs, subnets, EC2 instances, security groups, and S3 buckets, we laid a robust foundation for deploying a distributed Ray cluster.
