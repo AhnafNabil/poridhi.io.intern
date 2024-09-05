@@ -4,7 +4,7 @@ This documentation outlines the steps to create AWS infrastructure using GitHub 
 
 ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-5/images/image-2.png)
 
-### 1. Generate SSH Keys Locally
+## 1. Generate SSH Keys Locally
 
 Generate a new SSH key pair on your local machine. This key pair will be used to SSH into the EC2 instances.
 
@@ -16,7 +16,7 @@ This will generate two files, typically in the `~/.ssh` directory:
 - `id_rsa` (private key)
 - `id_rsa.pub` (public key)
 
-### 2. Go to the SSH Folder
+## 2. Go to the SSH Folder
 
 Navigate to the `.ssh` directory where the keys were generated.
 
@@ -24,7 +24,7 @@ Navigate to the `.ssh` directory where the keys were generated.
 cd ~/.ssh
 ```
 
-### 3. Get the Public Key and Add It to GitHub Secrets
+## 3. Get the Public Key and Add It to GitHub Secrets
 
 1. Open the `id_rsa.pub` file and copy its contents.
    
@@ -36,22 +36,30 @@ cd ~/.ssh
 3. Navigate to **Settings** > **Secrets and variables** > **Actions** > **New repository secret**.
 4. Add a new secret named `PUBLIC_KEY` and paste the contents of your `id_rsa.pub` file.
 
-### Step 4: Set Up a Pulumi Project
+## 4: Set Up a Pulumi Project
 
-1. **Set Up a Pulumi Project**:
+### 1. **Set Up a Pulumi Project**:
    - Create a new directory for your project and navigate into it:
      ```sh
      mkdir vpc-project
      cd vpc-project
      ```
 
-2. **Initialize a New Pulumi Project**:
-   - Run the following command to create a new Pulumi project:
+### 2. **Initialize a New Pulumi Project**:
+
+- Install Python venv
+
+    ```sh
+    sudo apt update
+    sudo apt install python3.8-venv
+    ```
+- Run the following command to create a new Pulumi project:
      ```sh
      pulumi new aws-python
      ```
-   - Follow the prompts to set up your project.
-It will create the necessary folders for pulumi setup. Now update the `__main__.py` file according to this:
+    Follow the prompts to set up your project. It will create the necessary folders for pulumi setup. 
+
+### 3. Update the `__main__.py` file according to this:
 
 ```python
 import pulumi
@@ -182,12 +190,11 @@ pulumi.export("worker2_public_ip", worker_node_2.public_ip)
 pulumi.export("nginx_instance", nginx_instance.public_ip)
 ```
 
-### 5. Create the GitHub Actions Workflow
+## 5. Create GitHub Actions Workflow
 
-Create a GitHub Actions workflow to deploy the AWS infrastructure using Pulumi.
+Create a GitHub Actions workflow in this directory `.github/workflows/deploy.yml` of your project.
 
 ```yaml
-# .github/workflows/deploy.yml
 name: Deploy Infrastructure
 
 on:
@@ -268,7 +275,7 @@ jobs:
           echo "NGINX_IP=${{ env.NGINX_IP }}"
 ```
 
-### 6. Push to GitHub
+## 6. Push to GitHub
 
 Commit your changes and push them to your GitHub repository.
 
@@ -278,7 +285,7 @@ git commit -m "Add Pulumi infrastructure and workflow"
 git push origin main
 ```
 
-### 7. Copy the Private Key for SSH Access
+## 7. Copy the Private Key for SSH Access
 
 After the infrastructure is deployed, copy the private key to a file named `my-key-pair.pem`.
 
@@ -293,7 +300,7 @@ cp ./id_rsa ./my-key-pair.pem
 To SSH into your EC2 instance, use the private key `my-key-pair.pem`.
 
 ```sh
-ssh -i ./my-key-pair.pem ec2-user@<instance-public-ip>
+ssh -i my-key-pair.pem ec2-user@<instance-public-ip>
 ```
 
 Replace `<instance-public-ip>` with the public IP address of your EC2 instance.
