@@ -6,16 +6,7 @@ By the end of this lab, you will have hands-on experience with Pulumi, howt to a
 
 ## Overall Architecture
 
-### What is Ray?
-
-Ray is an open-source unified framework for distributed computing, and scaling AI and Python applications like machine learning. It provides the compute layer for parallel processing so that you don’t need to be a distributed systems expert. Ray minimizes the complexity of running your distributed individual and end-to-end machine learning workflows with these components:
-
-- Scalable libraries for common machine learning tasks such as data preprocessing, distributed training, hyperparameter tuning, reinforcement learning, and model serving.
-- Pythonic distributed computing primitives for parallelizing and scaling Python applications.
-- Integrations and utilities for integrating and deploying a Ray cluster with existing tools and infrastructure such as Kubernetes, AWS, GCP, and Azure.
-
-Ray works by **creating a cluster of nodes** and **scheduling tasks** across them. It uses ***dynamic task*** ***scheduling***, ***a shared memory object store*** for efficient data sharing, supports the actor model for stateful computations, and has native support for Python and Java. It's a powerful tool for distributed computing, providing efficient task scheduling, data sharing, and support for stateful computations.
-
+![](./images/image.png)
 
 In this lab, we’ll create a ray cluster with 3 nodes, 
 
@@ -28,11 +19,9 @@ Supported by the compute and networking infrastructure of AWS.
 
 Having the right network configurations and setup in AWS for Ray clusters is crucial for efficient distributed computing.  The compute setup, including the choice of EC2 instances and their configurations, directly impacts the performance and cost-effectiveness of the Ray cluster. 
 
-Moreover, we need robust and dynamic storage support to ingest dataset, store the transformed and computed feature data to a feature store, store the model training and output data.
-
 ### Compute Instances Configurations
 
-1. **EC2 Instances**: AWS EC2 instances are used to host the Ray nodes. The instance type (e.g., t3.medium) determines the hardware of the host computer.
+1. **EC2 Instances**: AWS EC2 instances are used to host the Ray nodes. The instance type (e.g., t3.medium, t3.small) determines the hardware of the host computer.
 2. **AMI (Amazon Machine Image)**: Provides the information required to launch an instance, which is a virtual server in the cloud.
 3. **User Data Scripts**: These are used to bootstrap instances, installing necessary software and starting services. In the case of Ray, this might include installing Python, setting up a virtual environment, and installing and starting Ray.
 
@@ -380,6 +369,7 @@ ray start --head --port=6379 --dashboard-host=0.0.0.0 --dashboard-port=8265 --in
   - `--dashboard-port=8265` sets the port for the Ray dashboard, providing a web-based interface to monitor cluster health and performance.
 
 ### 8. **Install Additional Libraries**
+
 ```bash
 pip install ray[serve] modin[ray] mlflow py-ubjson missingno
 ```
@@ -401,7 +391,7 @@ ray status
 - **JupyterLab** provides a user-friendly interface for writing and testing Python code interactively.
 - **MLflow** helps manage machine learning models and experiments, while **Modin[ray]** and **Ray Serve** are used to scale these workflows.
 
-### Write the infrastructure createion code in `__main__.py` file in your Pulumi project directory:
+### Write the infrastructure creation code in `__main__.py` file in your Pulumi project directory:
 
 ```python
 import pulumi
@@ -685,27 +675,71 @@ We can set the hostname for our instances by using the `hostnamectl` command. Th
 
     Now, exit and ssh again to see if it works.
 
-## Check the Ray status in the headnode.
+### Check the Ray Status on the Head Node
 
-First SSH into the headnode and check ray status
+To verify the status of your Ray cluster, first SSH into the head node of your Ray deployment. Use the following steps to check whether the cluster is operating as expected:
 
-```sh
-ssh headnode
-ray status
-```
-This will show you the status of the Ray cluster. If everything is working fine, you should see the headnode and worker node. **Note:** Give some time for the Ray cluster up.
+1. **SSH into the Head Node:**
 
-## Check the Ray dashboard
+   First, log into the head node using SSH.
 
-Go to a browser and paste this URL
+   ```sh
+   ssh headnode
+   ```
 
-```sh
-http://headnode-public-ip:8265
-```
+2. **Check Ray Cluster Status:**
 
-You will see the ray dashboard and the status of the ray cluster.
+   After logging in, run the following command to check the status of the Ray cluster:
 
-So, we have successfully automated Ray cluster deployment.
+   ```sh
+   ray status
+   ```
+
+   The output of this command will show the current status of the Ray cluster, including the details of the head node and any worker nodes connected to it. If everything is configured correctly, you will see both the head node and the worker nodes listed, and their statuses should indicate that they are running properly.
+
+   > **Note:** It may take a few minutes for all nodes to connect and the cluster to become fully operational after deployment. Be patient while the system initializes.
+
+---
+
+### Check the Ray Dashboard
+
+The Ray dashboard provides a visual interface to monitor the cluster. To access the dashboard:
+
+1. Open a web browser and navigate to the following URL:
+
+   ```sh
+   http://<headnode-public-ip>:8265
+   ```
+
+   Replace `<headnode-public-ip>` with the public IP address of your head node.
+
+2. In the dashboard, you can see a graphical representation of the Ray cluster, including the head node and worker nodes. It will also display metrics such as resource utilization, node status, and any errors or logs from the cluster. This helps you monitor the health and performance of your deployment in real-time.
+
+---
+
+### Change File Ownership and Permissions
+
+In some cases, certain directories or files may have restricted permissions or be owned by the `root` user, which can interfere with the smooth operation of Ray or cause permission-related issues. To prevent this, adjust the ownership and permissions as follows:
+
+1. **Change Ownership of the Ray Environment Directory:**
+
+   To change ownership of the Ray environment directory to the `ubuntu` user, run the following command:
+
+   ```sh
+   sudo chown -R ubuntu:ubuntu /home/ubuntu/ray_env
+   ```
+
+   This command recursively modifies the ownership of all files and directories under `/home/ubuntu/ray_env`, ensuring the `ubuntu` user has full control.
+
+2. **Change Ownership of the Ray Temporary Files:**
+
+   Similarly, you may also need to adjust the ownership of the Ray-related files in the `/tmp/ray` directory. Run:
+
+   ```sh
+   sudo chown -R ubuntu:ubuntu /tmp/ray/*
+   ```
+
+   This ensures the `ubuntu` user has the necessary permissions to manage Ray processes, which often store temporary files in this location.
 
 
 ## Conclusion
