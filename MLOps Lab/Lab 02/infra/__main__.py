@@ -82,6 +82,7 @@ security_group = aws.ec2.SecurityGroup("micro-sec-group",
     ],
 )
 
+# Read the head_node_user_data.txt file. Update your path accordingly
 with open('/root/code/scripts/head_node_user_data.txt', 'r') as file:
     head_node_user_data = file.read()
 
@@ -91,7 +92,7 @@ head_node = aws.ec2.Instance('head-node',
     ami='ami-01811d4912b4ccb26',
     vpc_security_group_ids=[security_group.id],
     subnet_id=subnet.id,
-    user_data=head_node_user_data,
+    user_data=head_node_user_data, # pass the head-node-user-data
     key_name='key-pair-poridhi-poc',
     ebs_block_devices=[
         aws.ec2.InstanceEbsBlockDeviceArgs(
@@ -101,8 +102,12 @@ head_node = aws.ec2.Instance('head-node',
             delete_on_termination=True,
         ),
     ],
+    tags={
+        'Name': 'head-node',
+    }
 )
 
+# Read the worker_node_common_data.txt user. Update your path accordingly
 with open('/root/code/scripts/worker_node_common_data.txt', 'r') as file:
     worker_node_common_data = file.read()
 
@@ -112,13 +117,13 @@ worker_nodes = []
 for i in range(2):
     worker_node_user_data = head_node.private_ip.apply(lambda ip: worker_node_common_data  + f"""
 ray start --address='{ip}:6379'
-""")
-    worker_node = aws.ec2.Instance(f'worker-node-{i}',
+""") # The private IP of the head node is passed dynamically to the worker nodes, so they can connect to the head node via Ray (ray start command).
+    worker_node = aws.ec2.Instance(f'worker-node-{i+1}',
         instance_type='t3.small',
         ami='ami-01811d4912b4ccb26',
         vpc_security_group_ids=[security_group.id],
         subnet_id=subnet.id,
-        user_data=worker_node_user_data,
+        user_data=worker_node_user_data, # pass the worker node user data
         key_name='key-pair-poridhi-poc',
         ebs_block_devices=[
             aws.ec2.InstanceEbsBlockDeviceArgs(
@@ -128,17 +133,20 @@ ray start --address='{ip}:6379'
             delete_on_termination=True,
             ),
         ],
+        tags={
+            'Name': f'worker-node-{i+1}',
+        }
     )
     worker_nodes.append(worker_node)
 
-# Output the private IP addresses
+# Output the public and private IP addresses
 pulumi.export('head_node_private_ip', head_node.private_ip)
 pulumi.export('head_node_public_ip', head_node.public_ip)
 
-
+# Export the worker node public and private ip
 for i, worker_node in enumerate(worker_nodes):
-    pulumi.export(f'worker_node_{i}_private_ip', worker_node.private_ip)
-    pulumi.export(f'worker_node_{i}_public_ip', worker_node.public_ip)
+    pulumi.export(f'worker_node_{i+1}_private_ip', worker_node.private_ip)
+    pulumi.export(f'worker_node_{i+1}_public_ip', worker_node.public_ip)
 
 
 # Create a dynamic config file for SSH access
@@ -167,7 +175,7 @@ all_ips = [head_node.public_ip] + [worker_node.public_ip for worker_node in work
 pulumi.Output.all(*all_ips).apply(create_config_file)
 
 
-# Create specific S3 buckets with unique names
+# Create Staging S3 bucket with unique names
 staging_data_store_bucket = aws.s3.Bucket("stagingdatastorebucket-unique-name-321",
     acl="private",  # Example ACL configuration
     versioning=aws.s3.BucketVersioningArgs(
@@ -175,6 +183,7 @@ staging_data_store_bucket = aws.s3.Bucket("stagingdatastorebucket-unique-name-32
     ),
 )
 
+# Create Feature store bucket
 feature_store_bucket = aws.s3.Bucket("featurestorebucket-unique-name-321",
     acl="private",  # Example ACL configuration
     versioning=aws.s3.BucketVersioningArgs(
@@ -182,6 +191,7 @@ feature_store_bucket = aws.s3.Bucket("featurestorebucket-unique-name-321",
     ),
 )
 
+# Create Model store bucket
 model_store_bucket = aws.s3.Bucket("modelstorebucket-unique-name-321",
     acl="private",  # Example ACL configuration
     versioning=aws.s3.BucketVersioningArgs(
@@ -189,6 +199,7 @@ model_store_bucket = aws.s3.Bucket("modelstorebucket-unique-name-321",
     ),
 )
 
+# Create Results store bucket
 results_store_bucket = aws.s3.Bucket("resultsstorebucket-unique-name-321",
     acl="private",  # Example ACL configuration
     versioning=aws.s3.BucketVersioningArgs(
