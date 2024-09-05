@@ -6,7 +6,7 @@ By the end of this lab, you will have hands-on experience with Pulumi, howt to a
 
 ## Overall Architecture
 
-![](./images/arch.png)
+![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/arch.png)
 
 In this lab, we’ll create a ray cluster with 3 nodes, 
 
@@ -62,7 +62,7 @@ Run the following command to configure AWS CLI:
 ```bash
 aws configure
 ```
-![alt text](./images/image.png)
+![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image.png)
 
 
 This command prompts you for your AWS Access Key ID, Secret Access Key, region, and output format.
@@ -93,7 +93,7 @@ pulumi new aws-python
 ```
 Follow the prompts to set up your project.
 
-![alt text](./images/image-1.png)
+![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image-1.png)
 
 ### 4. Create Key Pair
 
@@ -292,7 +292,7 @@ pip install mlflow
 pip install missingno
 ```
 
-### Explanation of the script files
+## Explanation of the script files
 
 This script is designed to set up an environment on an EC2 instance to run distributed machine learning workloads with Ray, along with other essential tools. Here’s a breakdown of each part of the script:
 
@@ -491,7 +491,7 @@ head_node = aws.ec2.Instance('head-node',
     vpc_security_group_ids=[security_group.id],
     subnet_id=subnet.id,
     user_data=head_node_user_data, # pass the head-node-user-data
-    key_name='key-pair-poridhi-poc',
+    key_name='key-pair-poridhi-poc', # Created Key-pair
     ebs_block_devices=[
         aws.ec2.InstanceEbsBlockDeviceArgs(
             device_name="/dev/sda1",
@@ -521,7 +521,7 @@ ray start --address='{ip}:6379'
         ami='ami-01811d4912b4ccb26',
         vpc_security_group_ids=[security_group.id],
         subnet_id=subnet.id,
-        user_data=worker_node_user_data, # pass the worker node user data
+        user_data=worker_node_user_data, # pass the worker_node_user_data
         key_name='key-pair-poridhi-poc',
         ebs_block_devices=[
             aws.ec2.InstanceEbsBlockDeviceArgs(
@@ -638,17 +638,17 @@ pulumi up
 ```
 Review the changes and confirm by typing `yes`.
 
-![alt text](./images/image-2.png)
+![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image-2.png)
 
 ### Check the Created resources
 
 1. Go to `~/.ssh/` directory and check if config file is created dynamically
 
-![alt text](./images/image-3.png)
+![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image-3.png)
 
 2. Go to the AWS management console, to check the created resources
 
-![alt text](./images/image-4.png)
+![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image-4.png)
 
 3. Check the SSH connection
 
@@ -658,7 +658,7 @@ ssh worker1
 ssh worker2
 ```
 
-![alt text](./images/image-5.png)
+![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image-5.png)
 
 
 ## Set the hostname of the instances
@@ -674,7 +674,7 @@ We can set the hostname for our instances by using the `hostnamectl` command. Th
 
     Exit and SSH again to see if it works.
 
-    ![alt text](./images/image-6.png)
+    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image-6.png)
 
 - SSH into the workernode 1 using `ssh worker1` and do the same here as well:
 
@@ -718,7 +718,7 @@ To verify the status of your Ray cluster, first SSH into the head node of your R
    ray status
    ```
 
-   ![alt text](./images/image-7.png)
+   ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image-7.png)
 
    The output of this command will show the current status of the Ray cluster, including the details of the head node and any worker nodes connected to it. If everything is configured correctly, you will see both the head node and the worker nodes listed, and their statuses should indicate that they are running properly.
 
@@ -741,11 +741,11 @@ The Ray dashboard provides a visual interface to monitor the cluster. To access 
 
 2. In the dashboard, you can see a graphical representation of the Ray cluster, including the head node and worker nodes. It will also display metrics such as resource utilization, node status, and any errors or logs from the cluster. This helps you monitor the health and performance of your deployment in real-time.
 
-![alt text](./images/image-9.png)
+![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image-9.png)
 
 ---
 
-### Change File Ownership and Permissions
+## Change File Ownership and Permissions
 
 In some cases, certain directories or files may have restricted permissions or be owned by the `root` user, which can interfere with the smooth operation of Ray or cause permission-related issues. To prevent this, adjust the ownership and permissions as follows:
 
@@ -769,7 +769,7 @@ In some cases, certain directories or files may have restricted permissions or b
 
    This ensures the `ubuntu` user has the necessary permissions to manage Ray processes, which often store temporary files in this location.
 
-   ![alt text](./images/image-8.png)
+   ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image-8.png)
 
 
 ## Conclusion
