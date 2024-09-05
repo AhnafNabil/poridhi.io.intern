@@ -646,7 +646,7 @@ Review the changes and confirm by typing `yes`.
 
 ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image-3.png)
 
-**2. Go to the AWS management console, to check the created resources**
+**2. Go to the AWS management console to check the created resources**
 
 ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image-4.png)
 
@@ -741,7 +741,7 @@ The Ray dashboard provides a visual interface to monitor the cluster. To access 
 
 ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image-9.png)
 
----
+<!-- ---
 
 ## Step 08: Change File Ownership and Permissions
 
@@ -767,10 +767,8 @@ In some cases, certain directories or files may have restricted permissions or b
 
    This ensures the `ubuntu` user has the necessary permissions to manage Ray processes, which often store temporary files in this location.
 
-   ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image-8.png)
+   ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image-8.png) -->
 
-
-So, we have automated the Ray cluster deployment sucessfully.
 
 ## Conclusion
 
