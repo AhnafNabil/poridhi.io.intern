@@ -552,6 +552,7 @@ Let’s create an IAM role with the necessary permissions for EC2 instances to w
 - Choose `Create inline policy`.
 
     ![alt text](./images/image-1.png)
+    
 
 - Attach the following `json` file in the policy editor:
 
@@ -586,7 +587,7 @@ Let’s create an IAM role with the necessary permissions for EC2 instances to w
     ```
     
 
-  ![alt text](./images/image-3.png)
+  ![alt text](./images/image-1.jpg)
 
 ### Attach the Role to EC2 instances
 
@@ -620,7 +621,7 @@ Here’s a detailed explanation of the steps and why each of them is important i
      -    The raw dataset is uploaded to a staging S3 bucket. This dataset contains the energy consumption data, which is the primary input for the machine learning model.
      -  Staging the data in S3 ensures that it is securely stored and easily accessible for further processing steps. This also allows for version control of data and easy integration with various data processing tools.
 
-        ![alt text](image.png)
+        ![alt text](./images/image-12.png)
 
    - **Load Data from S3**:
      -    The dataset is read from the staging bucket into a `Ray` dataset, a distributed data processing framework that can handle large-scale data operations efficiently.
@@ -678,7 +679,7 @@ Here’s a detailed explanation of the steps and why each of them is important i
      -    Use the Ray dashboard `http://<head-node-public-ip>:8265` to monitor the execution of jobs on the dataset, ensuring that all tasks (like transformations, aggregations, and feature engineering) are completed correctly.
      -  Monitoring helps in identifying bottlenecks or errors in the data processing pipeline. It provides visibility into the progress of distributed tasks and ensures that the data is processed as expected before moving on to modeling.
 
-        ![alt text](image-1.png)
+        ![alt text](./images/image-13.png)
 
 
 
