@@ -17,36 +17,15 @@ By the end of this lab, you will have a fully functional VPC with EC2 instances 
 
 ## Architecture Diagram
 
-Here is a visual representation of the architecture:
-
 ![](https://github.com/Konami33/poridhi.io.intern/blob/main/PULUMI/PULUMI%20python/lab-3/images/image.jpg?raw=true)
 
 ## Step 1: Configure AWS CLI
 
-### Install AWS CLI
-
-Before proceeding, ensure that the AWS CLI is installed on your local machine. Follow the instructions below based on your operating system:
-
-- **Windows**:
-  1. Download the AWS CLI MSI installer from the [official AWS website](https://aws.amazon.com/cli/).
-  2. Run the downloaded MSI installer and follow the instructions.
-
-- **Linux**:
-  ```sh
-  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-  unzip awscliv2.zip
-  sudo ./aws/install
-  ```
-
-#### Configure AWS CLI
-
-After installing the AWS CLI, configure it with the necessary credentials. Run the following command and follow the prompts to configure it:
+Configure the AWS CLI with necessary credentials. Run the following command and follow the prompts to configure it:
 
 ```sh
 aws configure
 ```
-
-- **Explanation**: This command sets up your AWS CLI with the necessary credentials, region, and output format.
 
 ![](https://github.com/Konami33/poridhi.io.intern/blob/main/PULUMI/PULUMI%20python/lab-3/images/5.png?raw=true)
 
@@ -62,26 +41,28 @@ You will find the `AWS Access key` and `AWS Seceret Access key` on Lab descripti
      mkdir lab3-vpc-project
      cd lab3-vpc-project
      ```
+2. **Install Python venv**
+    - Update package and install python venv
+        ```sh
+        sudo apt update
+        sudo apt install python3.8-venv
+        ```
 
-2. **Initialize a New Pulumi Project**:
+
+3. **Initialize a New Pulumi Project**:
    - Run the following command to create a new Pulumi project:
      ```sh
      pulumi new aws-python
      ```
    - Follow the prompts to set up your project.
 
-3. **Create a Key Pair**:
+4. **Create a Key Pair**:
    - Run the following command to create a new key pair:
      ```sh
      aws ec2 create-key-pair --key-name MyKeyPair --query 'KeyMaterial' --output text > MyKeyPair.pem
      ```
 
-4. **Set File Permissions**:
-   - **For Windows**: Open PowerShell and navigate to the directory where `MyKeyPair.pem` is located. Then, use the following command to set the correct permissions:
-     ```powershell
-     icacls MyKeyPair.pem /inheritance:r
-     icacls MyKeyPair.pem /grant:r "$($env:USERNAME):(R)"
-     ```
+5. **Set File Permissions**:
 
    - **For Linux**:
      ```sh
@@ -92,10 +73,9 @@ You will find the `AWS Access key` and `AWS Seceret Access key` on Lab descripti
 
 ## Step 3: Create the Pulumi Program
 
-1. **Open `__main__.py`**:
-   - Open the `__main__.py` file in your project directory.
+1. **Open `__main__.py` file in your pulumi projecdt directory**:
 
-2. **Create the VPC**:
+2. **Create VPC**:
    - A Virtual Private Cloud (VPC) is a virtual network dedicated to your AWS account. You can configure your VPC with a range of IP addresses, subnets, route tables, and network gateways.
    ```python
    import pulumi
