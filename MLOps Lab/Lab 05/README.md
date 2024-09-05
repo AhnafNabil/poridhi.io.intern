@@ -1093,7 +1093,7 @@ Grafana will be used to visualize the model and system metrices like the cluster
 
     ```sh
     username: admin
-    passoword: admin
+    password: admin
     ```
 
     ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2005/images/image-12.png)
