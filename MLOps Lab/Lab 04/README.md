@@ -2,7 +2,7 @@
 
 In this lab, we build on the foundational data engineering practices established in our previous work, where we utilized a staging data store to manage and transform raw datasets. We previously focused on storing and processing raw data in the `stagingdatastorebucket`, followed by applying various transformations and feature engineering tasks. The processed data was then saved in the `featurestorebucket` for future use. 
 
-![alt text](./images/image-9.png)
+![alt text](https://raw.githubusercontent.com/Konami33/poridhi.io.intern/main/MLOps%20Lab/Lab%2004/images/image-9.png)
 
 In this lab, we advance this workflow by preparing the data for model training. Specifically, we will ingest the engineered features from the feature store into the `modelstorebucket`, followed by loading the data into the model training function from the `modeldatastorebucket`. After training, the model outputs, predictions, and results will be securely stored in the `resultsstorebucket`. This structured approach ensures that each stage of the machine learning pipeline is handled with precision, from data preparation to model deployment, facilitating a seamless and scalable workflow.
 
@@ -407,7 +407,7 @@ pulumi up
 ```
 Review the changes and confirm by typing `yes`.
 
-![alt text](./images/image-13.png)
+![alt text](https://raw.githubusercontent.com/Konami33/poridhi.io.intern/main/MLOps%20Lab/Lab%2004/images/image-13.png)
 
 ### Check the Ray Status on the Head Node
 
@@ -430,7 +430,7 @@ Review the changes and confirm by typing `yes`.
 
    > **Note:** It may take a few minutes for all nodes to connect and the cluster to become fully operational after deployment. Be patient while the system initializes.
 
-   ![alt text](./images/image-7.png)
+   ![alt text](https://raw.githubusercontent.com/Konami33/poridhi.io.intern/main/MLOps%20Lab/Lab%2004/images/image-7.png)
 
 
 ## Change File Ownership and Permissions
@@ -455,7 +455,7 @@ In some cases, certain directories or files may have restricted permissions or b
    sudo chown -R ubuntu:ubuntu /tmp/ray/*
    ```
 
-   ![alt text](./images/image-8.png)
+   ![alt text](https://raw.githubusercontent.com/Konami33/poridhi.io.intern/main/MLOps%20Lab/Lab%2004/images/image-8.png)
 
    This ensures the `ubuntu` user has the necessary permissions to manage Ray processes, which often store temporary files in this location.
 
@@ -495,7 +495,7 @@ nano ~/.jupyter/jupyter_lab_config.py
 
 This commands will open a config file as follows:
 
-![alt text](./images/image-10.png)
+![alt text](https://raw.githubusercontent.com/Konami33/poridhi.io.intern/main/MLOps%20Lab/Lab%2004/images/image-10.png)
 
 Add the following configuration:
 
@@ -510,7 +510,7 @@ c.ServerApp.open_browser = False
 c.ServerApp.port = 8888
 ```
 
-![alt text](./images/image-11.png)
+![alt text](https://raw.githubusercontent.com/Konami33/poridhi.io.intern/main/MLOps%20Lab/Lab%2004/images/image-11.png)
 
 Now, save and exit the file. 
 
@@ -522,7 +522,7 @@ jupyter lab
 
 Jupyter lab will be started on port `8888`.
 
-![alt text](./images/image-5.png)
+![alt text](https://raw.githubusercontent.com/Konami33/poridhi.io.intern/main/MLOps%20Lab/Lab%2004/images/image-5.png)
 
 Go to a browser and paste the URL marked in the picture. Replace `headnode` with the `public-ip` of the headnode instance.
 
@@ -538,18 +538,18 @@ Let’s create an IAM role with the necessary permissions for EC2 instances to w
 - Go to the IAM console and create a new role.
 - Select trusted entity type as `AWS service` and usecase as `EC2` as we are creating the role for EC2 instances.
 
-    ![alt text](./images/image.png)
+    ![alt text](https://raw.githubusercontent.com/Konami33/poridhi.io.intern/main/MLOps%20Lab/Lab%2004/images/image.png)
 
 - Give a name to the role and click `Create role`.
 
-    ![alt text](./images/image-2.png)
+    ![alt text](https://raw.githubusercontent.com/Konami33/poridhi.io.intern/main/MLOps%20Lab/Lab%2004/images/image-2.png)
 
 ### Attach Policy for Permissions
 
 - On the role summary page, under the "Permissions" tab, click on the "Add permissions" button.
 - Choose `Create inline policy`.
 
-    ![alt text](./images/image-1.png)
+    ![alt text](https://raw.githubusercontent.com/Konami33/poridhi.io.intern/main/MLOps%20Lab/Lab%2004/images/image-1.png)
 
 - Attach the following `json` file in the policy editor:
 
@@ -582,7 +582,7 @@ Let’s create an IAM role with the necessary permissions for EC2 instances to w
     ```
     Replace the bucket names with your actual bucket names.
 
-  ![alt text](./images/image-3.png)
+  ![alt text](https://raw.githubusercontent.com/Konami33/poridhi.io.intern/main/MLOps%20Lab/Lab%2004/images/image-3.png)
 
 ### Attach the Role to EC2 instances
 
@@ -590,11 +590,11 @@ Let’s create an IAM role with the necessary permissions for EC2 instances to w
 - Select the instances you created (`headnode`, `worker1`, `worker2`), to attach the role.
 - Click on Actions > Security > Modify IAM Role.
 
-    ![alt text](./images/image-6.png)
+    ![alt text](https://raw.githubusercontent.com/Konami33/poridhi.io.intern/main/MLOps%20Lab/Lab%2004/images/image-6.png)
 
 - In the dropdown list, you should see the role you created. Select it and click `Update IAM Role`.
 
-    ![alt text](./images/image-4.png)
+    ![alt text](https://raw.githubusercontent.com/Konami33/poridhi.io.intern/main/MLOps%20Lab/Lab%2004/images/image-4.png)
 
 - Repeat these steps for worker nodes also.
 
@@ -866,7 +866,7 @@ In this notebook, the steps flow through a series of actions designed to train a
      - Set up the MLFlow server to log model parameters and metrics (e.g., MAE, RMSE).
      - Monitor model performance (training and validation metrics) during training.
 
-   ![alt text](./images/image-14.png)
+   ![alt text](https://raw.githubusercontent.com/Konami33/poridhi.io.intern/main/MLOps%20Lab/Lab%2004/images/image-14.png)
 
 ### 4. **Saving and Managing Model Artifacts**
    -  Model artifacts (trained models, checkpoints) need to be saved for deployment or further evaluation. Saving them ensures you can load them back when needed without retraining.
@@ -874,22 +874,22 @@ In this notebook, the steps flow through a series of actions designed to train a
      - Save the trained model as a pickle file.
      - Log the model version in MLFlow for version tracking and future use.
 
-   ![alt text](./images/image-15.png)
+   ![alt text](https://raw.githubusercontent.com/Konami33/poridhi.io.intern/main/MLOps%20Lab/Lab%2004/images/image-15.png)
 
 ### 5. **Visualizing Predictions**
    -  Visualizing the actual versus predicted values helps assess the model’s accuracy and spot areas where it may be underperforming.
    - **Steps**:
      - After training, create scatter plots and line graphs to visualize the comparison between actual and predicted values.
 
-   ![alt text](./images/image-16.png)
+   ![alt text](https://raw.githubusercontent.com/Konami33/poridhi.io.intern/main/MLOps%20Lab/Lab%2004/images/image-16.png)
 
-   ![alt text](./images/image-17.png)
+   ![alt text](https://raw.githubusercontent.com/Konami33/poridhi.io.intern/main/MLOps%20Lab/Lab%2004/images/image-17.png)
 
 ## Open MLflow dashboard 
 
 After completly running the notebook for training models, open the MLflow dashboard to see the Experiment Tracking:
 
-![alt text](./images/image-12.png)
+![alt text](https://raw.githubusercontent.com/Konami33/poridhi.io.intern/main/MLOps%20Lab/Lab%2004/images/image-12.png)
 
 ## Conclusion
 
