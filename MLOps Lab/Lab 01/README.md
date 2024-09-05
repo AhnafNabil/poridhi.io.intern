@@ -4,7 +4,8 @@ Welcome to this  lab where we will deep dive into infrastructure deployment usin
 
 By the end of this lab, you will have hands-on experience with Pulumi, Ray clusters.
 
-![alt text](./images/image.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2001/images/image.png?raw=true)
+
 
 ### What is Ray?
 
@@ -16,7 +17,7 @@ Ray is an open-source unified framework for distributed computing, and scaling A
 
 Ray works by **creating a cluster of nodes** and **scheduling tasks** across them. It uses ***dynamic task*** ***scheduling***, ***a shared memory object store*** for efficient data sharing, supports the actor model for stateful computations, and has native support for Python and Java. It's a powerful tool for distributed computing, providing efficient task scheduling, data sharing, and support for stateful computations.
 
-![alt text](./images/image-8.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2001/images/image-8.png?raw=true)
 
 In this lab, we’ll create a ray cluster with 3 nodes, 
 
@@ -78,7 +79,7 @@ Run the following command to configure AWS CLI:
 ```bash
 aws configure
 ```
-![alt text](./images/image-1.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2001/images/image-1.png?raw=true)
 
 
 This command prompts you for your AWS Access Key ID, Secret Access Key, region, and output format.
@@ -109,7 +110,7 @@ pulumi new aws-python
 ```
 Follow the prompts to set up your project.
 
-![alt text](./images/image-2.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2001/images/image-2.png?raw=true)
 
 ### Create Key Pair
 
@@ -407,7 +408,7 @@ pulumi up
 ```
 Review the changes and confirm by typing "yes".
 
-![alt text](./images/image-3.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2001/images/image-3.png?raw=true)
 
 
 
@@ -417,11 +418,11 @@ You can varify the creteated resources such as VPC, Subnet, EC2 instance using A
 
 - **EC2 Instaces:**
 
-    ![alt text](./images/image-4.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2001/images/image-4.png?raw=true)
 
 - **S3 buckets:**
 
-    ![alt text](./images/image-5.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2001/images/image-5.png?raw=true)
 
 ## Step 3: SSH simplification using SSH Config File
 
@@ -458,7 +459,7 @@ The configuration defines SSH shortcuts for easy access to three EC2 instances: 
 
 The `config` file will look something like this in our case:
 
-![alt text](./images/image-6.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2001/images/image-6.png?raw=true)
 
 
 Now save and exit the vim editor and try to SSH into the head-node and worker-node instances using the following commands from 3 different terminal:
@@ -484,7 +485,7 @@ We can set the hostname for our instances by using the `hostnamectl` command. Th
 
     Exit and SSH again to see if it works.
 
-    ![alt text](./images/image-7.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2001/images/image-7.png?raw=true)
 
 - SSH into the workernode 1 using `ssh worker1` and do the same here as well:
 
@@ -564,7 +565,7 @@ ray start --head --port=6379 --dashboard-host=0.0.0.0 --dashboard-port=8265 --in
 
 Expected output:
 
-![alt text](./images/image-12.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2001/images/image-12.png?raw=true)
 
 
 ### Start the ray cluster inside each worker nodes
@@ -579,11 +580,11 @@ Replace `<head-node-instance-private-ip>` with the actual private IP address of 
 
 - Inside worker 1:
     
-    ![alt text](./images/image-9.png)   
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2001/images/image-9.png?raw=true)   
 
 - Inside worker 2:
 
-    ![alt text](./images/image-10.png)     
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2001/images/image-10.png?raw=true)     
 
 ### check the status of the Ray cluster
 To check the status of the Ray cluster, run the following command inside head node:
@@ -594,7 +595,7 @@ ray status
 
 Expected output:
 
-![alt text](./images/image-11.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2001/images/image-11.png?raw=true)
 
 This ensures that the status of the Ray cluster is correct and that the Ray cluster is running properly.
 

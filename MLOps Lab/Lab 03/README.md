@@ -1,8 +1,9 @@
 # Feature Engineering With Ray And AWS
 
-![alt text](./images/image-9.png)
+The following diagram demonstrates data pipeline for this lab as well as the upcoming lab. In this lab, we will be doing only half of the pipeline.
 
-This is the data pipeline for this lab as well as the upcoming lab. In this lab, we will be doing only half of the pipeline.
+![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2003/images/image-9.png?raw=true)
+
 
 You will use the `stagingdatastorebucket` to utilize as a staging data store where all the raw data will be stored from the sources. In this scenario, you won't connect any data connectors, API, databases or any other sources but this data engineering practice would be common throughout the course and other labs.
 
@@ -430,7 +431,7 @@ Review the changes and confirm by typing `yes`.
 
    > **Note:** It may take a few minutes for all nodes to connect and the cluster to become fully operational after deployment. Be patient while the system initializes.
 
-   ![alt text](./images/image-7.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2003/images/image-7.png?raw=true)
 
    
 
@@ -457,7 +458,7 @@ In some cases, certain directories or files may have restricted permissions or b
    sudo chown -R ubuntu:ubuntu /tmp/ray/*
    ```
 
-   ![alt text](./images/image-8.png)
+   ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2003/images/image-8.png?raw=true)
 
    This ensures the `ubuntu` user has the necessary permissions to manage Ray processes, which often store temporary files in this location.
 
@@ -498,7 +499,7 @@ nano ~/.jupyter/jupyter_lab_config.py
 
 This commands will open a config file as follows:
 
-![alt text](./images/image-10.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2003/images/image-10.png?raw=true)
 
 Add the following configuration:
 
@@ -513,7 +514,7 @@ c.ServerApp.open_browser = False
 c.ServerApp.port = 8888
 ```
 
-![alt text](./images/image-11.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2003/images/image-11.png?raw=true)
 
 Now, save and exit the file. 
 
@@ -525,7 +526,7 @@ jupyter lab
 
 Jupyter lab will be started on port `8888`.
 
-![alt text](./images/image-5.png)
+![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2003/images/image-5.png?raw=true)
 
 Go to a browser and paste the URL marked in the picture. Replace `headnode` with the `public-ip` of the headnode instance.
 
@@ -540,18 +541,18 @@ Let’s create an IAM role with the necessary permissions for EC2 instances to w
 - Go to the IAM console and create a new role.
 - Select trusted entity type as `AWS service` and usecase as `EC2` as we are creating the role for EC2 instances.
 
-    ![alt text](./images/image.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2003/images/image.png?raw=true)
 
 - Give a name to the role and click `Create role`.
 
-    ![alt text](./images/image-2.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2003/images/image-2.png?raw=true)
 
 ### Attach Policy for Permissions
 
 - On the role summary page, under the "Permissions" tab, click on the "Add permissions" button.
 - Choose `Create inline policy`.
 
-    ![alt text](./images/image-1.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2003/images/image-1.png?raw=true)
     
 
 - Attach the following `json` file in the policy editor:
@@ -587,7 +588,7 @@ Let’s create an IAM role with the necessary permissions for EC2 instances to w
     ```
     
 
-  ![alt text](./images/image-1.jpg)
+  ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2003/images/image-1.jpg?raw=true)
 
 ### Attach the Role to EC2 instances
 
@@ -595,11 +596,11 @@ Let’s create an IAM role with the necessary permissions for EC2 instances to w
 - Select the instances you created (`headnode`, `worker1`, `worker2`), to attach the role.
 - Click on Actions > Security > Modify IAM Role.
 
-    ![alt text](./images/image-6.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2003/images/image-6.png?raw=true)
 
 - In the dropdown list, you should see the role you created. Select it and click `Update IAM Role`.
 
-    ![alt text](./images/image-4.png)
+    ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2003/images/image-4.png?raw=true)
 
 - Repeat these steps for worker nodes also.
 
@@ -621,7 +622,7 @@ Here’s a detailed explanation of the steps and why each of them is important i
      -    The raw dataset is uploaded to a staging S3 bucket. This dataset contains the energy consumption data, which is the primary input for the machine learning model.
      -  Staging the data in S3 ensures that it is securely stored and easily accessible for further processing steps. This also allows for version control of data and easy integration with various data processing tools.
 
-        ![alt text](./images/image-12.png)
+        ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2003/images/image-12.png?raw=true)
 
    - **Load Data from S3**:
      -    The dataset is read from the staging bucket into a `Ray` dataset, a distributed data processing framework that can handle large-scale data operations efficiently.
@@ -679,7 +680,7 @@ Here’s a detailed explanation of the steps and why each of them is important i
      -    Use the Ray dashboard `http://<head-node-public-ip>:8265` to monitor the execution of jobs on the dataset, ensuring that all tasks (like transformations, aggregations, and feature engineering) are completed correctly.
      -  Monitoring helps in identifying bottlenecks or errors in the data processing pipeline. It provides visibility into the progress of distributed tasks and ensures that the data is processed as expected before moving on to modeling.
 
-        ![alt text](./images/image-13.png)
+        ![alt text](https://github.com/Konami33/poridhi.io.intern/blob/main/MLOps%20Lab/Lab%2003/images/image-13.png?raw=true)
 
 
 
