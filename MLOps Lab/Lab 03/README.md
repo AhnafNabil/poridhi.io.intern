@@ -134,7 +134,7 @@ chmod 400 key-pair-poridhi-poc.pem
     # Check Ray's status
     ray status
     ```
-3. Create a file named `worker_node_user_data.txt` and add the following code to it
+3. Create a file named `worker_node_common_data.txt` and add the following code to it
 
     ```sh
     #!/bin/bash
@@ -413,10 +413,11 @@ Review the changes and confirm by typing `yes`.
 
 1. **SSH into the Head Node:**
 
-   First, log into the head node using SSH.
+   First, log into the head node using SSH and activate the `ray_env`.
 
    ```sh
    ssh headnode
+   source ray_env/bin/activate
    ```
 
 2. **Check Ray Cluster Status:**
@@ -427,9 +428,11 @@ Review the changes and confirm by typing `yes`.
    ray status
    ```
 
+   > **Note:** It may take a few minutes for all nodes to connect and the cluster to become fully operational after deployment. Be patient while the system initializes.
+
    ![alt text](./images/image-7.png)
 
-   > **Note:** It may take a few minutes for all nodes to connect and the cluster to become fully operational after deployment. Be patient while the system initializes.
+   
 
 
 ## Change File Ownership and Permissions
@@ -552,6 +555,8 @@ Let’s create an IAM role with the necessary permissions for EC2 instances to w
 
 - Attach the following `json` file in the policy editor:
 
+    Replace the bucket names with your actual bucket names.
+
     ```json
     {
         "Version": "2012-10-17",
@@ -579,7 +584,7 @@ Let’s create an IAM role with the necessary permissions for EC2 instances to w
         ]
     }
     ```
-    Replace the bucket names with your actual bucket names.
+    
 
   ![alt text](./images/image-3.png)
 
@@ -614,6 +619,8 @@ Here’s a detailed explanation of the steps and why each of them is important i
    - **Upload Raw Data**:
      -    The raw dataset is uploaded to a staging S3 bucket. This dataset contains the energy consumption data, which is the primary input for the machine learning model.
      -  Staging the data in S3 ensures that it is securely stored and easily accessible for further processing steps. This also allows for version control of data and easy integration with various data processing tools.
+
+        ![alt text](image.png)
 
    - **Load Data from S3**:
      -    The dataset is read from the staging bucket into a `Ray` dataset, a distributed data processing framework that can handle large-scale data operations efficiently.
@@ -668,8 +675,10 @@ Here’s a detailed explanation of the steps and why each of them is important i
 
 ### 10. **Ray Dashboard**
    - **Monitor Processing**:
-     -    Use the Ray dashboard to monitor the execution of jobs on the dataset, ensuring that all tasks (like transformations, aggregations, and feature engineering) are completed correctly.
+     -    Use the Ray dashboard `http://<head-node-public-ip>:8265` to monitor the execution of jobs on the dataset, ensuring that all tasks (like transformations, aggregations, and feature engineering) are completed correctly.
      -  Monitoring helps in identifying bottlenecks or errors in the data processing pipeline. It provides visibility into the progress of distributed tasks and ensures that the data is processed as expected before moving on to modeling.
+
+        ![alt text](image-1.png)
 
 
 
