@@ -6,7 +6,7 @@ By the end of this lab, you will have hands-on experience with Pulumi, howt to a
 
 ## Overall Architecture
 
-![](./images/image.png)
+![](./images/arch.png)
 
 In this lab, we’ll create a ray cluster with 3 nodes, 
 
@@ -62,7 +62,7 @@ Run the following command to configure AWS CLI:
 ```bash
 aws configure
 ```
-![alt text](./images/image-1.png)
+![alt text](image.png)
 
 
 This command prompts you for your AWS Access Key ID, Secret Access Key, region, and output format.
@@ -70,22 +70,22 @@ This command prompts you for your AWS Access Key ID, Secret Access Key, region, 
 
 ##  Step 2: Set Up a Pulumi Project
 
-### Set Up a new directory
+### 1. Set Up a new directory
 Create a new directory for your project and navigate into it:
 
 ```sh
-mkdir aws-pulumi-infra
-cd aws-pulumi-infra
+mkdir MLOPS-Ray-cluster
+cd MLOPS-Ray-cluster
 ```
 
-### Install python `venv`
+### 2. Install python `venv`
 
 ```sh 
 sudo apt update
 sudo apt install python3.8-venv
 ```
 
-### Initialize a New Pulumi Project
+### 3. Initialize a New Pulumi Project
 Run the following command to create a new Pulumi project:
 
 ```sh
@@ -93,9 +93,9 @@ pulumi new aws-python
 ```
 Follow the prompts to set up your project.
 
-![alt text](./images/image-2.png)
+![alt text](image-1.png)
 
-### Create Key Pair
+### 4. Create Key Pair
 
 Create a new key pair in the `~/.ssh/` directory for the instances using the following command:
 
@@ -195,6 +195,7 @@ The **public IP**, **private IP** addresses of the head node and worker nodes ar
 
 ```sh
 mkdir scripts
+cd scripts
 ```
 2. Create a file named `head_node_user_data.txt` and add the following code to it
 
@@ -246,7 +247,7 @@ ray start --head --port=6379 --dashboard-host=0.0.0.0 --dashboard-port=8265 --in
 # Check Ray's status
 ray status
 ```
-3. Create a file named `worker_node_user_data.txt` and add the following code to it
+3. Create a file named `worker_node_common_data.txt` and add the following code to it
 
 ```sh
 #!/bin/bash
@@ -630,11 +631,17 @@ pulumi up
 ```
 Review the changes and confirm by typing `yes`.
 
+![alt text](image-2.png)
+
 ### Check the Created resources
 
 1. Go to `~/.ssh/` directory and check if config file is created dynamically
 
+![alt text](image-3.png)
+
 2. Go to the AWS management console, to check the created resources
+
+![alt text](image-4.png)
 
 3. Check the SSH connection
 
@@ -643,6 +650,9 @@ ssh headnode
 ssh worker1
 ssh worker2
 ```
+
+![alt text](image-5.png)
+
 
 ## Set the hostname of the instances
 
@@ -657,7 +667,7 @@ We can set the hostname for our instances by using the `hostnamectl` command. Th
 
     Exit and SSH again to see if it works.
 
-    ![alt text](./images/image-7.png)
+    ![alt text](image-6.png)
 
 - SSH into the workernode 1 using `ssh worker1` and do the same here as well:
 
@@ -686,7 +696,13 @@ To verify the status of your Ray cluster, first SSH into the head node of your R
    ```sh
    ssh headnode
    ```
+2. **Virtual environment:**
 
+    Activate the virtual environment for python
+
+    ```sh
+    source ray_env/bin/activate
+    ```
 2. **Check Ray Cluster Status:**
 
    After logging in, run the following command to check the status of the Ray cluster:
@@ -694,6 +710,8 @@ To verify the status of your Ray cluster, first SSH into the head node of your R
    ```sh
    ray status
    ```
+
+   ![alt text](image-7.png)
 
    The output of this command will show the current status of the Ray cluster, including the details of the head node and any worker nodes connected to it. If everything is configured correctly, you will see both the head node and the worker nodes listed, and their statuses should indicate that they are running properly.
 
@@ -713,7 +731,10 @@ The Ray dashboard provides a visual interface to monitor the cluster. To access 
 
    Replace `<headnode-public-ip>` with the public IP address of your head node.
 
+
 2. In the dashboard, you can see a graphical representation of the Ray cluster, including the head node and worker nodes. It will also display metrics such as resource utilization, node status, and any errors or logs from the cluster. This helps you monitor the health and performance of your deployment in real-time.
+
+![alt text](image-9.png)
 
 ---
 
@@ -740,6 +761,8 @@ In some cases, certain directories or files may have restricted permissions or b
    ```
 
    This ensures the `ubuntu` user has the necessary permissions to manage Ray processes, which often store temporary files in this location.
+
+   ![alt text](image-8.png)
 
 
 ## Conclusion
