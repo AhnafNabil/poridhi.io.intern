@@ -1,4 +1,4 @@
-# Model training and MLflow visualization
+# Model Training and MLflow Visualization
 
 In this lab, we build on the foundational data engineering practices established in our previous work, where we utilized a staging data store to manage and transform raw datasets. We previously focused on storing and processing raw data in the `stagingdatastorebucket`, followed by applying various transformations and feature engineering tasks. The processed data was then saved in the `featurestorebucket` for future use. 
 
@@ -132,7 +132,7 @@ chmod 400 key-pair-poridhi-poc.pem
     # Check Ray's status
     ray status
     ```
-3. Create a file named `worker_node_user_data.txt` and add the following code to it
+3. Create a file named `worker_node_common_data.txt` and add the following code to it
 
     ```sh
     #!/bin/bash
@@ -407,6 +407,8 @@ pulumi up
 ```
 Review the changes and confirm by typing `yes`.
 
+![alt text](./images/image-13.png)
+
 ### Check the Ray Status on the Head Node
 
 1. **SSH into the Head Node:**
@@ -415,6 +417,7 @@ Review the changes and confirm by typing `yes`.
 
    ```sh
    ssh headnode
+   source ray_env/bin/activate
    ```
 
 2. **Check Ray Cluster Status:**
@@ -425,9 +428,9 @@ Review the changes and confirm by typing `yes`.
    ray status
    ```
 
-   ![alt text](./images/image-7.png)
-
    > **Note:** It may take a few minutes for all nodes to connect and the cluster to become fully operational after deployment. Be patient while the system initializes.
+
+   ![alt text](./images/image-7.png)
 
 
 ## Change File Ownership and Permissions
@@ -487,7 +490,6 @@ Run the following commands to create a configuration file for the Jupyter Lab:
 ```bash
 jupyter lab --generate-config
 mkdir -p ~/.jupyter
-touch ~/.jupyter/jupyter_lab_config.py
 nano ~/.jupyter/jupyter_lab_config.py
 ```
 
@@ -807,6 +809,12 @@ LOCAL_FILE_PATH=./1-raw-dataset/powerconsumption.csv
 
 ### Run the python file
 
+Activate the `ray_env` if it is not activated.
+
+```bash
+source ray_env/bin/activate
+```
+
 Run the python file using the following command:
 
 ```bash
@@ -858,32 +866,31 @@ In this notebook, the steps flow through a series of actions designed to train a
      - Set up the MLFlow server to log model parameters and metrics (e.g., MAE, RMSE).
      - Monitor model performance (training and validation metrics) during training.
 
-### 4. **Visualizing Predictions**
-   -  Visualizing the actual versus predicted values helps assess the model’s accuracy and spot areas where it may be underperforming.
-   - **Steps**:
-     - After training, create scatter plots and line graphs to visualize the comparison between actual and predicted values.
+   ![alt text](./images/image-14.png)
 
-### 5. **Saving and Managing Model Artifacts**
+### 4. **Saving and Managing Model Artifacts**
    -  Model artifacts (trained models, checkpoints) need to be saved for deployment or further evaluation. Saving them ensures you can load them back when needed without retraining.
    - **Steps**:
      - Save the trained model as a pickle file.
      - Log the model version in MLFlow for version tracking and future use.
-   
-### 6. **Deploying the Model using Ray Serve**
-   -  Ray Serve is a scalable model deployment framework that allows you to serve the model in production, handling requests efficiently and scaling with demand.
-   - **Steps**:
-     - Load the model from the S3 bucket or the local system.
-     - Deploy it on the Ray cluster using Ray Serve to enable large-scale inference.
 
-### 7. **Model Evaluation and Version Tracking**
-   -  Tracking model versions ensures you can roll back to a previous version or monitor model performance over time.
-   - **Steps**:
-     - Log model versions, parameters, and checkpoints with MLFlow.
-     - Use these logs for evaluation and fine-tuning, and ensure proper tracking of different versions of the model across experiments.
+   ![alt text](./images/image-15.png)
 
+### 5. **Visualizing Predictions**
+   -  Visualizing the actual versus predicted values helps assess the model’s accuracy and spot areas where it may be underperforming.
+   - **Steps**:
+     - After training, create scatter plots and line graphs to visualize the comparison between actual and predicted values.
+
+   ![alt text](./images/image-16.png)
+
+   ![alt text](./images/image-17.png)
 
 ## Open MLflow dashboard 
 
 After completly running the notebook for training models, open the MLflow dashboard to see the Experiment Tracking:
 
 ![alt text](./images/image-12.png)
+
+## Conclusion
+
+In conclusion, this notebook demonstrates a streamlined approach to training machine learning models using Ray for distributed processing and MLFlow for experiment tracking. By leveraging a feature store, Ray’s scalable infrastructure, and XGBoost for training, the workflow ensures efficient handling of large datasets and complex models. The process emphasizes the importance of distributed training, model versioning, and artifact management for reproducibility and scalability.
