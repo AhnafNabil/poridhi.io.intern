@@ -124,37 +124,37 @@ These commands will create key pair for our instances.
 chmod 400 key-pair-poridhi-poc.pem
 ```
 
-### Write Code for infrastructure creation
+## Write Code for infrastructure creation
 
-#### Create a VPC
+### Create a VPC
 
 1. We start by creating a VPC using `aws.ec2.Vpc()`. The VPC has a CIDR block of `10.0.0.0/16`, providing up to 65,536 private IPv4 addresses. DNS support and DNS hostnames are enabled by setting `enable_dns_support=True` and `enable_dns_hostnames=True`. This is essential for our Ray cluster to operate in a secure, isolated network environment.
 2. The VPC ID is stored in the `vpc.id` variable.
 
-#### Create an Internet Gateway
+### Create an Internet Gateway
 
 1. Next, an Internet Gateway is created using `aws.ec2.InternetGateway()`.
 2. This Internet Gateway is attached to the VPC using the `vpc_id` parameter.
 3. **Why we need an Internet Gateway (IGW):** It connects the VPC to the internet, enabling Ray nodes to communicate with the outside world, such as downloading dependencies.
 
-#### Create a Public Subnet
+### Create a Public Subnet
 
 1. A public subnet is created using `aws.ec2.Subnet()` within the VPC.
 2. The subnet has a CIDR block of `10.0.1.0/24` and is configured to map public IP addresses on launch by setting `map_public_ip_on_launch=True`.
 3. **Why a Subnet is Needed:** It provides a segmented IP address range within the VPC where isolated resources, like Ray nodes, can be placed.
 
-#### Create a Route Table
+### Create a Route Table
 
 1. A route table is created using `aws.ec2.RouteTable()` and associated with the VPC.
 2. A route is added to this table, directing all traffic (`0.0.0.0/0`) to the Internet Gateway created earlier.
 3. **Importance for Ray:** This setup ensures proper routing of traffic between Ray nodes and external networks.
 
-#### Associate the Subnet with the Route Table
+### Associate the Subnet with the Route Table
 
 1. The public subnet is associated with the route table using `aws.ec2.RouteTableAssociation()`.
 2. The `subnet_id` and `route_table_id` parameters link the subnet and the route table, ensuring that traffic within the subnet follows the correct routing rules.
 
-#### Create a Security Group
+### Create a Security Group
 
 1. A security group is created using `aws.ec2.SecurityGroup()` and is associated with the VPC.
 2. The security group is configured with inbound rules to allow traffic on specific ports necessary for Ray:
@@ -165,7 +165,7 @@ chmod 400 key-pair-poridhi-poc.pem
     - **Ports 1024-65535:** Ephemeral ports required for inter-node communication and various monitoring tools.
 3. An outbound rule is added, allowing all traffic (`0.0.0.0/0`) to exit the VPC.
 
-#### Create the Head Node
+### Create the Head Node
 
 1. The head node (EC2 instance) is created using `aws.ec2.Instance()` with the following configurations:
     - Instance type: `t3.medium`
@@ -174,6 +174,7 @@ chmod 400 key-pair-poridhi-poc.pem
     - Subnet: the public subnet created earlier
     - Key pair: `key-pair-poridhi-poc` (replace with your key pair name)
     - EBS block device: a 20 GB GP3 volume
+    - User Data: Injects the `head_node_user_data` script (from an external file) into the `headnode` on launch to run custom commands to install the necessary libraries and dependencies.
 
 #### Create the Worker Nodes
 
@@ -184,17 +185,223 @@ chmod 400 key-pair-poridhi-poc.pem
     - Subnet: the public subnet created earlier
     - Key pair: `key-pair-poridhi-poc` (replace with your key pair name)
     - EBS block device: a 20 GB GP3 volume
+    - User Data: Injects the `worker_node_user_data` script (from an external file) into the `worker nodes` on launch to run custom commands to install the necessary libraries and dependencies.
 
-#### Create S3 Buckets
+### Create S3 Buckets
 
-1. The code creates four S3 buckets, each with a unique name and versioning enabled. These buckets will serve as storage for staging raw datasets, feature stores, model training data, and model outputs.
+1. The code creates four S3 bucketseach with a unique name and versioning enabled. These buckets will serve as storage for
 
-#### Export Outputs
+    - Staging raw datasets `(staging_data_store_bucket)`
+    - Feature stores `(feature_store_bucket)`
+    - Model training data `(model_store_bucket)`
+    - Model outputs. `(results_store_bucket)`
 
-1. The public IP, private IP addresses of the head node and worker nodes are exported as Pulumi outputs, along with the names of the S3 buckets.
+### Export Outputs
 
+The **public IP**, **private IP** addresses of the head node and worker nodes are exported as Pulumi outputs, along with the **names** of the S3 buckets.
 
-Now, **Open `__main__.py` file in your project directory**:
+### Write the scripts
+
+1. Open a directory named `scripts`
+
+```sh
+mkdir scripts
+```
+2. Create a file named `head_node_user_data.txt` and add the following code to it
+
+```sh
+#!/bin/bash
+
+# Change to the home directory
+cd /home/ubuntu/
+
+# Update the package list and install necessary software properties
+sudo apt-get update
+sudo apt-get install -y software-properties-common
+
+# Add the deadsnakes PPA and install Python 3.9 and related packages
+sudo add-apt-repository -y ppa:deadsnakes/ppa
+sudo apt-get update
+sudo apt-get install -y python3.9 python3.9-venv python3.9-dev
+
+# Create a Python virtual environment and activate it
+python3.9 -m venv ray_env
+source ray_env/bin/activate
+
+# Install Python libraries within the virtual environment
+pip install boto3 pyarrow numpy pandas matplotlib seaborn plotly scikit-learn xgboost -U ipywidgets
+
+# Install jupyter lab
+pip install jupyterlab
+
+# Install Ray and start Ray as the head node
+pip install "ray[default] @ https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-3.0.0.dev0-cp39-cp39-manylinux2014_x86_64.whl"
+
+# Install ray server
+pip install "ray[serve]"
+
+# Install py-ubjson
+pip install py-ubjson
+
+# Install modin-ray
+pip install modin[ray]
+
+# Install mlflow
+pip install mlflow
+
+# Install missingno
+pip install missingno
+
+ray start --head --port=6379 --dashboard-host=0.0.0.0 --dashboard-port=8265 --include-dashboard=True
+
+# Check Ray's status
+ray status
+```
+3. Create a file named `worker_node_user_data.txt` and add the following code to it
+
+```sh
+#!/bin/bash
+
+cd /home/ubuntu/
+
+# Update the package list and install necessary software properties
+sudo apt-get update
+sudo apt-get install -y software-properties-common
+
+# Add the deadsnakes PPA and install Python 3.9 and related packages
+sudo add-apt-repository -y ppa:deadsnakes/ppa
+sudo apt-get update
+sudo apt-get install -y python3.9 python3.9-venv python3.9-dev
+
+# Create a Python virtual environment and activate it
+python3.9 -m venv ray_env
+source ray_env/bin/activate
+
+# Install Python libraries within the virtual environment
+pip install boto3 pyarrow numpy pandas matplotlib seaborn plotly scikit-learn xgboost -U ipywidgets
+
+# Install jupyter lab
+pip install jupyterlab
+
+# Install Ray and start Ray as the head node
+pip install "ray[default] @ https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-3.0.0.dev0-cp39-cp39-manylinux2014_x86_64.whl"
+
+# Install ray server
+pip install "ray[serve]"
+
+# Install py-ubjson
+pip install py-ubjson
+
+# Install modin-ray
+pip install modin[ray]
+
+# Install mlflow
+pip install mlflow
+
+# Install missingno
+pip install missingno
+```
+
+### Explanation of the script files
+
+This script is designed to set up an environment on an EC2 instance to run distributed machine learning workloads with Ray, along with other essential tools. Here’s a breakdown of each part of the script:
+
+### 1. **Change to Home Directory**
+```bash
+cd /home/ubuntu/
+```
+This ensures that the commands are executed in the `/home/ubuntu/` directory, which is the home directory of the `ubuntu` user.
+
+### 2. **Update the Package List and Install Dependencies**
+
+```bash
+sudo apt-get update
+sudo apt-get install -y software-properties-common
+```
+- **`sudo apt-get update`** refreshes the package list to ensure the latest versions of software are available for installation.
+- **`software-properties-common`** is a utility that allows managing software repositories, such as adding third-party PPAs (Personal Package Archives).
+
+### 3. **Add the Deadsnakes PPA and Install Python 3.9**
+
+```bash
+sudo add-apt-repository -y ppa:deadsnakes/ppa
+sudo apt-get update
+sudo apt-get install -y python3.9 python3.9-venv python3.9-dev
+```
+- **Deadsnakes PPA** provides newer versions of Python not available by default in the Ubuntu repositories. 
+- **Python 3.9** is installed because it is needed for modern applications that may require features from this specific version.
+- **`python3.9-venv`** provides the ability to create isolated Python environments, and **`python3.9-dev`** includes development headers needed for compiling Python extensions.
+
+### 4. **Create and Activate a Virtual Environment**
+
+```bash
+python3.9 -m venv ray_env
+source ray_env/bin/activate
+```
+- A **virtual environment** (`ray_env`) is created to isolate the Python packages used for this project, preventing conflicts with other system packages.
+- The **`source`** command activates the virtual environment, so that subsequent Python package installations and executions happen inside it.
+
+### 5. **Install Essential Python Libraries**
+
+```bash
+pip install boto3 pyarrow numpy pandas matplotlib seaborn plotly scikit-learn xgboost -U ipywidgets
+```
+Several popular Python libraries are installed:
+- **`boto3`**: AWS SDK for Python, allowing interaction with AWS services like S3, EC2, etc.
+- **`pyarrow`**: A cross-language development platform for in-memory data processing, useful with large datasets.
+- **`numpy`**: Library for numerical operations.
+- **`pandas`**: Data manipulation and analysis.
+- **`matplotlib`, `seaborn`, `plotly`**: Visualization libraries for plotting and graphing data.
+- **`scikit-learn`**: Machine learning library.
+- **`xgboost`**: A powerful gradient boosting framework for supervised learning tasks.
+- **`ipywidgets`**: Adds interactivity to Jupyter notebooks.
+
+### 6. **Install JupyterLab**
+
+```bash
+pip install jupyterlab
+```
+- **JupyterLab** is installed to provide an interactive notebook interface for development and experimentation with the above packages where we will run our notebooks.
+
+### 7. **Install Ray and Start the Head Node**
+
+```bash
+pip install "ray[default] @ https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-3.0.0.dev0-cp39-cp39-manylinux2014_x86_64.whl"
+```
+- **Ray** is a distributed computing framework that allows running Python code on multiple machines (or nodes). This line installs Ray from a specific pre-built wheel compatible with Python 3.9.
+
+```bash
+ray start --head --port=6379 --dashboard-host=0.0.0.0 --dashboard-port=8265 --include-dashboard=True
+```
+- **Ray Head Node**: This command starts the Ray cluster in "head" mode, making this machine the central controller.
+
+  - `--port=6379` specifies the Redis port that Ray uses for communication between nodes.
+  - `--dashboard-host=0.0.0.0` exposes the Ray dashboard to external traffic.
+  - `--dashboard-port=8265` sets the port for the Ray dashboard, providing a web-based interface to monitor cluster health and performance.
+
+### 8. **Install Additional Libraries**
+```bash
+pip install ray[serve] modin[ray] mlflow py-ubjson missingno
+```
+- **Ray Serve**: A library for building scalable machine learning models and applications with Ray.
+- **Modin[ray]**: A library for accelerating pandas operations using Ray.
+- **MLflow**: A platform for managing machine learning experiments, including tracking, deployment, and versioning.
+- **Py-UBJSON**: A Python library for Universal Binary JSON, used for fast data serialization.
+- **Missingno**: A visualization library for handling missing data in datasets.
+
+### 9. **Check Ray Status**
+```bash
+ray status
+```
+- This command checks the current status of the Ray cluster, showing which nodes are connected, resource availability, etc.
+
+### Why These Installations are Necessary:
+- **Distributed Computing**: Ray is essential for distributing the workload across multiple nodes in a cluster. Installing it as a head node on one machine and having worker nodes connect to it enables large-scale parallelism.
+- **Data Science Tools**: Libraries like `numpy`, `pandas`, `scikit-learn`, and `xgboost` are fundamental for scientific computing, data processing, and machine learning tasks.
+- **JupyterLab** provides a user-friendly interface for writing and testing Python code interactively.
+- **MLflow** helps manage machine learning models and experiments, while **Modin[ray]** and **Ray Serve** are used to scale these workflows.
+
+### Write the infrastructure createion code in `__main__.py` file in your Pulumi project directory:
 
 ```python
 import pulumi
@@ -281,6 +488,7 @@ security_group = aws.ec2.SecurityGroup("micro-sec-group",
     ],
 )
 
+# Read the head_node_user_data.txt file. Update your path accordingly
 with open('/root/code/scripts/head_node_user_data.txt', 'r') as file:
     head_node_user_data = file.read()
 
@@ -290,7 +498,7 @@ head_node = aws.ec2.Instance('head-node',
     ami='ami-01811d4912b4ccb26',
     vpc_security_group_ids=[security_group.id],
     subnet_id=subnet.id,
-    user_data=head_node_user_data,
+    user_data=head_node_user_data, # pass the head-node-user-data
     key_name='key-pair-poridhi-poc',
     ebs_block_devices=[
         aws.ec2.InstanceEbsBlockDeviceArgs(
@@ -302,6 +510,7 @@ head_node = aws.ec2.Instance('head-node',
     ],
 )
 
+# Read the worker_node_common_data.txt user. Update your path accordingly
 with open('/root/code/scripts/worker_node_common_data.txt', 'r') as file:
     worker_node_common_data = file.read()
 
@@ -311,13 +520,13 @@ worker_nodes = []
 for i in range(2):
     worker_node_user_data = head_node.private_ip.apply(lambda ip: worker_node_common_data  + f"""
 ray start --address='{ip}:6379'
-""")
+""") # The private IP of the head node is passed dynamically to the worker nodes, so they can connect to the head node via Ray (ray start command).
     worker_node = aws.ec2.Instance(f'worker-node-{i}',
         instance_type='t3.small',
         ami='ami-01811d4912b4ccb26',
         vpc_security_group_ids=[security_group.id],
         subnet_id=subnet.id,
-        user_data=worker_node_user_data,
+        user_data=worker_node_user_data, # pass the worker node user data
         key_name='key-pair-poridhi-poc',
         ebs_block_devices=[
             aws.ec2.InstanceEbsBlockDeviceArgs(
@@ -330,11 +539,11 @@ ray start --address='{ip}:6379'
     )
     worker_nodes.append(worker_node)
 
-# Output the private IP addresses
+# Output the public and private IP addresses
 pulumi.export('head_node_private_ip', head_node.private_ip)
 pulumi.export('head_node_public_ip', head_node.public_ip)
 
-
+# Export the worker node public and private ip
 for i, worker_node in enumerate(worker_nodes):
     pulumi.export(f'worker_node_{i}_private_ip', worker_node.private_ip)
     pulumi.export(f'worker_node_{i}_public_ip', worker_node.public_ip)
@@ -366,7 +575,7 @@ all_ips = [head_node.public_ip] + [worker_node.public_ip for worker_node in work
 pulumi.Output.all(*all_ips).apply(create_config_file)
 
 
-# Create specific S3 buckets with unique names
+# Create Staging S3 bucket with unique names
 staging_data_store_bucket = aws.s3.Bucket("stagingdatastorebucket-unique-name-321",
     acl="private",  # Example ACL configuration
     versioning=aws.s3.BucketVersioningArgs(
@@ -374,6 +583,7 @@ staging_data_store_bucket = aws.s3.Bucket("stagingdatastorebucket-unique-name-32
     ),
 )
 
+# Create Feature store bucket
 feature_store_bucket = aws.s3.Bucket("featurestorebucket-unique-name-321",
     acl="private",  # Example ACL configuration
     versioning=aws.s3.BucketVersioningArgs(
@@ -381,6 +591,7 @@ feature_store_bucket = aws.s3.Bucket("featurestorebucket-unique-name-321",
     ),
 )
 
+# Create Model store bucket
 model_store_bucket = aws.s3.Bucket("modelstorebucket-unique-name-321",
     acl="private",  # Example ACL configuration
     versioning=aws.s3.BucketVersioningArgs(
@@ -388,6 +599,7 @@ model_store_bucket = aws.s3.Bucket("modelstorebucket-unique-name-321",
     ),
 )
 
+# Create Results store bucket
 results_store_bucket = aws.s3.Bucket("resultsstorebucket-unique-name-321",
     acl="private",  # Example ACL configuration
     versioning=aws.s3.BucketVersioningArgs(
@@ -402,6 +614,23 @@ pulumi.export('model_store_bucket_name', model_store_bucket.id)
 pulumi.export('results_store_bucket_name', results_store_bucket.id)
 ```
 
+### Explanation of the `create_config_file(ip_list)`:
+
+Here is the explanation of the `create_config_file` function in bullet points:
+
+- **Purpose:** Generates a dynamic SSH configuration file for simplified SSH access to nodes in a distributed system.
+- **Input:** A list of IP addresses corresponding to the head node and worker nodes.
+- **Hostname assignment:** Predefined hostnames (`headnode`, `worker1`, `worker2`) are mapped to the IP addresses.
+- **SSH configuration:** For each node, it adds:
+  - Hostname (e.g., `headnode`, `worker1`, `worker2`)
+  - IP address (`HostName`)
+  - SSH user (`ubuntu`)
+  - SSH private key (`~/.ssh/key-pair-poridhi-poc.pem`)
+- **File output:** Writes the configuration to the `~/.ssh/config` file.
+- **Function trigger:** Executed after all the EC2 instances are provisioned and their IP addresses are collected.
+- **Result:** Allows SSH access using simple commands like `ssh headnode` or `ssh worker1`, instead of manually entering IP addresses and key details.
+
+
 ### Deploy the Pulumi Stack
 
 Deploy the stack using the following command:
@@ -409,9 +638,23 @@ Deploy the stack using the following command:
 ```sh
 pulumi up
 ```
-Review the changes and confirm by typing "yes".
+Review the changes and confirm by typing `yes`.
 
-## Step 3: Set the hostname of the instances
+### Check the Created resources
+
+1. Go to `~/.ssh/` directory and check if config file is created dynamically
+
+2. Go to the AWS management console, to check the created resources
+
+3. Check the SSH connection
+
+```sh
+ssh headnode
+ssh worker1
+ssh worker2
+```
+
+## Set the hostname of the instances
 
 We can set the hostname for our instances by using the `hostnamectl` command. This will help us to easily identify at which instance we are now after we ssh into any instance.
 
@@ -441,6 +684,28 @@ We can set the hostname for our instances by using the `hostnamectl` command. Th
     ```
 
     Now, exit and ssh again to see if it works.
+
+## Check the Ray status in the headnode.
+
+First SSH into the headnode and check ray status
+
+```sh
+ssh headnode
+ray status
+```
+This will show you the status of the Ray cluster. If everything is working fine, you should see the headnode and worker node. **Note:** Give some time for the Ray cluster up.
+
+## Check the Ray dashboard
+
+Go to a browser and paste this URL
+
+```sh
+http://headnode-public-ip:8265
+```
+
+You will see the ray dashboard and the status of the ray cluster.
+
+So, we have successfully automated Ray cluster deployment.
 
 
 ## Conclusion
