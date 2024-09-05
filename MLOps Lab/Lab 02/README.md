@@ -62,7 +62,7 @@ Run the following command to configure AWS CLI:
 ```bash
 aws configure
 ```
-![alt text](image.png)
+![alt text](./images/image.png)
 
 
 This command prompts you for your AWS Access Key ID, Secret Access Key, region, and output format.
@@ -93,7 +93,7 @@ pulumi new aws-python
 ```
 Follow the prompts to set up your project.
 
-![alt text](image-1.png)
+![alt text](./images/image-1.png)
 
 ### 4. Create Key Pair
 
@@ -381,6 +381,7 @@ pip install ray[serve] modin[ray] mlflow py-ubjson missingno
 - **Missingno**: A visualization library for handling missing data in datasets.
 
 ### 9. **Check Ray Status**
+
 ```bash
 ray status
 ```
@@ -499,6 +500,9 @@ head_node = aws.ec2.Instance('head-node',
             delete_on_termination=True,
         ),
     ],
+    tags={
+        'Name': 'head-node',
+    }
 )
 
 # Read the worker_node_common_data.txt user. Update your path accordingly
@@ -512,7 +516,7 @@ for i in range(2):
     worker_node_user_data = head_node.private_ip.apply(lambda ip: worker_node_common_data  + f"""
 ray start --address='{ip}:6379'
 """) # The private IP of the head node is passed dynamically to the worker nodes, so they can connect to the head node via Ray (ray start command).
-    worker_node = aws.ec2.Instance(f'worker-node-{i}',
+    worker_node = aws.ec2.Instance(f'worker-node-{i+1}',
         instance_type='t3.small',
         ami='ami-01811d4912b4ccb26',
         vpc_security_group_ids=[security_group.id],
@@ -527,6 +531,9 @@ ray start --address='{ip}:6379'
             delete_on_termination=True,
             ),
         ],
+        tags={
+            'Name': f'worker-node-{i+1}',
+        }
     )
     worker_nodes.append(worker_node)
 
@@ -536,8 +543,8 @@ pulumi.export('head_node_public_ip', head_node.public_ip)
 
 # Export the worker node public and private ip
 for i, worker_node in enumerate(worker_nodes):
-    pulumi.export(f'worker_node_{i}_private_ip', worker_node.private_ip)
-    pulumi.export(f'worker_node_{i}_public_ip', worker_node.public_ip)
+    pulumi.export(f'worker_node_{i+1}_private_ip', worker_node.private_ip)
+    pulumi.export(f'worker_node_{i+1}_public_ip', worker_node.public_ip)
 
 
 # Create a dynamic config file for SSH access
@@ -631,17 +638,17 @@ pulumi up
 ```
 Review the changes and confirm by typing `yes`.
 
-![alt text](image-2.png)
+![alt text](./images/image-2.png)
 
 ### Check the Created resources
 
 1. Go to `~/.ssh/` directory and check if config file is created dynamically
 
-![alt text](image-3.png)
+![alt text](./images/image-3.png)
 
 2. Go to the AWS management console, to check the created resources
 
-![alt text](image-4.png)
+![alt text](./images/image-4.png)
 
 3. Check the SSH connection
 
@@ -651,7 +658,7 @@ ssh worker1
 ssh worker2
 ```
 
-![alt text](image-5.png)
+![alt text](./images/image-5.png)
 
 
 ## Set the hostname of the instances
@@ -667,7 +674,7 @@ We can set the hostname for our instances by using the `hostnamectl` command. Th
 
     Exit and SSH again to see if it works.
 
-    ![alt text](image-6.png)
+    ![alt text](./images/image-6.png)
 
 - SSH into the workernode 1 using `ssh worker1` and do the same here as well:
 
@@ -711,7 +718,7 @@ To verify the status of your Ray cluster, first SSH into the head node of your R
    ray status
    ```
 
-   ![alt text](image-7.png)
+   ![alt text](./images/image-7.png)
 
    The output of this command will show the current status of the Ray cluster, including the details of the head node and any worker nodes connected to it. If everything is configured correctly, you will see both the head node and the worker nodes listed, and their statuses should indicate that they are running properly.
 
@@ -734,7 +741,7 @@ The Ray dashboard provides a visual interface to monitor the cluster. To access 
 
 2. In the dashboard, you can see a graphical representation of the Ray cluster, including the head node and worker nodes. It will also display metrics such as resource utilization, node status, and any errors or logs from the cluster. This helps you monitor the health and performance of your deployment in real-time.
 
-![alt text](image-9.png)
+![alt text](./images/image-9.png)
 
 ---
 
@@ -762,7 +769,7 @@ In some cases, certain directories or files may have restricted permissions or b
 
    This ensures the `ubuntu` user has the necessary permissions to manage Ray processes, which often store temporary files in this location.
 
-   ![alt text](image-8.png)
+   ![alt text](./images/image-8.png)
 
 
 ## Conclusion
