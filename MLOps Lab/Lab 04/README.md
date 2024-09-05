@@ -1,12 +1,10 @@
-# Feature Engineering With Ray And AWS
+# Model training and MLflow visualization
+
+In this lab, we build on the foundational data engineering practices established in our previous work, where we utilized a staging data store to manage and transform raw datasets. We previously focused on storing and processing raw data in the `stagingdatastorebucket`, followed by applying various transformations and feature engineering tasks. The processed data was then saved in the `featurestorebucket` for future use. 
 
 ![alt text](./images/image-9.png)
 
-This is the data pipeline for this lab as well as the upcoming lab. In this lab, we will be doing only half of the pipeline.
-
-You will use the `stagingdatastorebucket` to utilize as a staging data store where all the raw data will be stored from the sources. In this scenario, you won't connect any data connectors, API, databases or any other sources but this data engineering practice would be common throughout the course and other labs.
-
-After ingesting the raw dataset into our transformation script you would perform some transformations and feature engineering/creation tasks. After processing the raw dataset and computing the necessary features for the ML model training, the transformed data would be stored in `featurestorebucket`. We will discuss a lot about this in the upcoming section. The remaining part of the pipeline will be explained in the next lab.
+In this lab, we advance this workflow by preparing the data for model training. Specifically, we will ingest the engineered features from the feature store into the `modelstorebucket`, followed by loading the data into the model training function from the `modeldatastorebucket`. After training, the model outputs, predictions, and results will be securely stored in the `resultsstorebucket`. This structured approach ensures that each stage of the machine learning pipeline is handled with precision, from data preparation to model deployment, facilitating a seamless and scalable workflow.
 
 
 ## Task Description
@@ -18,8 +16,8 @@ In this lab, we will:
 - Clone the repository that contains the notebook for this lab
 - Run the jupyter lab 
 - Attach an IAM Role to the EC2 Instances for S3 Buckets permissions
-- Run the notebook `1. data-transformation-and-feature-store.ipynb`
-
+- Run a python file for data transformation and feature store step
+- Run the notebook `2. training-and-saving-the-model.ipynb`
 
 ## AWS CLI Configuration
 
@@ -527,6 +525,7 @@ Jupyter lab will be started on port `8888`.
 Go to a browser and paste the URL marked in the picture. Replace `headnode` with the `public-ip` of the headnode instance.
 
 All the necessary files for our problem are already in this working directory.
+Jupyter lab will be started on port 8888.
 
 ## Attach an IAM Role to the EC2 Instances for S3 Buckets permissions
 
@@ -597,87 +596,294 @@ Let’s create an IAM role with the necessary permissions for EC2 instances to w
 
 - Repeat these steps for worker nodes also.
 
-## Run the `Data Transformation & Feature Store` Notebook
-
-Here’s a detailed explanation of the steps and why each of them is important in the context of preparing a dataset for machine learning, specifically for our dataset.
-
-### 1. **Setting Up the Environment**
-   - **AWS Setup with `boto3`**: 
-     -    AWS S3 is being used as a data storage solution, particularly because it’s scalable, durable, and can handle large datasets efficiently. Setting up `boto3`, the AWS SDK for Python, allows you to interact programmatically with S3 buckets where the data will be stored, processed, and later retrieved.
-     -  This setup is critical because it ensures secure and organized storage of the datasets, which is essential for a reproducible and scalable machine learning workflow.
-
-   - **S3 Bucket Interaction**:
-     -    Listing the S3 buckets helps in verifying that the necessary storage infrastructure (like buckets for staging, feature store, and model store) is in place.
-     -  This is necessary to confirm that the data pipelines will function as expected, with each bucket serving a specific purpose in the workflow (e.g., storing raw data, processed features, or model outputs).
-
-### 2. **Data Ingestion**
-   - **Upload Raw Data**:
-     -    The raw dataset is uploaded to a staging S3 bucket. This dataset contains the energy consumption data, which is the primary input for the machine learning model.
-     -  Staging the data in S3 ensures that it is securely stored and easily accessible for further processing steps. This also allows for version control of data and easy integration with various data processing tools.
-
-   - **Load Data from S3**:
-     -    The dataset is read from the staging bucket into a `Ray` dataset, a distributed data processing framework that can handle large-scale data operations efficiently.
-     -  Using `Ray` allows for parallelized data processing, which speeds up the workflow, making it more efficient and scalable, especially for large datasets.
-
-### 3. **Exploratory Data Analysis (EDA)**
-   - **Visualization with `plotly`**:
-     -    Visualize the energy consumption trends over time to understand the data's underlying patterns, such as peak usage hours or seasonal variations.
-     -  EDA is crucial for uncovering insights and identifying trends in the data that will inform feature engineering and model selection. Visualizing data helps in making informed decisions about which features are important for predicting energy consumption.
-
-   - **Key Findings**:
-     -    Identify the key trends, such as high energy consumption during summer months and lower usage in other seasons.
-     -  Understanding these patterns is essential for building accurate predictive models. It highlights the need to account for seasonality and time-based trends in the modeling process.
-
-### 4. **Feature Engineering**
-   - **New Features Creation**:
-     -    Develop new features that capture temporal and seasonal patterns, such as `TimeOfDay` and `Season`.
-     -  These new features help the machine learning model better understand the context in which energy is consumed, leading to more accurate predictions. For example, energy usage patterns differ significantly between morning and evening, so creating a `TimeOfDay` feature allows the model to learn these differences.
-
-   - **Batch Transformation**:
-     -    Apply transformations to the dataset in batches to compute the new features across the entire dataset efficiently.
-     -  Batch processing is efficient and scalable, allowing for the transformation of large datasets without overwhelming system resources.
-
-### 5. **Data Cleaning and Preprocessing**
-   - **Drop Unnecessary Columns**:
-     -    Remove columns that are not needed for modeling to reduce noise and improve model performance.
-     -  Simplifying the dataset by removing irrelevant columns can help in focusing the model on the most important features, thereby improving accuracy and reducing overfitting.
-
-   - **Inspect Column Types**:
-     -    Identify which columns are categorical and which are numerical to determine the appropriate preprocessing steps (like encoding for categorical variables).
-     -  Proper identification of column types is essential for applying the right transformations, such as one-hot encoding for categorical data or scaling for numerical data.
-
-### 6. **Encoding Categorical Variables**
-   - **One-Hot Encoding**:
-     -    Convert categorical variables (like `TimeOfDay` and `Season`) into numerical format using one-hot encoding.
-     -  Machine learning models typically require numerical input. One-hot encoding allows the model to use categorical information without assuming any ordinal relationship between categories.
-
-### 7. **Aggregation**
-   - **Data Aggregation**:
-     -    Group the data by `Year`, `Month`, `Day`, and `Hour` and aggregate values such as temperature and power consumption using methods like mean and sum.
-     -  Aggregating the data into hourly intervals helps to reduce data dimensionality and focus on patterns over more significant time periods, which is important for time-series analysis and prediction. It also smooths out noise and makes the dataset more manageable for modeling.
-
-### 8. **Lag Feature Creation**
-   - **Lag Shifting**:
-     -    Create lag features that represent previous values of key variables, such as temperature or power consumption, at different time intervals (e.g., 4 hours ago, 24 hours ago).
-     -  Lag features help capture temporal dependencies in time-series data. For instance, energy consumption at a certain time is often influenced by consumption patterns in the preceding hours. Including lag features allows the model to learn from past behaviors, which is crucial for accurate forecasting.
-
-### 9. **Feature Scaling**
-   - **Scaling**:
-     -    Normalize or scale the features so they have a common range, typically between 0 and 1 or -1 and 1.
-     -  Scaling is important because many machine learning algorithms are sensitive to the range of input data. Features with larger ranges can disproportionately influence the model's predictions. Scaling ensures that each feature contributes equally to the model's decision-making process.
-
-### 10. **Ray Dashboard**
-   - **Monitor Processing**:
-     -    Use the Ray dashboard to monitor the execution of jobs on the dataset, ensuring that all tasks (like transformations, aggregations, and feature engineering) are completed correctly.
-     -  Monitoring helps in identifying bottlenecks or errors in the data processing pipeline. It provides visibility into the progress of distributed tasks and ensures that the data is processed as expected before moving on to modeling.
 
 
 
+## Run the first notebook steps using python file
+
+Go to the desired directory to continue:
+
+```bash
+cd ML
+cd MLOPS-LAB-2
+```
+
+Create a file `feature_engineering.py` and edit as follows:
+
+```py
+import os
+import boto3
+import pandas as pd
+from dotenv import load_dotenv
+import ray
+from sklearn.preprocessing import MinMaxScaler
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Retrieve environment variables
+aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
+aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+aws_region = os.getenv('AWS_REGION')
+source_bucket_name = os.getenv('SOURCE_BUCKET_NAME')
+destination_bucket_name = os.getenv('DESTINATION_BUCKET_NAME')
+local_file_path = os.getenv('LOCAL_FILE_PATH')
+file_key = 'staging-directory/raw-dataset.csv'
+
+# Ensure the variables are correctly set
+if not all([aws_access_key_id, aws_secret_access_key, aws_region, source_bucket_name, destination_bucket_name, local_file_path]):
+    raise ValueError("One or more environment variables are not set correctly.")
+
+# Create an S3 resource
+s3_client = boto3.resource(
+    service_name='s3',
+    region_name=aws_region,
+    aws_access_key_id=aws_access_key_id,
+    aws_secret_access_key=aws_secret_access_key
+)
+
+# Upload file to S3
+print(f"Uploading file {local_file_path} to bucket {source_bucket_name} with key {file_key}...")
+s3_client.meta.client.upload_file(local_file_path, source_bucket_name, file_key)
+
+# List all objects in the bucket
+print(f"Objects in bucket {source_bucket_name}:")
+for obj in s3_client.Bucket(source_bucket_name).objects.all():
+    print(obj.key)
+
+# Read dataset from S3
+ds = ray.data.read_csv(f"s3://{source_bucket_name}/{file_key}")
+ds.show(limit=5)
+df = ds.to_pandas()
+
+# Define batch transformer
+class BatchTransformer:
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def categorize_time_of_day(hour):
+        if 6 <= hour < 12:
+            return 'Morning'
+        elif 12 <= hour < 18:
+            return 'Afternoon'
+        elif 18 <= hour < 24:
+            return 'Evening'
+        else:
+            return 'Night'
+
+    @staticmethod
+    def categorize_season(month):
+        if month in [12, 1, 2]:
+            return 'Winter'
+        elif month in [3, 4, 5]:
+            return 'Spring'
+        elif month in [6, 7, 8]:
+            return 'Summer'
+        else:
+            return 'Autumn'
+
+    def transform(self, batch):
+        batch['Datetime'] = pd.to_datetime(batch['Datetime'])
+        batch['Year'] = batch['Datetime'].dt.year
+        batch['Month'] = batch['Datetime'].dt.month
+        batch['Day'] = batch['Datetime'].dt.day
+        batch['Hour'] = batch['Datetime'].dt.hour
+        batch['TimeOfDay'] = batch['Hour'].apply(self.categorize_time_of_day)
+        batch['Weekday'] = batch['Datetime'].dt.weekday
+        batch['IsWeekend'] = batch['Weekday'].apply(lambda x: 1 if x >= 5 else 0)
+        batch['Season'] = batch['Month'].apply(self.categorize_season)
+        batch['Year'] = batch['Year'].astype(int)
+        batch['Weekday'] = batch['Weekday'].astype(int)
+        batch['IsWeekend'] = batch['IsWeekend'].astype(int)
+        return batch
+
+# Instantiate the transformer and apply it to the dataset
+transformer = BatchTransformer()
+transformed_ds = ds.map_batches(transformer.transform, batch_format="pandas")
+transformed_ds.to_pandas()
+
+# Drop unnecessary columns
+ds_updated = transformed_ds.drop_columns(["Datetime"])
+df_updated = ds_updated.to_pandas()
+
+# Define function to encode categorical columns
+def encode_categorical_columns(batch):
+    categorical_columns = ['TimeOfDay', 'Season']
+    batch_encoded = pd.get_dummies(batch, columns=categorical_columns)
+    batch_encoded = batch_encoded.astype(int)
+    return batch_encoded
+
+# Apply one-hot encoding
+ds_encoded = ds_updated.map_batches(encode_categorical_columns, batch_format="pandas")
+df_encoded = ds_encoded.to_pandas()
+
+# Define aggregation functions and perform grouping
+aggregation_functions = {
+    'Temperature': ['mean'],
+    'Humidity': ['mean'],
+    'WindSpeed': ['mean'],
+    'GeneralDiffuseFlows': ['mean'],
+    'DiffuseFlows': ['mean'],
+    'PowerConsumption_Zone1': ['sum'],
+    'PowerConsumption_Zone2': ['sum'],
+    'PowerConsumption_Zone3': ['sum'],
+    'Weekday': ['first'],
+    'IsWeekend': ['first'],
+    'TimeOfDay_Afternoon': ['first'],
+    'TimeOfDay_Evening': ['first'],
+    'TimeOfDay_Morning': ['first'],
+    'TimeOfDay_Night': ['first'],
+    'Season_Autumn': ['first'],
+    'Season_Spring': ['first'],
+    'Season_Summer': ['first'],
+    'Season_Winter': ['first']
+}
+
+df_grouped = df_encoded.groupby(['Year', 'Month', 'Day', 'Hour']).agg(aggregation_functions)
+df_grouped.columns = ['_'.join(col) if isinstance(col, tuple) else col for col in df_grouped.columns]
+df_grouped = df_grouped.reset_index()
+
+# Create lag features
+columns_to_lag = [
+    'Temperature_mean', 'Humidity_mean', 'WindSpeed_mean', 'GeneralDiffuseFlows_mean',
+    'DiffuseFlows_mean', 'PowerConsumption_Zone1_sum', 'PowerConsumption_Zone2_sum',
+    'PowerConsumption_Zone3_sum'
+]
+
+lags = [4, 8, 12, 24, 48]
+df_lagged = df_grouped.copy()
+
+for col in columns_to_lag:
+    for lag in lags:
+        df_lagged[f'{col}_lag{lag}'] = df_grouped[col].shift(lag)
+
+df_lagged.fillna(0, inplace=True)
+df_lagged = df_lagged.dropna()
+
+# Convert to Ray Dataset and scale
+feature_ds = ray.data.from_pandas(df_lagged)
+cols_to_scale = [
+    "Temperature_mean", "Humidity_mean", "WindSpeed_mean",
+    "GeneralDiffuseFlows_mean", "DiffuseFlows_mean", "PowerConsumption_Zone1_sum", 
+    "PowerConsumption_Zone2_sum", "PowerConsumption_Zone3_sum",
+    "Temperature_mean_lag4", "Temperature_mean_lag8", "Temperature_mean_lag12", "Temperature_mean_lag24", "Temperature_mean_lag48",
+    "Humidity_mean_lag4", "Humidity_mean_lag8", "Humidity_mean_lag12", "Humidity_mean_lag24", "Humidity_mean_lag48",
+    "WindSpeed_mean_lag4", "WindSpeed_mean_lag8", "WindSpeed_mean_lag12", "WindSpeed_mean_lag24", "WindSpeed_mean_lag48",
+    "GeneralDiffuseFlows_mean_lag4", "GeneralDiffuseFlows_mean_lag8", "GeneralDiffuseFlows_mean_lag12", "GeneralDiffuseFlows_mean_lag24", "GeneralDiffuseFlows_mean_lag48",
+    "DiffuseFlows_mean_lag4", "DiffuseFlows_mean_lag8", "DiffuseFlows_mean_lag12", "DiffuseFlows_mean_lag24", "DiffuseFlows_mean_lag48",
+    "PowerConsumption_Zone1_sum_lag4", "PowerConsumption_Zone1_sum_lag8", "PowerConsumption_Zone1_sum_lag12", "PowerConsumption_Zone1_sum_lag24", "PowerConsumption_Zone1_sum_lag48",
+    "PowerConsumption_Zone2_sum_lag4", "PowerConsumption_Zone2_sum_lag8", "PowerConsumption_Zone2_sum_lag12", "PowerConsumption_Zone2_sum_lag24", "PowerConsumption_Zone2_sum_lag48",
+    "PowerConsumption_Zone3_sum_lag4", "PowerConsumption_Zone3_sum_lag8", "PowerConsumption_Zone3_sum_lag12", "PowerConsumption_Zone3_sum_lag24", "PowerConsumption_Zone3_sum_lag48"
+]
+
+def scale_partition(df, cols_to_scale):
+    scaler = MinMaxScaler()
+    df[cols_to_scale] = scaler.fit_transform(df[cols_to_scale])
+    return df
+
+scaled_ds = feature_ds.map_batches(lambda batch: scale_partition(batch, cols_to_scale), batch_format="pandas")
+scaled_df = scaled_ds.to_pandas()
+
+# Save transformed data to CSV and upload to S3
+scaled_df.to_csv('2-transformed-data/transformed_features.csv', index=False)
+scaled_ds.write_csv(f"s3://{destination_bucket_name}/feature_data.csv")
+
+print("Data processing and upload complete.")
+```
+
+### Create a file for environment variables
+
+Create and open a `.env` file using `vim .env` and change the following environment variables according to your configuration:
+
+```env
+AWS_ACCESS_KEY_ID=<aws-access-key-id>
+AWS_SECRET_ACCESS_KEY=<aws-secret-access-key-id>
+AWS_REGION=ap-southeast-1
+SOURCE_BUCKET_NAME=<staging-datastore-bucket-name>
+DESTINATION_BUCKET_NAME=<feature-store-bucket-name>
+LOCAL_FILE_PATH=./1-raw-dataset/powerconsumption.csv
+```
+
+### Run the python file
+
+Run the python file using the following command:
+
+```bash
+python3 feature_engineering.py
+```
 
 
-Now open the Notebook: `1. data-transformation-and-feature-store.ipynb` and start running it on jupyter lab.
+
+## Run MLflow
+
+SSH into headnode and activate ray_env. Run the following command to configure MLflow dashboard:
+
+```
+mlflow ui --host 0.0.0.0 --port 5000
+```
 
 
-## Conclusion
-The goal of this entire workflow is to transform raw energy consumption data into a well-structured, feature-rich dataset that can be used to train accurate and efficient machine learning models. Each step in this process—ranging from data ingestion and exploratory analysis to feature engineering and scaling—ensures that the data is clean, relevant, and prepared for predictive modeling, ultimately leading to better and more reliable predictions of energy consumption patterns.
 
+## Train the model using `training-and-saving-the-model` notebook
+
+
+
+
+
+In this notebook, the steps flow through a series of actions designed to train a machine learning model, distribute the training workload, and track the progress and results. Here’s an outline of the process:
+
+### 1. **Loading Features from a Feature Store**
+   -  Features are pre-processed, meaningful data points required for training. The feature store allows versioning and ensures consistent, reliable data access for machine learning tasks.
+   - **Steps**:
+     - Access the S3 bucket (used as the feature store) and locate the latest dataset version.
+     - Download the feature dataset to the local system for training.
+
+### 2. **Distributed Training with Ray Train**
+   -  Distributed training accelerates the training process, especially for large datasets, by utilizing multiple workers across machines or nodes. Ray abstracts the complexity of this process.
+   - **Steps**:
+     - Load the dataset into Ray, which enables distributed data processing.
+     - Set up the training configuration using XGBoost, a popular gradient-boosting algorithm.
+     - Define the scaling configuration to specify the number of workers (distributed machines or processes).
+     - Initiate training with Ray Train, ensuring parallelism and scalability.
+   
+   **Ray Components**:
+   - **Ray Core**: Manages the distributed computing resources (tasks, actors).
+   - **Ray Data**: Handles the distributed data loading and processing.
+   - **Ray Train**: Coordinates the distributed machine learning training.
+
+### 3. **Tracking with MLFlow**
+   -  MLFlow provides experiment tracking, allowing you to monitor the training process, log metrics, and manage model versions. It is crucial for experiment reproducibility and performance evaluation.
+   - **Steps**:
+     - Set up the MLFlow server to log model parameters and metrics (e.g., MAE, RMSE).
+     - Monitor model performance (training and validation metrics) during training.
+
+### 4. **Visualizing Predictions**
+   -  Visualizing the actual versus predicted values helps assess the model’s accuracy and spot areas where it may be underperforming.
+   - **Steps**:
+     - After training, create scatter plots and line graphs to visualize the comparison between actual and predicted values.
+
+### 5. **Saving and Managing Model Artifacts**
+   -  Model artifacts (trained models, checkpoints) need to be saved for deployment or further evaluation. Saving them ensures you can load them back when needed without retraining.
+   - **Steps**:
+     - Save the trained model as a pickle file.
+     - Log the model version in MLFlow for version tracking and future use.
+   
+### 6. **Deploying the Model using Ray Serve**
+   -  Ray Serve is a scalable model deployment framework that allows you to serve the model in production, handling requests efficiently and scaling with demand.
+   - **Steps**:
+     - Load the model from the S3 bucket or the local system.
+     - Deploy it on the Ray cluster using Ray Serve to enable large-scale inference.
+
+### 7. **Model Evaluation and Version Tracking**
+   -  Tracking model versions ensures you can roll back to a previous version or monitor model performance over time.
+   - **Steps**:
+     - Log model versions, parameters, and checkpoints with MLFlow.
+     - Use these logs for evaluation and fine-tuning, and ensure proper tracking of different versions of the model across experiments.
+
+
+## Open MLflow dashboard 
+
+After completly running the notebook for training models, open the MLflow dashboard to see the Experiment Tracking:
+
+![alt text](./images/image-12.png)
