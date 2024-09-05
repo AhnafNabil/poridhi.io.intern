@@ -6,16 +6,7 @@ By the end of this lab, you will have hands-on experience with Pulumi, howt to a
 
 ## Overall Architecture
 
-### What is Ray?
-
-Ray is an open-source unified framework for distributed computing, and scaling AI and Python applications like machine learning. It provides the compute layer for parallel processing so that you don’t need to be a distributed systems expert. Ray minimizes the complexity of running your distributed individual and end-to-end machine learning workflows with these components:
-
-- Scalable libraries for common machine learning tasks such as data preprocessing, distributed training, hyperparameter tuning, reinforcement learning, and model serving.
-- Pythonic distributed computing primitives for parallelizing and scaling Python applications.
-- Integrations and utilities for integrating and deploying a Ray cluster with existing tools and infrastructure such as Kubernetes, AWS, GCP, and Azure.
-
-Ray works by **creating a cluster of nodes** and **scheduling tasks** across them. It uses ***dynamic task*** ***scheduling***, ***a shared memory object store*** for efficient data sharing, supports the actor model for stateful computations, and has native support for Python and Java. It's a powerful tool for distributed computing, providing efficient task scheduling, data sharing, and support for stateful computations.
-
+![](./images/image.png)
 
 In this lab, we’ll create a ray cluster with 3 nodes, 
 
@@ -380,6 +371,7 @@ ray start --head --port=6379 --dashboard-host=0.0.0.0 --dashboard-port=8265 --in
   - `--dashboard-port=8265` sets the port for the Ray dashboard, providing a web-based interface to monitor cluster health and performance.
 
 ### 8. **Install Additional Libraries**
+
 ```bash
 pip install ray[serve] modin[ray] mlflow py-ubjson missingno
 ```
@@ -401,7 +393,7 @@ ray status
 - **JupyterLab** provides a user-friendly interface for writing and testing Python code interactively.
 - **MLflow** helps manage machine learning models and experiments, while **Modin[ray]** and **Ray Serve** are used to scale these workflows.
 
-### Write the infrastructure createion code in `__main__.py` file in your Pulumi project directory:
+### Write the infrastructure creation code in `__main__.py` file in your Pulumi project directory:
 
 ```python
 import pulumi
@@ -693,7 +685,9 @@ First SSH into the headnode and check ray status
 ssh headnode
 ray status
 ```
-This will show you the status of the Ray cluster. If everything is working fine, you should see the headnode and worker node. **Note:** Give some time for the Ray cluster up.
+This will show you the status of the Ray cluster. If everything is working fine, you should see the headnode and worker node. 
+
+> **Note:** Give some time for the Ray cluster up.
 
 ## Check the Ray dashboard
 
@@ -706,6 +700,15 @@ http://headnode-public-ip:8265
 You will see the ray dashboard and the status of the ray cluster.
 
 So, we have successfully automated Ray cluster deployment.
+
+## Change the File Ownership and Permissions of these directories
+
+Changing the file permission to the `ubuntu` user, as the files or directories owned by a root user or with restrictive permissions.
+
+```sh
+sudo chown -R ubuntu:ubuntu /home/ubuntu/ray_env
+sudo chown -R ubuntu:ubuntu /tmp/ray/*
+```
 
 
 ## Conclusion
