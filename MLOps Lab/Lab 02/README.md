@@ -55,7 +55,7 @@ In this hands-on lab we will learn
 > **Note:** This lab is intended to be done in poridhi VS Code. So we will skip the aws cli installation, pulumi installation, and python installation steps as we these are already installed in the VS code environment.
 
 
-## Step 1. AWS CLI Configuration
+## Step 01: AWS CLI Configuration
 
 Run the following command to configure AWS CLI:
 
@@ -68,7 +68,7 @@ aws configure
 This command prompts you for your AWS Access Key ID, Secret Access Key, region, and output format.
 
 
-##  Step 2: Set Up a Pulumi Project
+##  Step 02: Set Up a Pulumi Project
 
 ### 1. Set Up a new directory
 Create a new directory for your project and navigate into it:
@@ -113,7 +113,7 @@ These commands will create key pair for our instances.
 chmod 400 key-pair-poridhi-poc.pem
 ```
 
-## Write Code for infrastructure creation
+## Step 03: Write Code for infrastructure creation
 
 ### Create a VPC
 
@@ -165,7 +165,7 @@ chmod 400 key-pair-poridhi-poc.pem
     - EBS block device: a 20 GB GP3 volume
     - User Data: Injects the `head_node_user_data` script (from an external file) into the `headnode` on launch to run custom commands to install the necessary libraries and dependencies.
 
-#### Create the Worker Nodes
+### Create the Worker Nodes
 
 1. Two worker nodes (EC2 instances) are created using a loop and `aws.ec2.Instance()` with configurations similar to the head node:
     - Instance type: `t3.small`
@@ -189,15 +189,15 @@ chmod 400 key-pair-poridhi-poc.pem
 
 The **public IP**, **private IP** addresses of the head node and worker nodes are exported as Pulumi outputs, along with the **names** of the S3 buckets.
 
-### Write the scripts
+## Write the scripts
 
-1. Open a directory named `scripts`
+### **1. Open a directory named `scripts`**
 
 ```sh
 mkdir scripts
 cd scripts
 ```
-2. Create a file named `head_node_user_data.txt` and add the following code to it
+### **2. Create a file named `head_node_user_data.txt` and add the following code to it**
 
 ```sh
 #!/bin/bash
@@ -247,7 +247,7 @@ ray start --head --port=6379 --dashboard-host=0.0.0.0 --dashboard-port=8265 --in
 # Check Ray's status
 ray status
 ```
-3. Create a file named `worker_node_common_data.txt` and add the following code to it
+**3. Create a file named `worker_node_common_data.txt` and add the following code to it**
 
 ```sh
 #!/bin/bash
@@ -292,17 +292,17 @@ pip install mlflow
 pip install missingno
 ```
 
-## Explanation of the script files
+## Explanation of the script file
 
 This script is designed to set up an environment on an EC2 instance to run distributed machine learning workloads with Ray, along with other essential tools. Here’s a breakdown of each part of the script:
 
-### 1. **Change to Home Directory**
+### **Change to Home Directory**
 ```bash
 cd /home/ubuntu/
 ```
 This ensures that the commands are executed in the `/home/ubuntu/` directory, which is the home directory of the `ubuntu` user.
 
-### 2. **Update the Package List and Install Dependencies**
+### **Update the Package List and Install Dependencies**
 
 ```bash
 sudo apt-get update
@@ -311,7 +311,7 @@ sudo apt-get install -y software-properties-common
 - **`sudo apt-get update`** refreshes the package list to ensure the latest versions of software are available for installation.
 - **`software-properties-common`** is a utility that allows managing software repositories, such as adding third-party PPAs (Personal Package Archives).
 
-### 3. **Add the Deadsnakes PPA and Install Python 3.9**
+### **Add the Deadsnakes PPA and Install Python 3.9**
 
 ```bash
 sudo add-apt-repository -y ppa:deadsnakes/ppa
@@ -322,7 +322,7 @@ sudo apt-get install -y python3.9 python3.9-venv python3.9-dev
 - **Python 3.9** is installed because it is needed for modern applications that may require features from this specific version.
 - **`python3.9-venv`** provides the ability to create isolated Python environments, and **`python3.9-dev`** includes development headers needed for compiling Python extensions.
 
-### 4. **Create and Activate a Virtual Environment**
+### **Create and Activate a Virtual Environment**
 
 ```bash
 python3.9 -m venv ray_env
@@ -331,7 +331,7 @@ source ray_env/bin/activate
 - A **virtual environment** (`ray_env`) is created to isolate the Python packages used for this project, preventing conflicts with other system packages.
 - The **`source`** command activates the virtual environment, so that subsequent Python package installations and executions happen inside it.
 
-### 5. **Install Essential Python Libraries**
+### **Install Essential Python Libraries**
 
 ```bash
 pip install boto3 pyarrow numpy pandas matplotlib seaborn plotly scikit-learn xgboost -U ipywidgets
@@ -346,14 +346,14 @@ Several popular Python libraries are installed:
 - **`xgboost`**: A powerful gradient boosting framework for supervised learning tasks.
 - **`ipywidgets`**: Adds interactivity to Jupyter notebooks.
 
-### 6. **Install JupyterLab**
+### **Install JupyterLab**
 
 ```bash
 pip install jupyterlab
 ```
 - **JupyterLab** is installed to provide an interactive notebook interface for development and experimentation with the above packages where we will run our notebooks.
 
-### 7. **Install Ray and Start the Head Node**
+### **Install Ray and Start the Head Node**
 
 ```bash
 pip install "ray[default] @ https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-3.0.0.dev0-cp39-cp39-manylinux2014_x86_64.whl"
@@ -369,7 +369,7 @@ ray start --head --port=6379 --dashboard-host=0.0.0.0 --dashboard-port=8265 --in
   - `--dashboard-host=0.0.0.0` exposes the Ray dashboard to external traffic.
   - `--dashboard-port=8265` sets the port for the Ray dashboard, providing a web-based interface to monitor cluster health and performance.
 
-### 8. **Install Additional Libraries**
+### **Install Additional Libraries**
 
 ```bash
 pip install ray[serve] modin[ray] mlflow py-ubjson missingno
@@ -380,7 +380,7 @@ pip install ray[serve] modin[ray] mlflow py-ubjson missingno
 - **Py-UBJSON**: A Python library for Universal Binary JSON, used for fast data serialization.
 - **Missingno**: A visualization library for handling missing data in datasets.
 
-### 9. **Check Ray Status**
+### **Check Ray Status**
 
 ```bash
 ray status
@@ -393,7 +393,7 @@ ray status
 - **JupyterLab** provides a user-friendly interface for writing and testing Python code interactively.
 - **MLflow** helps manage machine learning models and experiments, while **Modin[ray]** and **Ray Serve** are used to scale these workflows.
 
-### Write the infrastructure creation code in `__main__.py` file in your Pulumi project directory:
+### **4. Write the infrastructure creation code in `__main__.py` file in your Pulumi project directory:**
 
 ```python
 import pulumi
@@ -629,7 +629,7 @@ Here is the explanation of the `create_config_file` function in bullet points:
 - **Result:** Allows SSH access using simple commands like `ssh headnode` or `ssh worker1`, instead of manually entering IP addresses and key details.
 
 
-### Deploy the Pulumi Stack
+## Step 04: Deploy the Pulumi Stack
 
 Deploy the stack using the following command:
 
@@ -642,15 +642,15 @@ Review the changes and confirm by typing `yes`.
 
 ### Check the Created resources
 
-1. Go to `~/.ssh/` directory and check if config file is created dynamically
+**1. Go to `~/.ssh/` directory and check if config file is created dynamically**
 
 ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image-3.png)
 
-2. Go to the AWS management console, to check the created resources
+**2. Go to the AWS management console, to check the created resources**
 
 ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image-4.png)
 
-3. Check the SSH connection
+**3. Check the SSH connection**
 
 ```sh
 ssh headnode
@@ -661,7 +661,7 @@ ssh worker2
 ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image-5.png)
 
 
-## Set the hostname of the instances
+## Step 05: Set the hostname of the instances
 
 We can set the hostname for our instances by using the `hostnamectl` command. This will help us to easily identify at which instance we are now after we ssh into any instance.
 
@@ -692,7 +692,7 @@ We can set the hostname for our instances by using the `hostnamectl` command. Th
 
     Now, exit and ssh again to see if it works.
 
-### Check the Ray Status on the Head Node
+## Step 06: Check the Ray Status on the Head Node
 
 To verify the status of your Ray cluster, first SSH into the head node of your Ray deployment. Use the following steps to check whether the cluster is operating as expected:
 
@@ -724,9 +724,7 @@ To verify the status of your Ray cluster, first SSH into the head node of your R
 
    > **Note:** It may take a few minutes for all nodes to connect and the cluster to become fully operational after deployment. Be patient while the system initializes.
 
----
-
-### Check the Ray Dashboard
+## Step 07: Check the Ray Dashboard
 
 The Ray dashboard provides a visual interface to monitor the cluster. To access the dashboard:
 
@@ -745,7 +743,7 @@ The Ray dashboard provides a visual interface to monitor the cluster. To access 
 
 ---
 
-## Change File Ownership and Permissions
+## Step 08: Change File Ownership and Permissions
 
 In some cases, certain directories or files may have restricted permissions or be owned by the `root` user, which can interfere with the smooth operation of Ray or cause permission-related issues. To prevent this, adjust the ownership and permissions as follows:
 
@@ -771,6 +769,8 @@ In some cases, certain directories or files may have restricted permissions or b
 
    ![](https://github.com/Konami33/poridhi.io.intern/raw/main/MLOps%20Lab/Lab%2002/images/image-8.png)
 
+
+So, we have automated the Ray cluster deployment sucessfully.
 
 ## Conclusion
 
