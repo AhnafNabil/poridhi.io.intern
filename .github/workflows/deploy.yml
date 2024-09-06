@@ -38,7 +38,7 @@ jobs:
 
       # select stack
       - name: Pulumi stack select
-        run: pulumi stack select dev
+        run: pulumi stack select Konami33/AWS-INFRA-WITH-GITHUB-ACTION/dev
 
       # refresh
       - name: Pulumi refresh
