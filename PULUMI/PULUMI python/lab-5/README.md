@@ -11,7 +11,7 @@ In this lab, we will set up a Virtual Private Cloud (VPC) in AWS with both publi
 7. Attach Github action to create the resources using PULUMI. Basically Github action will trigger the pulumi to create the resouces.
 8. Establish SSH access to the EC2 instances.
 
-![alt text](./images/arch.drawio.svg)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-5/images/arch.drawio.svg)
 
 ## Step by step
 
@@ -36,7 +36,7 @@ In this lab, we will set up a Virtual Private Cloud (VPC) in AWS with both publi
     ```
     Follow the prompts to set up your project. It will create the necessary folders for pulumi setup.
 
-- Create SSH Key-pair file
+- Create SSH Key-pair file in your `~/.ssh/` directory:
 
   ```sh
   aws ec2 create-key-pair --key-name MyKeyPair --query 'KeyMaterial' --output text > MyKeyPair.pem
@@ -290,7 +290,7 @@ jobs:
   - `AWS_SECRET_ACCESS_KEY` -> AWS account secret access key.
   - `PULUMI_ACCESS_TOKEN` -> Your pulumi access token.
 
-  ![alt text](./images/image.png)
+  ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-5/images/image.png)
 
 - **Commit your changes and push to your GitHub repository.**
 
@@ -304,11 +304,11 @@ jobs:
 
 - Go to your repository and check the **`Actions`** status:
 
-  ![alt text](./images/image-1.png)
+  ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-5/images/image-1.png)
 
 - Check if the job is successful or not:
 
-  ![alt text](./images/image-2.png)
+  ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-5/images/image-2.png)
 
 
 ## Step 04: Check the AWS Resources
@@ -317,11 +317,11 @@ Go to your aws management console and you will see all the resouces
 
 - Resouce Map:
 
-  ![alt text](./images/image-3.png)
+  ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-5/images/image-3.png)
 
 - Instances:
 
-  ![alt text](./images/image-4.png)
+  ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-5/images/image-4.png)
 
 
 
@@ -337,7 +337,7 @@ In our architecture we have a public instance and private instances. To connect 
   ```sh
   scp -i MyKeyPair.pem MyKeyPair.pem ubuntu@public-instance-ip:~/.ssh/
   ```
-  ![alt text](./images/image-5.png)
+  ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-5/images/image-5.png)
 
 - **Now SSH into the public instance**
 
@@ -345,26 +345,26 @@ In our architecture we have a public instance and private instances. To connect 
   ssh -i <path-to-your-keyfile>/MyKeyPair.pem ubuntu@public-instance-ip
   ```
 
-  ![alt text](./images/image-6.png)
+  ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-5/images/image-6.png)
 
 - **You can also set the hostname:(optional)**
 
   ```sh
   sudo hostnamectl set-hostname public-ec2
   ```
-  ![alt text](./images/image-7.png)
+  ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-5/images/image-7.png)
 - **Then SSH into the private instances from the public instance:**
 
   ```sh
   ssh -i MyKeyPair.pem ubuntu@private-instance1-ip
   ```
-  ![alt text](./images/image-8.png)
+  ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-5/images/image-8.png)
 
   ```sh
   ssh -i MyKeyPair.pem ubuntu@private-instance2-ip
   ```
-  ![alt text](./images/image-9.png)
+  ![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-5/images/image-9.png)
 
 ### Conclusion
 
-So, we have setup pulumi project, created github action to automatically create the aws resources using pulumi. Then we have also SSH into the instances.
+So, we have setup pulumi project, created github action to automatically create the aws resources using pulumi. Then we have also setup SSH connection and SSH into the instances.
