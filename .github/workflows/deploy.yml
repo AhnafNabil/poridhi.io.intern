@@ -35,19 +35,18 @@ jobs:
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
         run: pulumi login
-      
-      # Change directory to the correct Pulumi project location
-      - name: Change to Pulumi project directory
-        run: cd PULUMI/PULUMI\ python/lab-5/infra
 
       # select stack
       - name: Pulumi stack select
         run: pulumi stack select Konami33/AWS-INFRA-WITH-GITHUB-ACTION/dev
+        working-directory: PULUMI/PULUMI\ python/lab-5/infra
 
       # refresh
       - name: Pulumi refresh
         run: pulumi refresh --yes
+        working-directory: PULUMI/PULUMI\ python/lab-5/infra
 
       # up
       - name: Pulumi up
         run: pulumi up --yes
+        working-directory: PULUMI/PULUMI\ python/lab-5/infra
