@@ -11,7 +11,7 @@ In this lab, we will set up a Virtual Private Cloud (VPC) in AWS with both publi
 7. Attach Github action to create the resources using PULUMI. Basically Github action will trigger the pulumi to create the resouces.
 8. Establish SSH access to the EC2 instances.
 
-![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-5/images/arch.drawio.svg)
+![alt text](https://github.com/Konami33/poridhi.io.intern/raw/main/PULUMI/PULUMI%20python/lab-5/images/arch1.drawio.svg)
 
 ## Step by step
 
