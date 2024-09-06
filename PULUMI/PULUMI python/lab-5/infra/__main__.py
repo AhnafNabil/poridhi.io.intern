@@ -4,7 +4,7 @@ import pulumi_aws as aws
 # Create a VPC
 vpc = aws.ec2.Vpc("my-vpc",
     cidr_block="10.0.0.0/16",
-    tag={
+    tags={
         "Name": "my-vpc"
     }
 )
@@ -15,9 +15,9 @@ pulumi.export("vpc_id", vpc.id)
 public_subnet = aws.ec2.Subnet("public-subnet",
     vpc_id=vpc.id,
     cidr_block="10.0.1.0/24",
-    availability_zone="ap-southeast-1",
+    availability_zone="ap-southeast-1a",
     map_public_ip_on_launch=True,
-    tag={
+    tags={
         "Name": "public-subnet"
     }
 )
@@ -28,8 +28,8 @@ pulumi.export("public_subnet_id", public_subnet.id)
 private_subnet = aws.ec2.Subnet("private-subnet",
     vpc_id=vpc.id,
     cidr_block="10.0.2.0/24",
-    availability_zone="ap-southeast-1",
-    tag={
+    availability_zone="ap-southeast-1a",
+    tags={
         "Name": "private-subnet"
     }
 )
@@ -62,7 +62,6 @@ route_table_association = aws.ec2.RouteTableAssociation("public-route-table-asso
 )
 
 pulumi.export("public_route_table_id", public_route_table.id)
-
 
 # Allocate an Elastic IP for the NAT Gateway
 eip = aws.ec2.Eip("nat-eip", vpc=True)
@@ -119,7 +118,7 @@ public_instance = aws.ec2.Instance("public-instance",
     subnet_id=public_subnet.id,
     key_name="MyKeyPair",
     associate_public_ip_address=True,
-    tag={
+    tags={
         "Name": "Public-Instance"
     }
 )
@@ -138,30 +137,32 @@ private_security_group = aws.ec2.SecurityGroup("private-secgrp",
         {'protocol': '-1', 'from_port': 0, 'to_port': 0, 'cidr_blocks': ['0.0.0.0/0']}
     ]
 )
-    # Create an EC2 instance in the private subnet
-private_instance_1 = aws.ec2.Instance("private-instance",
-        instance_type="t2.micro",
-        vpc_security_group_ids=[private_security_group.id],
-        ami=ami_id,
-        subnet_id=private_subnet.id,
-        key_name="MyKeyPair",
-        tag={
-            "Name": "Private-instance-1"
-        }
-    )
-pulumi.export("private_instance_id", private_instance_1.id)
-pulumi.export("private_instance_ip", private_instance_1.private_ip)
+
+# Create two EC2 instances in the private subnet with unique resource names
+
+private_instance_1 = aws.ec2.Instance("private-instance-1",
+    instance_type="t2.micro",
+    vpc_security_group_ids=[private_security_group.id],
+    ami=ami_id,
+    subnet_id=private_subnet.id,
+    key_name="MyKeyPair",
+    tags={
+        "Name": "Private-instance-1"
+    }
+)
+pulumi.export("private_instance_1_id", private_instance_1.id)
+pulumi.export("private_instance_1_ip", private_instance_1.private_ip)
 
 
-private_instance_2 = aws.ec2.Instance("private-instance",
-        instance_type="t2.micro",
-        vpc_security_group_ids=[private_security_group.id],
-        ami=ami_id,
-        subnet_id=private_subnet.id,
-        key_name="MyKeyPair",
-        tag={
-            "Name": "Private-instance-2"
-        }
-    )
-pulumi.export("private_instance_id", private_instance_2.id)
-pulumi.export("private_instance_ip", private_instance_2.private_ip)
+private_instance_2 = aws.ec2.Instance("private-instance-2",
+    instance_type="t2.micro",
+    vpc_security_group_ids=[private_security_group.id],
+    ami=ami_id,
+    subnet_id=private_subnet.id,
+    key_name="MyKeyPair",
+    tags={
+        "Name": "Private-instance-2"
+    }
+)
+pulumi.export("private_instance_2_id", private_instance_2.id)
+pulumi.export("private_instance_2_ip", private_instance_2.private_ip)
