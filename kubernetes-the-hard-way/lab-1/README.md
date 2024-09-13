@@ -362,17 +362,17 @@ pulumi.Output.all(*all_ips).apply(create_config_file)
 KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
   --load-balancer-arns ${LOAD_BALANCER_ARN} \
   --output text --query 'LoadBalancers[].DNSName')
-
 export KUBERNETES_PUBLIC_ADDRESS
 echo $KUBERNETES_PUBLIC_ADDRESS
+
 ```
 
 ## Export Kubernetes_HOSTNAME
 
 ```sh
 KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local
-
 export KUBERNETES_HOSTNAMES
 echo $KUBERNETES_HOSTNAMES
+
 ```
 
