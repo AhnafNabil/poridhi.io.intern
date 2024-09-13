@@ -24,21 +24,21 @@ Now ssh into each one of the IP addresses received in last step.
 
 Download the official etcd release binaries from the [etcd](https://github.com/etcd-io/etcd) GitHub project:
 
-```
+```sh
 wget -q --show-progress --https-only --timestamping \
   "https://github.com/etcd-io/etcd/releases/download/v3.4.15/etcd-v3.4.15-linux-amd64.tar.gz"
 ```
 
 Extract and install the `etcd` server and the `etcdctl` command line utility:
 
-```
+```sh
 tar -xvf etcd-v3.4.15-linux-amd64.tar.gz
 sudo mv etcd-v3.4.15-linux-amd64/etcd* /usr/local/bin/
 ```
 
 ### Configure the etcd Server
 
-```
+```sh
 sudo mkdir -p /etc/etcd /var/lib/etcd
 sudo chmod 700 /var/lib/etcd
 sudo cp ca.pem kubernetes-key.pem kubernetes.pem /etc/etcd/
@@ -52,14 +52,14 @@ The instance internal IP address will be used to serve client requests and commu
 ### Set `INTERNAL_IP`
 If you already know the internal IP of the instance, you can set it like this:
 ```bash
-INTERNAL_IP="10.0.1.10"  # Replace with the actual internal IP
+INTERNAL_IP="10.0.1.10"
 export INTERNAL_IP
 ```
 
 ### Set `ETCD_NAME`
 If you know the etcd name (which typically matches the hostname or a unique identifier for the instance in the etcd cluster), you can set it like this:
 ```bash
-ETCD_NAME="controller-0"  # Replace with the actual etcd name
+ETCD_NAME="controller-0"
 export ETCD_NAME
 ```
 
@@ -75,14 +75,14 @@ echo $ETCD_NAME
 ### Set `INTERNAL_IP`
 If you already know the internal IP of the instance, you can set it like this:
 ```bash
-INTERNAL_IP="10.0.1.11"  # Replace with the actual internal IP
+INTERNAL_IP="10.0.1.11"
 export INTERNAL_IP
 ```
 
 ### Set `ETCD_NAME`
 If you know the etcd name (which typically matches the hostname or a unique identifier for the instance in the etcd cluster), you can set it like this:
 ```bash
-ETCD_NAME="controller-1"  # Replace with the actual etcd name
+ETCD_NAME="controller-1"
 export ETCD_NAME
 ```
 
@@ -143,7 +143,7 @@ sudo systemctl start etcd
 
 List the etcd cluster members:
 
-```
+```sh
 sudo ETCDCTL_API=3 etcdctl member list \
   --endpoints=https://127.0.0.1:2379 \
   --cacert=/etc/etcd/ca.pem \
@@ -153,8 +153,7 @@ sudo ETCDCTL_API=3 etcdctl member list \
 
 > output
 
-```
-bbeedf10f5bbaa0c, started, controller-2, https://10.0.1.12:2380, https://10.0.1.12:2379, false
+```sh
 f9b0e395cb8278dc, started, controller-0, https://10.0.1.10:2380, https://10.0.1.10:2379, false
 eecdfcb7e79fc5dd, started, controller-1, https://10.0.1.11:2380, https://10.0.1.11:2379, false
 ```

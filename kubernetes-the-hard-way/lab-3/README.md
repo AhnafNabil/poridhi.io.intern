@@ -111,6 +111,7 @@ kubectl config set-context default \
   --kubeconfig=kube-controller-manager.kubeconfig
 
 kubectl config use-context default --kubeconfig=kube-controller-manager.kubeconfig
+
 ```
 
 Results:
@@ -143,6 +144,7 @@ kubectl config set-context default \
   --kubeconfig=kube-scheduler.kubeconfig
 
 kubectl config use-context default --kubeconfig=kube-scheduler.kubeconfig
+
 ```
 
 Results:
@@ -174,6 +176,7 @@ kubectl config set-context default \
   --kubeconfig=admin.kubeconfig
 
 kubectl config use-context default --kubeconfig=admin.kubeconfig
+
 ```
 
 Results:
@@ -189,30 +192,32 @@ admin.kubeconfig
 
 Copy the appropriate `kubelet` and `kube-proxy` kubeconfig files to each worker instance:
 
-```
+```sh
 for instance in worker-0 worker-1; do
   external_ip=$(aws ec2 describe-instances --filters \
     "Name=tag:Name,Values=${instance}" \
     "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
-  scp -i /root/code/infra-k8s/kubernetes.id_rsa \
+  scp -i ~/.ssh/k8s-infra-aws/kubernetes.id_rsa \
     ${instance}.kubeconfig kube-proxy.kubeconfig ubuntu@${external_ip}:~/
 done
+
 ```
 
 Copy the appropriate `kube-controller-manager` and `kube-scheduler` kubeconfig files to each controller instance:
 
-```
+```sh
 for instance in controller-0 controller-1; do
   external_ip=$(aws ec2 describe-instances --filters \
     "Name=tag:Name,Values=${instance}" \
     "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
   
-  scp -i /root/code/infra-k8s/kubernetes.id_rsa \
+  scp -i ~/.ssh/k8s-infra-aws/kubernetes.id_rsa \
     admin.kubeconfig kube-controller-manager.kubeconfig kube-scheduler.kubeconfig ubuntu@${external_ip}:~/
 done
+
 ```
 
 Next: [Generating the Data Encryption Config and Key](06-data-encryption-keys.md)
@@ -235,7 +240,7 @@ ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
 
 Create the `encryption-config.yaml` encryption config file:
 
-```
+```yaml
 cat > encryption-config.yaml <<EOF
 kind: EncryptionConfig
 apiVersion: v1
@@ -260,8 +265,6 @@ for instance in controller-0 controller-1; do
     "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
   
-  scp -i /root/code/infra-k8s/kubernetes.id_rsa encryption-config.yaml ubuntu@${external_ip}:~/
+  scp -i ~/.ssh/k8s-infra-aws/kubernetes.id_rsa encryption-config.yaml ubuntu@${external_ip}:~/
 done
 ```
-
-Next: [Bootstrapping the etcd Cluster](07-bootstrapping-etcd.md)

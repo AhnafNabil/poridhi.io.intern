@@ -2,6 +2,7 @@
 
 In this lab you will provision a [PKI Infrastructure](https://en.wikipedia.org/wiki/Public_key_infrastructure) using CloudFlare's PKI toolkit, [cfssl](https://github.com/cloudflare/cfssl), then use it to bootstrap a Certificate Authority, and generate TLS certificates for the following components: etcd, kube-apiserver, kube-controller-manager, kube-scheduler, kubelet, and kube-proxy.
 
+
 ## Certificate Authority
 
 In this section you will provision a Certificate Authority that can be used to generate additional TLS certificates.
@@ -284,8 +285,6 @@ The `kubernetes-the-hard-way` static IP address will be included in the list of 
 Generate the Kubernetes API Server certificate and private key:
 
 ```
-KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local
-
 cat > kubernetes-csr.json <<EOF
 {
   "CN": "kubernetes",
@@ -377,7 +376,7 @@ for instance in worker-0 worker-1; do
     "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
-  scp -i /root/code/infra-k8s/kubernetes.id_rsa ca.pem ${instance}-key.pem ${instance}.pem ubuntu@${external_ip}:~/
+  scp -i ~/.ssh/k8s-infra-aws/kubernetes.id_rsa ca.pem ${instance}-key.pem ${instance}.pem ubuntu@${external_ip}:~/
 done
 ```
 
@@ -390,7 +389,7 @@ for instance in controller-0 controller-1; do
     "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
-  scp -i /root/code/infra-k8s/kubernetes.id_rsa \
+  scp -i ~/.ssh/k8s-infra-aws/kubernetes.id_rsa \
     ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
     service-account-key.pem service-account.pem ubuntu@${external_ip}:~/
 done
@@ -405,22 +404,29 @@ Next: [Generating Kubernetes Configuration Files for Authentication](05-kubernet
 
 ```sh
 Host controller-0
-    HostName 18.143.65.127
+    HostName 18.143.192.134
     User ubuntu
-    IdentityFile /root/code/infra-k8s/kubernetes.id_rsa
+    IdentityFile /root/code/k8s-infra-aws/kubernetes.id_rsa
 
 Host controller-1
-    HostName 54.179.23.81
+    HostName 18.140.7.226
     User ubuntu
-    IdentityFile /root/code/infra-k8s/kubernetes.id_rsa
+    IdentityFile /root/code/k8s-infra-aws/kubernetes.id_rsa
+
 Host worker-0
-    HostName 47.129.246.29
+    HostName 47.129.113.5
     User ubuntu
-    IdentityFile /root/code/infra-k8s/kubernetes.id_rsa
+    IdentityFile /root/code/k8s-infra-aws/kubernetes.id_rsa
 
 Host worker-1
-    HostName 18.136.194.190
+    HostName 18.140.98.129
     User ubuntu
-    IdentityFile /root/code/infra-k8s/kubernetes.id_rsa
+    IdentityFile /root/code/k8s-infra-aws/kubernetes.id_rsa
+```
+
+## Set hostname
+```sh
+sudo hostnamectl set-hostname controller-0
+sudo hostnamectl set-hostname controller-1
 ```
 

@@ -54,8 +54,9 @@ The instance internal IP address will be used to advertise the API Server to mem
 
 ### Set `INTERNAL_IP`
 If you already know the internal IP of the instance, you can set it like this:
+
 ```bash
-INTERNAL_IP="10.0.1.10"  # Replace with the actual internal IP
+INTERNAL_IP="10.0.1.10"
 export INTERNAL_IP
 echo $INTERNAL_IP
 ```
@@ -72,7 +73,7 @@ echo $KUBERNETES_PUBLIC_ADDRESS
 ### Set `INTERNAL_IP`
 If you already know the internal IP of the instance, you can set it like this:
 ```bash
-INTERNAL_IP="10.0.1.11"  # Replace with the actual internal IP
+INTERNAL_IP="10.0.1.11"
 export INTERNAL_IP
 ```
 
@@ -85,7 +86,7 @@ echo $KUBERNETES_PUBLIC_ADDRESS
 
 Create the `kube-apiserver.service` systemd unit file:
 
-```
+```sh
 cat <<EOF | sudo tee /etc/systemd/system/kube-apiserver.service
 [Unit]
 Description=Kubernetes API Server
@@ -134,13 +135,13 @@ EOF
 
 Move the `kube-controller-manager` kubeconfig into place:
 
-```
+```sh
 sudo mv kube-controller-manager.kubeconfig /var/lib/kubernetes/
 ```
 
 Create the `kube-controller-manager.service` systemd unit file:
 
-```
+```sh
 cat <<EOF | sudo tee /etc/systemd/system/kube-controller-manager.service
 [Unit]
 Description=Kubernetes Controller Manager
@@ -172,7 +173,7 @@ EOF
 
 Move the `kube-scheduler` kubeconfig into place:
 
-```
+```bash
 sudo mv kube-scheduler.kubeconfig /var/lib/kubernetes/
 ```
 
@@ -191,7 +192,7 @@ EOF
 
 Create the `kube-scheduler.service` systemd unit file:
 
-```
+```bash
 cat <<EOF | sudo tee /etc/systemd/system/kube-scheduler.service
 [Unit]
 Description=Kubernetes Scheduler
@@ -333,8 +334,6 @@ kubernetes-77dd3661caa2c707.elb.ap-southeast-1.amazonaws.com
 ```
 Make a HTTP request for the Kubernetes version info:
 
-
-> ERROR to solve
 ```
 curl --cacert ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}/version
 ```
