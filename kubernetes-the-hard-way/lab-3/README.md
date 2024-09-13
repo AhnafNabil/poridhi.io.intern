@@ -10,9 +10,14 @@ In this section you will generate kubeconfig files for the `controller manager`,
 
 Each kubeconfig requires a Kubernetes API Server to connect to. To support high availability the IP address assigned to the external load balancer fronting the Kubernetes API Servers will be used.
 
+```sh
+echo $KUBERNETES_PUBLIC_ADDRESS
+```
+
+
 Retrieve the `kubernetes-the-hard-way` DNS address:
 
-```
+```sh
 KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
   --load-balancer-arns ${LOAD_BALANCER_ARN} \
   --output text --query 'LoadBalancers[0].DNSName')
@@ -199,7 +204,7 @@ for instance in worker-0 worker-1; do
     "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
-  scp -i ~/.ssh/k8s-infra-aws/kubernetes.id_rsa \
+  scp -i ~/.ssh/kubernetes.id_rsa \
     ${instance}.kubeconfig kube-proxy.kubeconfig ubuntu@${external_ip}:~/
 done
 
@@ -214,7 +219,7 @@ for instance in controller-0 controller-1; do
     "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
   
-  scp -i ~/.ssh/k8s-infra-aws/kubernetes.id_rsa \
+  scp -i ~/.ssh/kubernetes.id_rsa \
     admin.kubeconfig kube-controller-manager.kubeconfig kube-scheduler.kubeconfig ubuntu@${external_ip}:~/
 done
 
@@ -258,13 +263,13 @@ EOF
 
 Copy the `encryption-config.yaml` encryption config file to each controller instance:
 
-```
+```sh
 for instance in controller-0 controller-1; do
   external_ip=$(aws ec2 describe-instances --filters \
     "Name=tag:Name,Values=${instance}" \
     "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
   
-  scp -i ~/.ssh/k8s-infra-aws/kubernetes.id_rsa encryption-config.yaml ubuntu@${external_ip}:~/
+  scp -i ~/.ssh/kubernetes.id_rsa encryption-config.yaml ubuntu@${external_ip}:~/
 done
 ```
