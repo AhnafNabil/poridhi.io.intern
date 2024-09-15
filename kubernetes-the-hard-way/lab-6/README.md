@@ -143,7 +143,40 @@ sudo mkdir -p /etc/containerd/
 ```
 
 ```sh
-sudo tee /etc/containerd/config.toml << EOF
+cat <<EOF | sudo tee /etc/containerd/config.toml
+version = 2
+
+[plugins]
+  [plugins."io.containerd.grpc.v1.cri"]
+    [plugins."io.containerd.grpc.v1.cri".containerd]
+      snapshotter = "overlayfs"
+      [plugins."io.containerd.grpc.v1.cri".containerd.default_runtime]
+        runtime_type = "io.containerd.runc.v2"
+      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+          runtime_type = "io.containerd.runc.v2"
+          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+            SystemdCgroup = true
+
+[plugins."io.containerd.internal.v1.opt"]
+  path = "/opt/containerd"
+
+[plugins."io.containerd.internal.v1.restart"]
+  interval = "10s"
+
+[plugins."io.containerd.runtime.v1.linux"]
+  shim = "containerd-shim"
+  runtime = "runc"
+  runtime_root = ""
+  no_shim = false
+  shim_debug = false
+EOF
+```
+
+## Copied
+
+```sh
+cat > config.toml << EOF
 [plugins]
   [plugins.cri.containerd]
     snapshotter = "overlayfs"
@@ -151,13 +184,10 @@ sudo tee /etc/containerd/config.toml << EOF
       runtime_type = "io.containerd.runtime.v1.linux"
       runtime_engine = "/usr/local/bin/runc"
       runtime_root = ""
-
-  [plugins."io.containerd.grpc.v1.cri"]
-    [plugins."io.containerd.grpc.v1.cri".containerd]
-      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
-        runtime_type = "io.containerd.runc.v2"
-        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
-          SystemdCgroup = true
+    [plugins.cri.containerd.untrusted_workload_runtime]
+      runtime_type = "io.containerd.runtime.v1.linux"
+      runtime_engine = "/usr/local/bin/runsc"
+      runtime_root = "/run/containerd/runsc"
 EOF
 ```
 
@@ -190,7 +220,7 @@ EOF
 ### Configure the Kubelet
 
 ### worker-0
-```
+```sh
 WORKER_NAME="worker-0"
 echo "${WORKER_NAME}"
 
@@ -200,7 +230,7 @@ sudo mv ca.pem /var/lib/kubernetes/
 ```
 
 ### worker-1
-```
+```sh
 WORKER_NAME="worker-1"
 echo "${WORKER_NAME}"
 
@@ -227,11 +257,12 @@ authorization:
 clusterDomain: "cluster.local"
 clusterDNS:
   - "10.32.0.10"
-podCIDR: "${POD_CIDR}"
+# podCIDR: "10.200.0.0/24"  # Replace with the actual Pod CIDR for this worker
 resolvConf: "/run/systemd/resolve/resolv.conf"
 runtimeRequestTimeout: "15m"
 tlsCertFile: "/var/lib/kubelet/${WORKER_NAME}.pem"
 tlsPrivateKeyFile: "/var/lib/kubelet/${WORKER_NAME}-key.pem"
+cgroupDriver: systemd # changed here
 EOF
 ```
 
@@ -256,7 +287,8 @@ ExecStart=/usr/local/bin/kubelet \\
   --kubeconfig=/var/lib/kubelet/kubeconfig \\
   --network-plugin=cni \\
   --register-node=true \\
-  --v=2
+  --v=2 \\
+  --hostname-override=/${WORKER_NAME}
 Restart=on-failure
 RestartSec=5
 
