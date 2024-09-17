@@ -1,6 +1,6 @@
 # Kustomize: Simplifying Kubernetes Configurations for Multiple Environments
 
-![alt text](./images/image.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/Kustomize/Lab%2001/images/image.png)
 
 ## What is Kustomize?
 
@@ -79,7 +79,7 @@ For the standalone version, follow these steps:
 
    You should see the version number of Kustomize printed in your terminal.
 
-   ![alt text](./images/image-1.png)
+   ![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/Kustomize/Lab%2001/images/image-1.png)
 
 ## Next Steps
 

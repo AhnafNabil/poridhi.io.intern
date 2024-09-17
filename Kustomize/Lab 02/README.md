@@ -4,7 +4,7 @@
 
 This guide walks through key Kustomize concepts using a shared base directory for the original YAML files. We'll cover how Kustomize modifies these base configurations and present the resulting YAML files.
 
-![alt text](./images/image.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/Kustomize/Lab%2002/images/image.png)
 
 ## Project Structure
 
@@ -87,7 +87,7 @@ Now, let's explore different Kustomize concepts and the resulting YAML.
 
 The `kustomization.yaml` file is the main file used by the Kustomize tool. When you execute Kustomize, it looks for the file named `kustomization.yaml`. This file contains a list of all the Kubernetes resources (YAML files) that should be managed by Kustomize. It also contains all the customizations we want to apply to generate the customized manifest.
 
-![alt text](./images/image-2.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/Kustomize/Lab%2002/images/image-2.png)
 
 Let's modify our base `kustomization.yaml`:
 
@@ -120,7 +120,7 @@ Use this command if you are in the root directory. If you are in the directory w
 kubectl kustomize .
 ```
 
-![alt text](./images/image-3.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/Kustomize/Lab%2002/images/image-3.png)
 
 Notice how the `commonLabels` and `namePrefix` have been applied to both resources.
 
@@ -171,7 +171,7 @@ Use this command if you are in the root directory. If you are in the directory w
 kubectl kustomize .
 ```
 
-![alt text](./images/image-4.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/Kustomize/Lab%2002/images/image-4.png)
 
 The image version has been updated from 1.19.0 to 1.20.0.
 
@@ -230,7 +230,7 @@ Use this command if you are in the root directory. If you are in the directory w
 kubectl kustomize .
 ```
 
-![alt text](./images/image-5.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/Kustomize/Lab%2002/images/image-5.png)
 
 The number of replicas has been increased from 1 to 3.
 
@@ -240,7 +240,7 @@ The Base folder represents the config that will be identical across all the envi
 
 On the other hand, the Overlays folder allows us to customize the behavior on a per-environment basis. We can create an Overlay for each environment. We specify all the properties and parameters that we want to overwrite and change.
 
-![alt text](./images/image-1.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/Kustomize/Lab%2002/images/image-1.png)
 
 Now, let's create environment-specific configurations using overlays.
 
@@ -284,7 +284,7 @@ Use this command if you are in the root directory. If you are in the directory w
 kubectl kustomize .
 ```
 
-![alt text](./images/image-6.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/Kustomize/Lab%2002/images/image-6.png)
 
 Notice how the development overlay has:
 1. Added a prefix "dev-" and suffix "-v1" to resource names

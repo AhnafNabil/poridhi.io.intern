@@ -4,7 +4,7 @@
 
 In this lab, we are going to deploy an Nginx web server in both development (dev) and production (prod) environments using Kubernetes. Each environment has distinct requirements tailored to its specific needs. For the development environment, we need to configure a deployment with 2 replicas, allocating fewer CPU and memory resources to conserve resources. The service should be exposed using a `NodePort` to facilitate easy access during development. In the production environment, the deployment should be configured with 4 replicas, higher CPU and memory limits to handle increased traffic and a service with `ClusterIP`.
 
-![alt text](./images/kustomize.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/Kustomize/Lab%2003/images/kustomize.png)
 
 ## Directory Structure
 
@@ -53,7 +53,7 @@ We can see the initial namespaces using the following command:
 kubectl get namespace
 ```
 
-![alt text](./images/kustomize-01.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/Kustomize/Lab%2003/images/kustomize-01.png)
 
 We can create new namespace called `dev` and `prod` by using the ``kubectl`` command.
 
@@ -62,7 +62,7 @@ kubectl create namespace dev
 kubectl create namespace prod
 ```
 
-![alt text](./images/kustomize-02.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/Kustomize/Lab%2003/images/kustomize-02.png)
 
 ## `base` directory
 
@@ -204,7 +204,7 @@ kubectl kustomize .
 
 This command will render the final Kubernetes manifest, showing the development-specific changes.
 
-![alt text](./images/kustomize-03.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/Kustomize/Lab%2003/images/kustomize-03.png)
 
 To apply the customized manifest to the Kubernetes cluster, use one of the following commands:
 
@@ -236,7 +236,7 @@ To view all objects at once:
 kubectl get all -n dev
 ```
 
-![alt text](./images/kustomize-04.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/Kustomize/Lab%2003/images/kustomize-04.png)
 
 Here, we can see that there are 2 replicas running in the dev environment.
 
@@ -320,7 +320,7 @@ kubectl kustomize .
 
 This command will render the final Kubernetes manifest, showing the development-specific changes.
 
-![alt text](./images/kustomize-05.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/Kustomize/Lab%2003/images/kustomize-05.png)
 
 To apply the customized manifest to the Kubernetes cluster, use one of the following commands:
 
@@ -352,7 +352,7 @@ To view all objects at once:
 kubectl get all -n prod
 ```
 
-![alt text](./images/kustomize-06.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/main/Kustomize/Lab%2003/images/kustomize-06.png)
 
 ## Conclusion
 
