@@ -2,7 +2,7 @@
 
 In this tutorial, we'll explore how to generate ConfigMaps using Kustomize in a Kubernetes environment. We'll walk through an Nginx example where we use a ConfigMap to provide content for `index.html`. This guide assumes you have a basic understanding of Kubernetes, Kustomize, and have `kubectl` installed and configured.
 
-![alt text](./images/configmap.svg)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/309c930d26d0e32057a5aa09f9e2fdddfd79f3c0/Kustomize/Lab%2004/images/configmap.svg)
 
 ## Prerequisites
 
