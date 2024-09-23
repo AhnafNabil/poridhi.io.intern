@@ -2,7 +2,7 @@
 
 In this tutorial, we'll explore how to generate ConfigMaps using Kustomize in a Kubernetes environment. We'll walk through an Nginx example where we use a ConfigMap to provide content for `index.html`. This guide assumes you have a basic understanding of Kubernetes, Kustomize, and have `kubectl` installed and configured.
 
-![alt text](./images/congigmap.drawio.svg)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/1c4e9df542fcf61735910d6f4ed139709f2cfa85/Kustomize/Lab%2004/images/congigmap.drawio.svg)
 
 ## Prerequisites
 
@@ -256,7 +256,7 @@ Use this command if you are in the root directory. If you are in the directory w
 kubectl kustomize . | kubectl apply -f -
 ```
 
-![alt text](./images/image.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/refs/heads/main/Kustomize/Lab%2004/images/image.png)
 
 ### 2. Verify the ConfigMaps
 
@@ -268,7 +268,7 @@ kubectl get configmaps
 
 **Expected Output:**
 
-![alt text](./images/image-1.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/refs/heads/main/Kustomize/Lab%2004/images/image-1.png)
 
 *Note: The ConfigMap names have hashes appended to ensure uniqueness when the data changes.*
 
@@ -282,7 +282,7 @@ To get the IP address of the node in a Kubernetes cluster, we can use the kubect
 kubectl get nodes -o wide
 ```
 
-![alt text](./images/image-2.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/refs/heads/main/Kustomize/Lab%2004/images/image-2.png)
 
 #### Curl using NodePort
 
@@ -292,7 +292,7 @@ kubectl get svc
 
 **Example Output:**
 
-![alt text](./images/image-3.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/refs/heads/main/Kustomize/Lab%2004/images/image-3.png)
 
 We can access the service through any of our Kubernetes cluster nodes' IP addresses, on port 30007.
 
@@ -302,7 +302,7 @@ curl http://<Node-IP>:30007
 
 You should see the output displaying:
 
-![alt text](./images/image-4.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/refs/heads/main/Kustomize/Lab%2004/images/image-4.png)
 
 ### 4. Check the Environment Variable
 
@@ -322,7 +322,7 @@ Replace `<pod-name>` with the name of one of the Nginx pods.
 
 **Expected Output:**
 
-![alt text](./images/image-5.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/refs/heads/main/Kustomize/Lab%2004/images/image-5.png)
 
 ## Updating the ConfigMap
 
@@ -360,7 +360,7 @@ List the ConfigMaps to verify they have been created:
 kubectl get configmaps
 ```
 
-![alt text](./images/image-6.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/refs/heads/main/Kustomize/Lab%2004/images/image-6.png)
 
 ### 3. Prune Orphaned ConfigMaps
 
@@ -381,7 +381,7 @@ Now, List the ConfigMaps to verify previous ConfigMap has been deleted:
 kubectl get configmaps
 ```
 
-![alt text](./images/image-7.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/refs/heads/main/Kustomize/Lab%2004/images/image-7.png)
 
 ### 4. Verify the Update
 
@@ -391,7 +391,7 @@ After applying the changes, We can access the service through any of our Kuberne
 curl http://<Node-IP>:30007
 ```
 
-![alt text](./images/image-8.png)
+![alt text](https://raw.githubusercontent.com/AhnafNabil/poridhi.io.intern/refs/heads/main/Kustomize/Lab%2004/images/image-8.png)
 
 ## Conclusion
 
