@@ -84,11 +84,11 @@ Runtime: go1.12.12
 ## Installing Kubectl
 
 ```sh
-wget https://storage.googleapis.com/kubernetes-release/release/v1.8.0/bin/linux/amd64/kubectl
+curl -LO "https://dl.k8s.io/release/v1.21.0/bin/linux/amd64/kubectl"
 
-chmod +x kubectl
+chmod +x ./kubectl
 
-sudo mv kubectl /usr/local/bin/
+sudo mv ./kubectl /usr/local/bin/kubectl
 
 kubectl version --client
 ```

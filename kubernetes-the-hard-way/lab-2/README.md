@@ -9,7 +9,7 @@ In this section you will provision a Certificate Authority that can be used to g
 
 Generate the CA configuration file, certificate, and private key:
 
-```
+```sh
 cat > ca-config.json <<EOF
 {
   "signing": {
@@ -63,7 +63,7 @@ In this section you will generate client and server certificates for each Kubern
 
 Generate the `admin` client certificate and private key:
 
-```
+```sh
 cat > admin-csr.json <<EOF
 {
   "CN": "admin",
@@ -104,7 +104,7 @@ Kubernetes uses a [special-purpose authorization mode](https://kubernetes.io/doc
 
 Generate a certificate and private key for each Kubernetes worker node:
 
-```
+```sh
 for i in 0 1; do
   instance="worker-${i}"
   instance_hostname="ip-10-0-1-2${i}"
@@ -162,7 +162,7 @@ worker-2.pem
 
 Generate the `kube-controller-manager` client certificate and private key:
 
-```
+```sh
 cat > kube-controller-manager-csr.json <<EOF
 {
   "CN": "system:kube-controller-manager",
@@ -202,7 +202,7 @@ kube-controller-manager.pem
 
 Generate the `kube-proxy` client certificate and private key:
 
-```
+```sh
 cat > kube-proxy-csr.json <<EOF
 {
   "CN": "system:kube-proxy",
@@ -241,7 +241,7 @@ kube-proxy.pem
 
 Generate the `kube-scheduler` client certificate and private key:
 
-```
+```sh
 cat > kube-scheduler-csr.json <<EOF
 {
   "CN": "system:kube-scheduler",
@@ -284,7 +284,7 @@ The `kubernetes-the-hard-way` static IP address will be included in the list of 
 
 Generate the Kubernetes API Server certificate and private key:
 
-```
+```sh
 cat > kubernetes-csr.json <<EOF
 {
   "CN": "kubernetes",
@@ -328,7 +328,7 @@ The Kubernetes Controller Manager leverages a key pair to generate and sign serv
 
 Generate the `service-account` certificate and private key:
 
-```
+```sh
 cat > service-account-csr.json <<EOF
 {
   "CN": "service-accounts",
@@ -398,35 +398,4 @@ done
 > The `kube-proxy`, `kube-controller-manager`, `kube-scheduler`, and `kubelet` client certificates will be used to generate client authentication configuration files in the next lab.
 
 Next: [Generating Kubernetes Configuration Files for Authentication](05-kubernetes-configuration-files.md)
-
-
-## Create config file
-
-```sh
-Host controller-0
-    HostName 18.143.192.134
-    User ubuntu
-    IdentityFile /root/code/k8s-infra-aws/kubernetes.id_rsa
-
-Host controller-1
-    HostName 18.140.7.226
-    User ubuntu
-    IdentityFile /root/code/k8s-infra-aws/kubernetes.id_rsa
-
-Host worker-0
-    HostName 47.129.113.5
-    User ubuntu
-    IdentityFile /root/code/k8s-infra-aws/kubernetes.id_rsa
-
-Host worker-1
-    HostName 18.140.98.129
-    User ubuntu
-    IdentityFile /root/code/k8s-infra-aws/kubernetes.id_rsa
-```
-
-## Set hostname
-```sh
-sudo hostnamectl set-hostname controller-0
-sudo hostnamectl set-hostname controller-1
-```
 

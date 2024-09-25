@@ -31,7 +31,7 @@ When generating kubeconfig files for Kubelets the client certificate matching th
 
 Generate a kubeconfig file for each worker node:
 
-```
+```sh
 for instance in worker-0 worker-1; do
   kubectl config set-cluster kubernetes-the-hard-way \
     --certificate-authority=ca.pem \
@@ -66,7 +66,7 @@ worker-2.kubeconfig
 
 Generate a kubeconfig file for the `kube-proxy` service:
 
-```
+```sh
 kubectl config set-cluster kubernetes-the-hard-way \
   --certificate-authority=ca.pem \
   --embed-certs=true \
@@ -97,7 +97,7 @@ kube-proxy.kubeconfig
 
 Generate a kubeconfig file for the `kube-controller-manager` service:
 
-```
+```sh
 kubectl config set-cluster kubernetes-the-hard-way \
   --certificate-authority=ca.pem \
   --embed-certs=true \
@@ -130,7 +130,7 @@ kube-controller-manager.kubeconfig
 
 Generate a kubeconfig file for the `kube-scheduler` service:
 
-```
+```sh
 kubectl config set-cluster kubernetes-the-hard-way \
   --certificate-authority=ca.pem \
   --embed-certs=true \
@@ -162,7 +162,7 @@ kube-scheduler.kubeconfig
 
 Generate a kubeconfig file for the `admin` user:
 
-```
+```sh
 kubectl config set-cluster kubernetes-the-hard-way \
   --certificate-authority=ca.pem \
   --embed-certs=true \
@@ -189,9 +189,6 @@ Results:
 ```
 admin.kubeconfig
 ```
-
-
-## 
 
 ## Distribute the Kubernetes Configuration Files
 
@@ -237,7 +234,7 @@ In this lab you will generate an encryption key and an [encryption config](https
 
 Generate an encryption key:
 
-```
+```sh
 ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
 ```
 

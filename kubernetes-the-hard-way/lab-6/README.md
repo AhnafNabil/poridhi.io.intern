@@ -6,8 +6,8 @@ In this lab you will bootstrap three Kubernetes worker nodes. The following comp
 
 The commands in this lab must be run on each worker instance: `worker-0`, `worker-1`, and `worker-2`. Login to each worker instance using the `ssh` command. Example:
 
-```
-for instance in worker-0 worker-1 worker-2; do
+```sh
+for instance in worker-0 worker-1; do
   external_ip=$(aws ec2 describe-instances --filters \
     "Name=tag:Name,Values=${instance}" \
     "Name=instance-state-name,Values=running" \
@@ -19,15 +19,11 @@ done
 
 Now ssh into each one of the IP addresses received in last step.
 
-### Running commands in parallel with tmux
-
-[tmux](https://github.com/tmux/tmux/wiki) can be used to run commands on multiple compute instances at the same time. See the [Running commands in parallel with tmux](01-prerequisites.md#running-commands-in-parallel-with-tmux) section in the Prerequisites lab.
-
 ## Provisioning a Kubernetes Worker Node
 
 Install the OS dependencies:
 
-```
+```sh
 sudo apt-get update
 sudo apt-get -y install socat conntrack ipset
 ```
@@ -40,13 +36,13 @@ By default the kubelet will fail to start if [swap](https://help.ubuntu.com/comm
 
 Verify if swap is enabled:
 
-```
+```sh
 sudo swapon --show
 ```
 
 If output is empthy then swap is not enabled. If swap is enabled run the following command to disable swap immediately:
 
-```
+```sh
 sudo swapoff -a
 ```
 
@@ -54,7 +50,7 @@ sudo swapoff -a
 
 ### Download and Install Worker Binaries
 
-```
+```sh
 wget -q --show-progress --https-only --timestamping \
   https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.21.0/crictl-v1.21.0-linux-amd64.tar.gz \
   https://github.com/opencontainers/runc/releases/download/v1.0.0-rc93/runc.amd64 \
@@ -67,7 +63,7 @@ wget -q --show-progress --https-only --timestamping \
 
 Create the installation directories:
 
-```
+```sh
 sudo mkdir -p \
   /etc/cni/net.d \
   /opt/cni/bin \
@@ -79,7 +75,7 @@ sudo mkdir -p \
 
 Install the worker binaries:
 
-```
+```sh
 mkdir containerd
 tar -xvf crictl-v1.21.0-linux-amd64.tar.gz
 tar -xvf containerd-1.4.4-linux-amd64.tar.gz -C containerd
@@ -102,7 +98,7 @@ echo $POD_CIDR
 
 Create the `bridge` network configuration file:
 
-```
+```sh
 cat <<EOF | sudo tee /etc/cni/net.d/10-bridge.conf
 {
     "cniVersion": "0.4.0",
@@ -124,7 +120,7 @@ EOF
 
 Create the `loopback` network configuration file:
 
-```
+```sh
 cat <<EOF | sudo tee /etc/cni/net.d/99-loopback.conf
 {
     "cniVersion": "0.4.0",
@@ -143,51 +139,14 @@ sudo mkdir -p /etc/containerd/
 ```
 
 ```sh
-cat <<EOF | sudo tee /etc/containerd/config.toml
-version = 2
-
-[plugins]
-  [plugins."io.containerd.grpc.v1.cri"]
-    [plugins."io.containerd.grpc.v1.cri".containerd]
-      snapshotter = "overlayfs"
-      [plugins."io.containerd.grpc.v1.cri".containerd.default_runtime]
-        runtime_type = "io.containerd.runc.v2"
-      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
-        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
-          runtime_type = "io.containerd.runc.v2"
-          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
-            SystemdCgroup = true
-
-[plugins."io.containerd.internal.v1.opt"]
-  path = "/opt/containerd"
-
-[plugins."io.containerd.internal.v1.restart"]
-  interval = "10s"
-
-[plugins."io.containerd.runtime.v1.linux"]
-  shim = "containerd-shim"
-  runtime = "runc"
-  runtime_root = ""
-  no_shim = false
-  shim_debug = false
-EOF
-```
-
-## Copied
-
-```sh
 cat > config.toml << EOF
 [plugins]
   [plugins.cri.containerd]
     snapshotter = "overlayfs"
     [plugins.cri.containerd.default_runtime]
-      runtime_type = "io.containerd.runtime.v1.linux"
+      runtime_type = "io.containerd.runc.v2"
       runtime_engine = "/usr/local/bin/runc"
       runtime_root = ""
-    [plugins.cri.containerd.untrusted_workload_runtime]
-      runtime_type = "io.containerd.runtime.v1.linux"
-      runtime_engine = "/usr/local/bin/runsc"
-      runtime_root = "/run/containerd/runsc"
 EOF
 ```
 
@@ -202,7 +161,7 @@ After=network.target
 
 [Service]
 ExecStartPre=/sbin/modprobe overlay
-ExecStart=/bin/containerd
+ExecStart=/usr/bin/containerd
 Restart=always
 RestartSec=5
 Delegate=yes
@@ -211,6 +170,9 @@ OOMScoreAdjust=-999
 LimitNOFILE=1048576
 LimitNPROC=infinity
 LimitCORE=infinity
+TasksMax=infinity
+CPUAccounting=true
+MemoryAccounting=true
 
 [Install]
 WantedBy=multi-user.target
@@ -257,18 +219,21 @@ authorization:
 clusterDomain: "cluster.local"
 clusterDNS:
   - "10.32.0.10"
-# podCIDR: "10.200.0.0/24"  # Replace with the actual Pod CIDR for this worker
+podCIDR: "10.200.1.0/24"  # Replace with the actual Pod CIDR for this worker
 resolvConf: "/run/systemd/resolve/resolv.conf"
 runtimeRequestTimeout: "15m"
 tlsCertFile: "/var/lib/kubelet/${WORKER_NAME}.pem"
 tlsPrivateKeyFile: "/var/lib/kubelet/${WORKER_NAME}-key.pem"
-cgroupDriver: systemd # changed here
+cgroupDriver: systemd
+startupGracePeriod: "30s"
 EOF
 ```
 
 > The `resolvConf` configuration is used to avoid loops when using CoreDNS for service discovery on systems running `systemd-resolved`. 
 
 Create the `kubelet.service` systemd unit file:
+
+### worker-0
 
 ```sh
 cat <<EOF | sudo tee /etc/systemd/system/kubelet.service
@@ -287,10 +252,45 @@ ExecStart=/usr/local/bin/kubelet \\
   --kubeconfig=/var/lib/kubelet/kubeconfig \\
   --network-plugin=cni \\
   --register-node=true \\
-  --v=2 \\
-  --hostname-override=/${WORKER_NAME}
+  --v=2
 Restart=on-failure
 RestartSec=5
+Delegate=yes
+KillMode=process
+OOMScoreAdjust=-999
+TasksMax=infinity
+
+[Install]
+WantedBy=multi-user.target
+EOF
+```
+
+### worker-1
+
+```sh
+cat <<EOF | sudo tee /etc/systemd/system/kubelet.service
+[Unit]
+Description=Kubernetes Kubelet
+Documentation=https://github.com/kubernetes/kubernetes
+After=containerd.service
+Requires=containerd.service
+
+[Service]
+ExecStart=/usr/local/bin/kubelet \\
+  --config=/var/lib/kubelet/kubelet-config.yaml \\
+  --container-runtime=remote \\
+  --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \\
+  --image-pull-progress-deadline=2m \\
+  --kubeconfig=/var/lib/kubelet/kubeconfig \\
+  --network-plugin=cni \\
+  --register-node=true \\
+  --v=2
+Restart=on-failure
+RestartSec=5
+Delegate=yes
+KillMode=process
+OOMScoreAdjust=-999
+TasksMax=infinity
 
 [Install]
 WantedBy=multi-user.target
@@ -313,6 +313,8 @@ clientConnection:
   kubeconfig: "/var/lib/kube-proxy/kubeconfig"
 mode: "iptables"
 clusterCIDR: "10.200.0.0/16"
+iptables:
+  syncPeriod: "30s"
 EOF
 ```
 
@@ -323,12 +325,17 @@ cat <<EOF | sudo tee /etc/systemd/system/kube-proxy.service
 [Unit]
 Description=Kubernetes Kube Proxy
 Documentation=https://github.com/kubernetes/kubernetes
+After=network.target
 
 [Service]
 ExecStart=/usr/local/bin/kube-proxy \\
   --config=/var/lib/kube-proxy/kube-proxy-config.yaml
 Restart=on-failure
 RestartSec=5
+Delegate=yes
+KillMode=process
+OOMScoreAdjust=-999
+TasksMax=infinity
 
 [Install]
 WantedBy=multi-user.target
@@ -357,7 +364,7 @@ external_ip=$(aws ec2 describe-instances --filters \
     "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
-ssh -i kubernetes.id_rsa ubuntu@${external_ip} kubectl get nodes --kubeconfig admin.kubeconfig
+ssh -i ~/.ssh/kubernetes.id_rsa ubuntu@${external_ip} kubectl get nodes --kubeconfig admin.kubeconfig
 ```
 
 > output

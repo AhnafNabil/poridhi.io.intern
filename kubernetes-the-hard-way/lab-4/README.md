@@ -4,7 +4,7 @@ Kubernetes components are stateless and store cluster state in [etcd](https://gi
 
 ## Prerequisites
 
-The commands in this lab must be run on each controller instance: `controller-0`, `controller-1`, and `controller-2`. Login to each controller instance using the `ssh` command. Example:
+The commands in this lab must be run on each controller instance: `controller-0`, `controller-1`. Login to each controller instance using the `ssh` command. Example:
 
 ```sh
 ssh controller-0
@@ -26,14 +26,14 @@ Download the official etcd release binaries from the [etcd](https://github.com/e
 
 ```sh
 wget -q --show-progress --https-only --timestamping \
-  "https://github.com/etcd-io/etcd/releases/download/v3.4.15/etcd-v3.4.15-linux-amd64.tar.gz"
+  "https://github.com/etcd-io/etcd/releases/download/v3.5.16/etcd-v3.5.16-linux-amd64.tar.gz"
 ```
 
 Extract and install the `etcd` server and the `etcdctl` command line utility:
 
 ```sh
-tar -xvf etcd-v3.4.15-linux-amd64.tar.gz
-sudo mv etcd-v3.4.15-linux-amd64/etcd* /usr/local/bin/
+tar -xvf etcd-v3.5.16-linux-amd64.tar.gz
+sudo mv etcd-v3.5.16-linux-amd64/etcd* /usr/local/bin/
 ```
 
 ### Configure the etcd Server
@@ -95,7 +95,7 @@ echo $ETCD_NAME
 
 ## Create the `etcd.service` systemd unit file:
 
-```
+```sh
 cat <<EOF | sudo tee /etc/systemd/system/etcd.service
 [Unit]
 Description=etcd
@@ -131,7 +131,7 @@ EOF
 
 ### Start the etcd Server
 
-```
+```sh
 sudo systemctl daemon-reload
 sudo systemctl enable etcd
 sudo systemctl start etcd

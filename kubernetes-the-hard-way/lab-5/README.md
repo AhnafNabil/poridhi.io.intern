@@ -23,7 +23,7 @@ sudo mkdir -p /etc/kubernetes/config
 
 Download the official Kubernetes release binaries:
 
-```
+```sh
 wget -q --show-progress --https-only --timestamping \
   "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kube-apiserver" \
   "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kube-controller-manager" \
@@ -33,14 +33,14 @@ wget -q --show-progress --https-only --timestamping \
 
 Install the Kubernetes binaries:
 
-```
+```sh
 chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
 sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
 ```
 
 ### Configure the Kubernetes API Server
 
-```
+```sh
 sudo mkdir -p /var/lib/kubernetes/
 
 sudo mv ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
@@ -61,25 +61,26 @@ export INTERNAL_IP
 echo $INTERNAL_IP
 ```
 
-### Set `KUBERNETES_PUBLIC_ADDRESS`
+### Set `KUBERNETES_PUBLIC_ADDRESS` Make user to change the public ip
 ```sh
-KUBERNETES_PUBLIC_ADDRESS="13.215.48.225"
+KUBERNETES_PUBLIC_ADDRESS="47.129.114.46"
 export KUBERNETES_PUBLIC_ADDRESS
 echo $KUBERNETES_PUBLIC_ADDRESS
 ```
 
 ## Controller-1
 
-### Set `INTERNAL_IP`
-If you already know the internal IP of the instance, you can set it like this:
+### Set `INTERNAL_IP`. (change the ip accordingly)
+If you already know the internal IP of the instance, you can set it like this
 ```bash
 INTERNAL_IP="10.0.1.11"
 export INTERNAL_IP
+echo $INTERNAL_IP
 ```
 
 ### Set `KUBERNETES_PUBLIC_ADDRESS` (Make sure to change ip)
 ```sh
-KUBERNETES_PUBLIC_ADDRESS="13.250.108.135"
+KUBERNETES_PUBLIC_ADDRESS="18.140.130.28"
 export KUBERNETES_PUBLIC_ADDRESS
 echo $KUBERNETES_PUBLIC_ADDRESS
 ```
@@ -160,7 +161,7 @@ ExecStart=/usr/local/bin/kube-controller-manager \\
   --service-account-private-key-file=/var/lib/kubernetes/service-account-key.pem \\
   --service-cluster-ip-range=10.32.0.0/24 \\
   --use-service-account-credentials=true \\
-  --v=2
+  --v=4
 Restart=on-failure
 RestartSec=5
 
@@ -179,7 +180,7 @@ sudo mv kube-scheduler.kubeconfig /var/lib/kubernetes/
 
 Create the `kube-scheduler.yaml` configuration file:
 
-```
+```yaml
 cat <<EOF | sudo tee /etc/kubernetes/config/kube-scheduler.yaml
 apiVersion: kubescheduler.config.k8s.io/v1beta1
 kind: KubeSchedulerConfiguration
@@ -201,7 +202,7 @@ Documentation=https://github.com/kubernetes/kubernetes
 [Service]
 ExecStart=/usr/local/bin/kube-scheduler \\
   --config=/etc/kubernetes/config/kube-scheduler.yaml \\
-  --v=2
+  --v=4
 Restart=on-failure
 RestartSec=5
 
@@ -212,7 +213,7 @@ EOF
 
 ### Start the Controller Services
 
-```
+```sh
 sudo systemctl daemon-reload
 sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler
 sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
@@ -222,9 +223,10 @@ sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
 
 ### Verification
 
-```
+```sh
 kubectl cluster-info --kubeconfig admin.kubeconfig
 ```
+>OUTPUT:
 
 ```
 Kubernetes control plane is running at https://127.0.0.1:6443
@@ -239,7 +241,7 @@ be able to resolve the worker hostnames.  This is not set up by default in
 AWS.  The workaround is to add manual host entries on each of the controller
 nodes with this command:
 
-```
+```sh
 cat <<EOF | sudo tee -a /etc/hosts
 10.0.1.20 ip-10-0-1-20
 10.0.1.21 ip-10-0-1-21
@@ -257,7 +259,7 @@ In this section you will configure RBAC permissions to allow the Kubernetes API 
 
 The commands in this section will effect the entire cluster and only need to be run once from one of the controller nodes.
 
-```
+```sh
 external_ip=$(aws ec2 describe-instances --filters \
     "Name=tag:Name,Values=controller-0" \
     "Name=instance-state-name,Values=running" \
@@ -268,7 +270,7 @@ ssh -i kubernetes.id_rsa ubuntu@${external_ip}
 
 Create the `system:kube-apiserver-to-kubelet` [ClusterRole](https://kubernetes.io/docs/admin/authorization/rbac/#role-and-clusterrole) with permissions to access the Kubelet API and perform most common tasks associated with managing pods:
 
-```
+```sh
 cat <<EOF | kubectl apply --kubeconfig admin.kubeconfig -f -
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -296,7 +298,7 @@ The Kubernetes API Server authenticates to the Kubelet as the `kubernetes` user 
 
 Bind the `system:kube-apiserver-to-kubelet` ClusterRole to the `kubernetes` user:
 
-```
+```bash
 cat <<EOF | kubectl apply --kubeconfig admin.kubeconfig -f -
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -334,7 +336,7 @@ kubernetes-77dd3661caa2c707.elb.ap-southeast-1.amazonaws.com
 ```
 Make a HTTP request for the Kubernetes version info:
 
-```
+```sh
 curl --cacert ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}/version
 ```
 
