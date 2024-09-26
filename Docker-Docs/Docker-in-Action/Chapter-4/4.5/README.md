@@ -25,11 +25,14 @@ First we will create a docker image that performs simple file writting applicati
     ```sh
     docker build -t my_writer .
     ```
+
+    ![alt text](./images/image-7.png)
 3. Now we have a Docker image that writes the current date to a file named `logA` in the `/data` directory every second. We can also verify the docker image creation by
 
     ```sh
     docker images
     ```
+    ![alt text](./images/image-8.png)
 
 ## Log sharing using Bind Mount:
 
@@ -50,7 +53,7 @@ docker run --name plath -d \
     my_writer
 ```
 
-![alt text](./images/image-3.png)
+![alt text](./images/image-9.png)
 
 **3. Create and Run a Log-Reading Container and use `bind mounts` to share**:
 
@@ -60,6 +63,8 @@ docker run --rm \
     alpine:latest \
     head /data/logA
 ```
+
+![alt text](./images/image-10.png)
 
 *Explanation:*
 
@@ -83,7 +88,7 @@ cat ${LOG_SRC}/logA
 - **cat**: This command displays the contents of the file.
 - **${LOG_SRC}/logA**: Path to the log file on the host.
 
-![alt text](./images/image-6.png)
+![alt text](./images/image-11.png)
 
 **Stop the Log-Writing Container**:
 ```sh
@@ -100,6 +105,7 @@ Now we will achieve the same result using docker volume.
 
 ```sh
 docker volume create --driver local logging-example
+docker volume ls
 ```
 
 ![alt text](./images/image.png)
@@ -126,6 +132,9 @@ docker run --rm \
     alpine:latest \
     head /data/logA
 ```
+
+![alt text](./images/image-12.png)
+
 **Explanation:**
 - **docker run**: This command runs a new container.
 - **--mount type=volume,src=logging-example,dst=/data**: This option specifies a volume mount.
@@ -205,69 +214,12 @@ docker inspect --format "{{json .Mounts}}" reader | jq .
 
 *Expected Output:* (Make sure to install `jq` command-line tool if you want to format the JSON output in a prettier way)
 
-```sh
-root@ubuntu-l9r7bi-6c84595885-r9psx:~# docker inspect --format '{{json .Mounts}}' reader | jq .
-[
-  {
-    "Type": "volume",
-    "Name": "4ae7315ea8b5f9b23924acdcae611a9cb9513e7b82241aff3f855a8c98c5cc1d",
-    "Source": "/var/lib/docker/volumes/4ae7315ea8b5f9b23924acdcae611a9cb9513e7b82241aff3f855a8c98c5cc1d/_data",
-    "Destination": "/library/TAoCP.vol3",
-    "Driver": "local",
-    "Mode": "",
-    "RW": true,
-    "Propagation": ""
-  },
-  {
-    "Type": "volume",
-    "Name": "93a5d377e77adf55b5b95984530e2a1d59d26de0c401b54088ddf4a9e65a9690",
-    "Source": "/var/lib/docker/volumes/93a5d377e77adf55b5b95984530e2a1d59d26de0c401b54088ddf4a9e65a9690/_data",
-    "Destination": "/library/TAoCP.vol4.a",
-    "Driver": "local",
-    "Mode": "",
-    "RW": true,
-    "Propagation": ""
-  },
-  {
-    "Type": "volume",
-    "Name": "cdbd2053a43ad76d4aa28d92f2ccef9484e510f3625b69238a750af012eea29c",
-    "Source": "/var/lib/docker/volumes/cdbd2053a43ad76d4aa28d92f2ccef9484e510f3625b69238a750af012eea29c/_data",
-    "Destination": "/library/TAoCP.vol1",
-    "Driver": "local",
-    "Mode": "",
-    "RW": true,
-    "Propagation": ""
-  },
-  {
-    "Type": "volume",
-    "Name": "7d2377f4131a26dab218d41d747118a85252c55a28c28e2f251d92d78e650677",
-    "Source": "/var/lib/docker/volumes/7d2377f4131a26dab218d41d747118a85252c55a28c28e2f251d92d78e650677/_data",
-    "Destination": "/library/PoEAA",
-    "Driver": "local",
-    "Mode": "",
-    "RW": true,
-    "Propagation": ""
-  },
-  {
-    "Type": "bind",
-    "Source": "/tmp",
-    "Destination": "/library/DSL",
-    "Mode": "",
-    "RW": true,
-    "Propagation": "rprivate"
-  },
-  {
-    "Type": "volume",
-    "Name": "f98e69944b403f6e5e6e197a2ed5fb89e0e6ac30175a7b3565309b623ba6fecd",
-    "Source": "/var/lib/docker/volumes/f98e69944b403f6e5e6e197a2ed5fb89e0e6ac30175a7b3565309b623ba6fecd/_data",
-    "Destination": "/library/TAoCP.vol2",
-    "Driver": "local",
-    "Mode": "",
-    "RW": true,
-    "Propagation": ""
-  }
-]
+```bash
+sudo apt-get update
+sudo apt install jq -y
 ```
+
+![alt text](./images/image-13.png)
 - **docker inspect**: Provides detailed information about Docker objects.
 - **--format "{{json .Mounts}}"**: Formats the output to show the mounts of the container.
 
@@ -293,6 +245,8 @@ docker stop $(docker ps -aq)
 docker rm $(docker ps -aq)
 docker volume rm $(docker volume ls -q)
 ```
+
+![alt text](./images/image-14.png)
 
 By following these procedures, you can efficiently manage and remove Docker volumes, ensuring your Docker environment remains clean and optimized.
 

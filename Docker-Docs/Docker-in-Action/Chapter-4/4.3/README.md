@@ -16,6 +16,7 @@ docker run --rm \
     --entrypoint mount \
     alpine:latest -v
 ```
+![alt text](./images/image.png)
 
 ### Command Explanation
 - `--mount type=tmpfs,dst=/tmp`: This part of the command specifies that a `tmpfs` device will be mounted at the `/tmp` directory within the container's file system.
@@ -79,7 +80,7 @@ Consider a scenario where you're developing a **microservice-based application**
     # Ensure the directory exists
     RUN mkdir -p /app/tmp
 
-    # Run the application and keep the container running otherwise exec command will not work
+    # Run the application and keep the container running
     CMD ["sh", "-c", "python3 example_microservice.py && tail -f /dev/null"]
     ```
 
@@ -89,7 +90,7 @@ Consider a scenario where you're developing a **microservice-based application**
 - We have to ensure that any temporary files or sensitive configuration files are created and accessed within the mounted tmpfs directory.
 
 
-#### Create a simple micorservice
+#### Create a simple micorservice named `example_microservice.py`
 
 
 ```python
@@ -108,9 +109,9 @@ def process_sensitive_data(data):
         f.write(data)
     
     # Perform processing on the sensitive data
-    # For demonstration purposes, let's just read it back
     with open(os.path.join(tmp_dir, "sensitive_data.txt"), "r") as f:
         processed_data = f.read()
+        print(f"Processed Data: {processed_data}")
 
 # Example usage
 data_to_process = "This is sensitive data"
@@ -128,13 +129,15 @@ In this completion:
     ```bash
     # Build Docker image
     docker build -t my_microservice .
-
-    # Run Docker container
-    docker run --rm \
-        --mount type=tmpfs,dst=/app/tmp,tmpfs-size=16k,tmpfs-mode=1770 \
-        --entrypoint mount \
-        my_microservice -v
     ```
+    ![alt text](./images/image-2.png)
+
+    ```sh
+    docker run --rm -d \
+        --mount type=tmpfs,dst=/app/tmp,tmpfs-size=16k,tmpfs-mode=1770 \
+        my_microservice
+    ```
+    ![alt text](./images/image-4.png)
 
 ### **Step 04: Ensure that the tmpfs mount is properly configured**
 
@@ -153,17 +156,12 @@ To ensure that the `tmpfs` mount is properly configured when running the Docker 
 2. **Check File Storage Location**: Confirm that sensitive data is being stored within the tmpfs-mounted directory. We can do this by examining the files created or accessed by the container.
 
     ```bash
-    docker exec <container_id_or_name> ls /app/tmp
-    ```
-
-    ![](./images/5.png)
-
-    This command lists the contents of the `/app/tmp` directory within the running container. Here we can see the example_microservice.py file which contains the sensitive data. We can also see the file contents by:
-
-    ```bash
-    docker exec <container_id_or_name> -it /bin/bash
-    cat /app/tmp/example_microservice.py
+    docker exec -it <container_id_or_name> /bin/bash
     ````
-    ![](./images/6.png)
+    ```sh
+    cd tmp && ls
+    cat sensitive_data.txt 
+    ```
+    ![alt text](./images/image-3.png)
 
 So we have successfully completed the task.
