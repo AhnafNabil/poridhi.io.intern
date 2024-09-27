@@ -8,7 +8,7 @@ In this section you will verify the ability to [encrypt secret data at rest](htt
 
 Create a generic secret:
 
-```
+```sh
 kubectl create secret generic kubernetes-the-hard-way \
   --from-literal="mykey=mydata"
 ```
@@ -32,7 +32,7 @@ ssh -i kubernetes.id_rsa ubuntu@${external_ip} \
 
 > output
 
-```
+```sh
 00000000  2f 72 65 67 69 73 74 72  79 2f 73 65 63 72 65 74  |/registry/secret|
 00000010  73 2f 64 65 66 61 75 6c  74 2f 6b 75 62 65 72 6e  |s/default/kubern|
 00000020  65 74 65 73 2d 74 68 65  2d 68 61 72 64 2d 77 61  |etes-the-hard-wa|
@@ -66,13 +66,13 @@ In this section you will verify the ability to create and manage [Deployments](h
 
 Create a deployment for the [nginx](https://nginx.org/en/) web server:
 
-```
+```sh
 kubectl create deployment nginx --image=nginx
 ```
 
 List the pod created by the `nginx` deployment:
 
-```
+```sh
 kubectl get pods -l app=nginx
 ```
 
@@ -158,13 +158,13 @@ In this section you will verify the ability to [execute commands in a container]
 
 Print the nginx version by executing the `nginx -v` command in the `nginx` container:
 
-```
+```sh
 kubectl exec -ti $POD_NAME -- nginx -v
 ```
 
 > output
 
-```
+```sh
 nginx version: nginx/1.21.1
 ```
 
@@ -174,7 +174,7 @@ In this section you will verify the ability to expose applications using a [Serv
 
 Expose the `nginx` deployment using a [NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport) service:
 
-```
+```sh
 kubectl expose deployment nginx --port 80 --type NodePort
 ```
 
@@ -182,14 +182,14 @@ kubectl expose deployment nginx --port 80 --type NodePort
 
 Retrieve the node port assigned to the `nginx` service:
 
-```
+```sh
 NODE_PORT=$(kubectl get svc nginx \
   --output=jsonpath='{range .spec.ports[0]}{.nodePort}')
 ```
 
 Create a firewall rule that allows remote access to the `nginx` node port:
 
-```
+```sh
 aws ec2 authorize-security-group-ingress \
   --group-id ${SECURITY_GROUP_ID} \
   --protocol tcp \
@@ -199,13 +199,13 @@ aws ec2 authorize-security-group-ingress \
 
 Get the worker node name where the `nginx` pod is running:
 
-```
+```sh
 INSTANCE_NAME=$(kubectl get pod $POD_NAME --output=jsonpath='{.spec.nodeName}')
 ```
 
 Retrieve the external IP address of a worker instance:
 
-```
+```sh
 EXTERNAL_IP=$(aws ec2 describe-instances --filters \
     "Name=instance-state-name,Values=running" \
     "Name=network-interface.private-dns-name,Values=${INSTANCE_NAME}.*.internal*" \
@@ -214,7 +214,7 @@ EXTERNAL_IP=$(aws ec2 describe-instances --filters \
 
 Make an HTTP request using the external IP address and the `nginx` node port:
 
-```
+```sh
 curl -I http://${EXTERNAL_IP}:${NODE_PORT}
 ```
 
@@ -233,3 +233,52 @@ Accept-Ranges: bytes
 ```
 
 Next: [Cleaning Up](14-cleanup.md)
+
+
+Port forwarding is a great option for accessing services locally on your machine without exposing them externally or modifying your Kubernetes service configuration. Here's how you can do it:
+
+### Steps for Port Forwarding
+
+1. **Identify the Pod or Service**: 
+   First, you need to identify the pod or service you want to forward ports from. For example, if you have an `nginx` deployment, find one of its pods:
+
+   ```bash
+   kubectl get pods -l app=nginx
+   ```
+
+2. **Forward the Port**:
+   You can use `kubectl port-forward` to forward a port from the pod or service to your local machine.
+
+   **Forwarding from a Pod:**
+
+   If you want to forward from a specific pod, use this command:
+
+   ```bash
+   kubectl port-forward <pod-name> 8080:80
+   ```
+
+   Example:
+   ```bash
+   kubectl port-forward nginx-deployment-6d8bf79768-h24xt 8080:80
+   ```
+
+   This will forward port `80` from the pod to `8080` on your local machine. You can now access the service at `http://localhost:8080`.
+
+   **Forwarding from a Service:**
+
+   Alternatively, if you want to forward from a service, you can do so as well:
+
+   ```bash
+   kubectl port-forward service/nginx-service 8080:80
+   ```
+
+   This forwards traffic from the `nginx-service` service on port `80` to your local machine on port `8080`.
+
+3. **Access the Service**: 
+   After running the port-forward command, you can access the service locally on your machine by navigating to:
+
+   ```
+   http://localhost:8080
+   ```
+
+   This is useful for testing or accessing services locally without modifying your cluster's networking configuration.

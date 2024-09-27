@@ -6,7 +6,7 @@ In this lab you will deploy the [DNS add-on](https://kubernetes.io/docs/concepts
 
 Deploy the `coredns` cluster add-on:
 
-```
+```sh
 kubectl apply -f coredns.yml
 ```
 
@@ -37,40 +37,48 @@ coredns-8494f9c688-zqrj2   1/1     Running   0          10s
 
 ## Verification (stucked)
 
-Create a `busybox` deployment:
+Create a `busybox` deployment: `busybox-pod.yaml`
 
-```
-kubectl run busybox --image=busybox:1.28 --command -- sleep 3600
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox
+  annotations:
+    container.apparmor.security.beta.kubernetes.io/busybox: unconfined
+spec:
+  containers:
+  - name: busybox
+    image: busybox:1.28
+    command: ["sleep", "3600"]
 ```
 
-List the pod created by the `busybox` deployment:
-
-```
-kubectl get pods -l run=busybox
+```sh
+kubectl apply -f busybox-pod.yaml
 ```
 
 > output
 
-```
+```sh
 NAME      READY   STATUS    RESTARTS   AGE
 busybox   1/1     Running   0          3s
 ```
 
 Retrieve the full name of the `busybox` pod:
 
-```
+```sh
 POD_NAME=$(kubectl get pods -l run=busybox -o jsonpath="{.items[0].metadata.name}")
 ```
 
 Execute a DNS lookup for the `kubernetes` service inside the `busybox` pod:
 
-```
+```sh
 kubectl exec -ti $POD_NAME -- nslookup kubernetes
 ```
 
 > output
 
-```
+```sh
 Server:    10.32.0.10
 Address 1: 10.32.0.10 kube-dns.kube-system.svc.cluster.local
 
