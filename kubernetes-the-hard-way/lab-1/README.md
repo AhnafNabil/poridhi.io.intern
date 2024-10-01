@@ -1,8 +1,53 @@
-# Kubernetes the Hard Way: Initial Setup
+# Kubernetes the Hard Way on AWS: Part 01
+
+## Introduction
+
+This is the first lab on setting up a Kubernetes cluster from scratch on Amazon Web Services (AWS). The goal of this tutorial is to help you understand the internal workings of Kubernetes by manually provisioning the necessary cloud infrastructure and configuring each component step-by-step.
+
+By the end of this tutorial series, you'll have a deeper understanding of how each Kubernetes component interacts and will be able to troubleshoot any issues that arise during the setup process.
+
+### Prerequisites:
+
+- Basic familiarity with AWS and its services (EC2, VPC, IAM, etc.)
+- AWS account with sufficient permissions to create EC2 instances, VPCs, and IAM roles
+- Working knowledge of Kubernetes architecture and components
+- Installed AWS CLI, jq, and Python 3 on your local machine
+
+## Kubernetes Architecture Overview
+
+In a typical Kubernetes setup, the cluster is divided into control plane nodes and worker nodes. The control plane nodes manage the state of the cluster, while the worker nodes are responsible for running your containerized applications.
+
+![](./images/k8s-2.drawio.svg)
+
+### Key Components of Kubernetes Architecture
+
+**1. Control Plane Components:**
+
+- **etcd:** A highly available key-value store used for maintaining the cluster state.
+- **kube-apiserver:** The API server provides the frontend to the control plane and handles all external communication.
+- **kube-scheduler:** Assigns tasks to nodes based on resource availability and workload requirements.
+- **kube-controller-manager:** Manages the state of the cluster, ensuring that the desired number of pods are running at all times.
+
+**2. Node Components:**
+
+- **kubelet**: Runs on each worker node and ensures that containers are running as expected.
+- **kube-proxy:** Maintains network rules for allowing pods to communicate with each other and with services.
+
+The setup will include deploying a secure, highly-available control plane, multiple worker nodes, and networking components, all manually configured on AWS.
+
+## AWS Infrastructure
+
+In this setup, we will design and deploy AWS Infrastructure to support Kubernetes Cluster. The cluster will 
+
+- Consist of four public instances, divided into two categories: Controller nodes and Worker nodes. 
+- To enable connectivity and internet access to the nodes, we will create a public route table and attach an internet gateway to it. This will allow the nodes to communicate with each other and access external resources and services. 
+- Finally, we will utilize Pulumi python to create and manage this AWS infrastructure.
+
+![](./images/infra.drawio.svg)
 
 ## Setting Up Amazon Web Services (AWS) Command Line Interface (CLI)
 
-![](./images/aws.drawio.svg)
+The AWS CLI is a command-line tool that allows you to interact with AWS services programmatically. It simplifies provisioning resources, such as EC2 instances and load balancers, which are required to host your Kubernetes cluster.
 
 ### Step 1: Configure AWS CLI
 
@@ -19,7 +64,7 @@ Run the following command and provide the required information:
 aws configure
 ```
 
-After configuration, the AWS CLI will use these credentials to manage resources in your chosen region.
+> Note: Use aws configure list to verify that your configuration is correct and check the active profile and region settings.
 
 ### Step 2: Install `jq` for JSON Parsing
 
@@ -123,7 +168,7 @@ cd k8s-infra-aws
 
 ### Step 2: Install Python `venv`
 
-To manage Python environments easily, you will need to install the `venv` module. Run the following commands to install it:
+Set up a Python virtual environment (`venv`) to manage dependencies for Pulumi or other Python-based tools:
 
 ```sh
 sudo apt update
@@ -148,13 +193,13 @@ Pulumi will guide you through setting up a new project and configuring it to use
 
 #### Update the `__main.py__` file:
 
-Update the __main.py__ file to create the necessary AWS infrastructure:
-```python
-import pulumi
-import pulumi_aws as aws
-import os
+Open the `__main__.py` file and define the AWS infrastructure required for the Kubernetes cluster. This Pulumi code provisions the foundational infrastructure required to set up a Kubernetes cluster on AWS. It handles the creation of a **Virtual Private Cloud (VPC)**, **subnets**, **security groups**, **EC2 instances** (for both control plane and worker nodes), and a **Network Load Balancer (NLB)**.
 
-# Create a VPC
+Let's break down each part of the code:
+
+#### 1. **Create a Virtual Private Cloud (VPC)**
+
+```python
 vpc = aws.ec2.Vpc(
     'kubernetes-vpc',
     cidr_block='10.0.0.0/16',
@@ -162,8 +207,14 @@ vpc = aws.ec2.Vpc(
     enable_dns_hostnames=True,
     tags={'Name': 'kubernetes-the-hard-way'}
 )
+```
+- Creates a new VPC named `kubernetes-vpc` with a CIDR block of `10.0.0.0/16`.
+- Enables DNS support and hostnames, allowing EC2 instances within the VPC to resolve DNS names.
+- Tags the VPC for easy identification in the AWS console.
 
-# Create a subnet
+#### 2. **Create a Subnet**
+
+```python
 subnet = aws.ec2.Subnet(
     'kubernetes-subnet',
     vpc_id=vpc.id,
@@ -171,15 +222,25 @@ subnet = aws.ec2.Subnet(
     map_public_ip_on_launch=True,
     tags={'Name': 'kubernetes'}
 )
+```
+- Creates a new subnet within the VPC with a CIDR block of `10.0.1.0/24`.
+- `map_public_ip_on_launch=True` automatically assigns a public IP to each instance created in this subnet.
+- Tags the subnet as `kubernetes`.
 
-# Create an Internet Gateway
+#### 3. **Create an Internet Gateway**
+
+```python
 internet_gateway = aws.ec2.InternetGateway(
     'kubernetes-internet-gateway',
     vpc_id=vpc.id,
     tags={'Name': 'kubernetes'}
 )
+```
+- Creates an Internet Gateway to allow instances within the VPC to access the internet.
 
-# Create a Route Table
+#### 4. **Create a Route Table and Associate It with the Subnet**
+
+```python
 route_table = aws.ec2.RouteTable(
     'kubernetes-route-table',
     vpc_id=vpc.id,
@@ -198,8 +259,13 @@ route_table_association = aws.ec2.RouteTableAssociation(
     subnet_id=subnet.id,
     route_table_id=route_table.id
 )
+```
+- Creates a route table with a default route (`0.0.0.0/0`) pointing to the Internet Gateway.
+- Associates the route table with the subnet to ensure instances in the subnet have internet access.
 
-# Create a security group with egress and ingress rules
+#### 5. **Create a Security Group with Ingress and Egress Rules**
+
+```python
 security_group = aws.ec2.SecurityGroup(
     'kubernetes-security-group',
     vpc_id=vpc.id,
@@ -246,8 +312,15 @@ security_group = aws.ec2.SecurityGroup(
     ],
     tags={'Name': 'kubernetes'}
 )
+```
+- Creates a security group with ingress and egress rules to allow specific traffic.
+  - Allows all traffic within the VPC and another CIDR block (`10.200.0.0/16`).
+  - Allows SSH (port 22), Kubernetes API server (port 6443), HTTPS (port 443), and ICMP traffic from any source.
+  - Allows all outbound (egress) traffic to any destination.
 
-# Create EC2 Instances for Controllers
+#### 6. **Create EC2 Instances for Control Plane and Worker Nodes**
+
+```python
 controller_instances = []
 for i in range(2):
     controller = aws.ec2.Instance(
@@ -264,8 +337,11 @@ for i in range(2):
         }
     )
     controller_instances.append(controller)
+```
+- Creates 2 control plane instances (`controller-0` and `controller-1`) with private IP addresses `10.0.1.10` and `10.0.1.11`.
+- Attaches the instances to the previously created security group and subnet.
 
-# Create EC2 Instances for Workers
+```python
 worker_instances = []
 for i in range(2):
     worker = aws.ec2.Instance(
@@ -280,8 +356,12 @@ for i in range(2):
         tags={'Name': f'worker-{i}'}
     )
     worker_instances.append(worker)
+```
+- Similarly, creates 2 worker nodes (`worker-0` and `worker-1`) with private IP addresses `10.0.1.20` and `10.0.1.21`.
 
-# Create a Network Load Balancer
+#### 7. **Create a Network Load Balancer (NLB)**
+
+```python
 nlb = aws.lb.LoadBalancer(
     'kubernetes-nlb',
     internal=False,
@@ -289,8 +369,12 @@ nlb = aws.lb.LoadBalancer(
     subnets=[subnet.id],
     name='kubernetes'
 )
+```
+- Creates an external-facing Network Load Balancer named `kubernetes`.
 
-# Create a Target Group for the Load Balancer
+#### 8. **Create a Target Group and Register EC2 Instances**
+
+```python
 target_group = aws.lb.TargetGroup(
     'kubernetes-target-group',
     port=6443,
@@ -302,7 +386,6 @@ target_group = aws.lb.TargetGroup(
     )
 )
 
-# Register Instances in Target Group
 def create_attachment(name, target_id):
     return aws.lb.TargetGroupAttachment(
         name,
@@ -322,8 +405,15 @@ for i, instance in enumerate(controller_instances):
 
     # Debug output
     pulumi.log.info(f'Creating TargetGroupAttachment with name: {attachment_name}')
+```
 
-# Create a Listener for the Load Balancer
+- Creates a target group for the NLB to route traffic to the Kubernetes API server (port 6443).
+  
+- Defines a helper function to create a `TargetGroupAttachment` resource that registers EC2 instances with the target group.
+
+#### 9. **Create an NLB Listener**
+
+```python
 listener = aws.lb.Listener(
     'kubernetes-listener',
     load_balancer_arn=nlb.arn,
@@ -334,7 +424,15 @@ listener = aws.lb.Listener(
         target_group_arn=target_group.arn,
     )]
 )
+```
+- Creates an NLB listener that forwards traffic on port 443 (HTTPS) to the target group.
 
+#### 10. **Export Outputs**
+
+
+This section exports various outputs (public and private IPs)
+
+```python
 # Export Public DNS Name of the NLB
 pulumi.export('kubernetes_public_address', nlb.dns_name)
 
@@ -352,8 +450,13 @@ pulumi.export('worker_private_ips', worker_private_ips)
 # Export the VPC ID and Subnet ID for reference
 pulumi.export('vpc_id', vpc.id)
 pulumi.export('subnet_id', subnet.id)
+```
 
-# create config file
+#### 11. **Create an SSH Configuration File**
+
+This function dynamically creates an SSH config file to simplify SSH access to the instances.
+
+```python
 def create_config_file(ip_list):
     # Define the hostnames for each IP address
     hostnames = ['controller-0', 'controller-1', 'worker-0', 'worker-1']
@@ -378,6 +481,12 @@ all_ips = [controller.public_ip for controller in controller_instances] + [worke
 # Create the config file with the IPs once the instances are ready
 pulumi.Output.all(*all_ips).apply(create_config_file)
 ```
+- Generates a local SSH config file to `~/.ssh/` directory using the `public IPs` of the control plane and worker nodes for easier access during cluster management.
+
+### Key Points
+- This code provides a complete setup for a Kubernetes cluster’s base infrastructure.
+- It creates a VPC, subnet, route tables, security groups, EC2 instances, and configures a Network Load Balancer for handling Kubernetes API traffic.
+- The code dynamically updates the SSH config file, simplifying SSH access to EC2 instances.
 
 ### Step 4: Create an AWS Key Pair
 
@@ -394,6 +503,17 @@ chmod 400 kubernetes.id_rsa
 ```
 
 This will save the private key as `kubernetes.id_rsa` in your `~/.ssh/` directory and restrict its permissions.
+
+### Step 5: Create Infra
+
+Now Create the infrastructure using this command:
+
+```sh
+pulumi up
+```
+After the creation check from the AWS console management or PULUMI ouputs for ensuring if all the necessary resources are created or not.
+
+
 
 ## Export Kubernetes Public Address
 
@@ -429,21 +549,24 @@ This document sets up the basic infrastructure and client tools necessary for fo
 
 ## SSH into the Instances
 
-SSH into the instances, `controller-0`, controller-1, worker-0, worker-1 using these commands:
+SSH into the instances, `controller-0`, `controller-1`, `worker-0`, `worker-1` using these commands:
 
 - **controller-0**
-```sh
-ssh controller-0
-```
+    ```sh
+    ssh controller-0
+    ```
+
 - **controller-1**
-```sh
-ssh controller-1
-```
+    ```sh
+    ssh controller-1
+    ```
+
 - **worker-0**
-```sh
-ssh worker-0
-```
+    ```sh
+    ssh worker-0
+    ```
+
 - **worker-0**
-```sh
-ssh worker-1
-```
+    ```sh
+    ssh worker-1
+    ```
