@@ -4,7 +4,7 @@ In this lab we will provision a [PKI Infrastructure](https://en.wikipedia.org/wi
 
 ![](./images/cert-2.drawio.svg)
 
-## Initialize the AWS Infrastructure:
+## Initialize AWS Infrastructure:
 
 ![](./images/infra.drawio.svg)
 
@@ -90,19 +90,19 @@ chmod +x install_k8s_tools.sh
 
 ## Provisioning Compute Resources
 
-1. Create a Directory for Your Infrastructure
+**1. Create a Directory for Your Infrastructure**
 
 ```sh
 mkdir k8s-infra-aws
 cd k8s-infra-aws
 ```
 
-2. Create a New Pulumi Project
+**2. Create a New Pulumi Project**
 
 ```sh
 pulumi new aws-python
 ```
-3. Update the `__main.py__` file:
+**3. Update the `__main.py__` file:**
 
 ```python
 import pulumi
@@ -334,7 +334,7 @@ all_ips = [controller.public_ip for controller in controller_instances] + [worke
 pulumi.Output.all(*all_ips).apply(create_config_file)
 ```
 
-4. Generate the key Pair
+**4. Generate the key Pair**
 
 ```sh
 cd ~/.ssh/
@@ -342,12 +342,21 @@ aws ec2 create-key-pair --key-name kubernetes --output text --query 'KeyMaterial
 chmod 400 kubernetes.id_rsa
 ```
 
-5. Create Infra
+**5. Create Infra**
 
 ```sh
 pulumi up --yes
 ```
 # Certificate Generation
+
+## Directory to store all the files
+
+Create a directory to store all the necessary certifications and config files.
+
+```sh
+mkdir k8s-files
+cd k8s-files
+```
 
 ## 1. Provisioning a Certificate Authority (CA)
 
@@ -669,7 +678,7 @@ cfssl gencert \
   -ca=ca.pem \
   -ca-key=ca-key.pem \
   -config=ca-config.json \
-  -hostname=10.32.0.1,10.0.1.10,10.0.1.11,10.0.1.12,${KUBERNETES_PUBLIC_ADDRESS},127.0.0.1,${KUBERNETES_HOSTNAMES} \
+  -hostname=10.32.0.1,10.0.1.10,10.0.1.11,${KUBERNETES_PUBLIC_ADDRESS},127.0.0.1,${KUBERNETES_HOSTNAMES} \
   -profile=kubernetes \
   kubernetes-csr.json | cfssljson -bare kubernetes
 ```

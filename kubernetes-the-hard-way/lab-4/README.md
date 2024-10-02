@@ -1,22 +1,32 @@
 # Bootstrapping the etcd Cluster
 
-Kubernetes components are stateless and store cluster state in [etcd](https://github.com/etcd-io/etcd). In this lab you will bootstrap a three node etcd cluster and configure it for high availability and secure remote access.
+Kubernetes components are stateless and store cluster state in [etcd](https://github.com/etcd-io/etcd). In this lab you will bootstrap a `two` node etcd cluster and configure it for high availability and secure remote access.
+
+![](./images/etcd.drawio.svg)
 
 ## Prerequisites
 
-The commands in this lab must be run on each controller instance: `controller-0`, `controller-1`. Login to each controller instance using the `ssh` command. Example:
+The commands in this lab must be run on each controller instances: `controller-0`, `controller-1`. Login to each controller instance using the `ssh` command. Example:
 
 ```sh
 ssh controller-0
 ssh controller-1
 ```
 
+We can also set the hostname of each controller:
+
+**1. Controller-0**
+
 ```sh
 sudo hostnamectl set-hostname controller-0
+```
+
+**2. Controller-1**
+```sh
 sudo hostnamectl set-hostname controller-1
 ```
 
-Now ssh into each one of the IP addresses received in last step.
+>Make sure to exit the terminal and again ssh into the instance to reload the changes.
 
 ## Bootstrapping an etcd Cluster Member
 
@@ -157,5 +167,3 @@ sudo ETCDCTL_API=3 etcdctl member list \
 f9b0e395cb8278dc, started, controller-0, https://10.0.1.10:2380, https://10.0.1.10:2379, false
 eecdfcb7e79fc5dd, started, controller-1, https://10.0.1.11:2380, https://10.0.1.11:2379, false
 ```
-
-Next: [Bootstrapping the Kubernetes Control Plane](08-bootstrapping-kubernetes-controllers.md)
