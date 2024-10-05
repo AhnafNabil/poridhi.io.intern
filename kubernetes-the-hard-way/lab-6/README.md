@@ -1,40 +1,40 @@
 # Bootstrapping the Kubernetes Worker Nodes
 
-In this lab you will bootstrap three Kubernetes worker nodes. The following components will be installed on each node: [runc](https://github.com/opencontainers/runc), [container networking plugins](https://github.com/containernetworking/cni), [containerd](https://github.com/containerd/containerd), [kubelet](https://kubernetes.io/docs/admin/kubelet), and [kube-proxy](https://kubernetes.io/docs/concepts/cluster-administration/proxies).
+In this lab you will learn how to bootstrap two Kubernetes worker nodes, install necessary components, and configure them to join the Kubernetes cluster. The worker nodes are where your applications and services will run. We will configure the worker nodes to communicate with the control plane, manage containers, and handle networking.
+
+![](./images/worker-1.drawio.svg)
+
+
+## Overview
+The worker nodes in a Kubernetes cluster run critical components that enable them to host containers, manage networking, and communicate with the control plane. Each worker node is provisioned with the following components:
+
+- **runc:** A lightweight container runtime for managing container processes.
+- **Container Networking Interface (CNI) Plugins:** Provide networking capabilities such as setting up routes and IP addresses.
+- **containerd:** Manages container lifecycle and ensures containers are running as expected.
+- **kubelet:** The primary Kubernetes node agent responsible for managing pods and container health.
+- **kube-proxy:** Handles networking and communication between services within the cluster.
+
+This guide covers bootstrapping two worker nodes and configuring them to communicate securely with the control plane.
 
 ## Prerequisites
 
-The commands in this lab must be run on each worker instance: `worker-0`, `worker-1`, and `worker-2`. Login to each worker instance using the `ssh` command. Example:
+The commands in this lab must be run on each worker instance: `worker-0`, `worker-1`. Login to each worker instance using the `ssh` command.
 
-```sh
-for instance in worker-0 worker-1; do
-  external_ip=$(aws ec2 describe-instances --filters \
-    "Name=tag:Name,Values=${instance}" \
-    "Name=instance-state-name,Values=running" \
-    --output text --query 'Reservations[].Instances[].PublicIpAddress')
+## Step 01: Install the OS Dependencies
 
-  echo ssh -i kubernetes.id_rsa ubuntu@$external_ip
-done
-```
-
-Now ssh into each one of the IP addresses received in last step.
-
-## Provisioning a Kubernetes Worker Node
-
-Install the OS dependencies:
+Start by installing the necessary OS dependencies on each worker node. This includes tools like `socat` and `conntrack`, which are required for Kubernetes operations.
 
 ```sh
 sudo apt-get update
 sudo apt-get -y install socat conntrack ipset
 ```
 
-> The socat binary enables support for the `kubectl port-forward` command.
+- **socat:** Enables support for the `kubectl port-forward` command.
+- **conntrack**: Manages connections to ensure that packet flows are correctly tracked and maintained.
 
-### Disable Swap
+## Step 02: Disable Swap
 
-By default the kubelet will fail to start if [swap](https://help.ubuntu.com/community/SwapFaq) is enabled. It is [recommended](https://github.com/kubernetes/kubernetes/issues/7294) that swap be disabled to ensure Kubernetes can provide proper resource allocation and quality of service.
-
-Verify if swap is enabled:
+Kubernetes requires that swap be disabled to ensure proper memory allocation and resource management. Check if swap is enabled:
 
 ```sh
 sudo swapon --show
@@ -46,9 +46,11 @@ If output is empthy then swap is not enabled. If swap is enabled run the followi
 sudo swapoff -a
 ```
 
-> To ensure swap remains off after reboot consult your Linux distro documentation.
+> NOTE: To ensure swap remains off after reboot consult your Linux distro documentation.
 
-### Download and Install Worker Binaries
+## Step 03: Download and Install Worker Binaries
+
+Download the required binaries for Kubernetes worker nodes:
 
 ```sh
 wget -q --show-progress --https-only --timestamping \
@@ -61,7 +63,7 @@ wget -q --show-progress --https-only --timestamping \
   https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubelet
 ```
 
-Create the installation directories:
+Create the directories required for storing these binaries and configurations:
 
 ```sh
 sudo mkdir -p \
@@ -73,7 +75,7 @@ sudo mkdir -p \
   /var/run/kubernetes
 ```
 
-Install the worker binaries:
+Extract and install the downloaded binaries:
 
 ```sh
 mkdir containerd
@@ -86,9 +88,9 @@ sudo mv crictl kubectl kube-proxy kubelet runc /usr/local/bin/
 sudo mv containerd/bin/* /bin/
 ```
 
-### Configure CNI Networking
+## Step 4: Configure Container Networking Interface (CNI)
 
-Retrieve the Pod CIDR range for the current compute instance:
+The CNI plugins are used to set up container networking and handle IP address management. Retrieve the Pod CIDR range for the current compute instance:
 
 ```sh
 POD_CIDR="10.200.0.0/16"
@@ -96,7 +98,7 @@ export POD_CIDR
 echo $POD_CIDR
 ```
 
-Create the `bridge` network configuration file:
+Create the bridge network configuration file for CNI:
 
 ```sh
 cat <<EOF | sudo tee /etc/cni/net.d/10-bridge.conf
@@ -118,7 +120,7 @@ cat <<EOF | sudo tee /etc/cni/net.d/10-bridge.conf
 EOF
 ```
 
-Create the `loopback` network configuration file:
+Create the loopback network configuration file:
 
 ```sh
 cat <<EOF | sudo tee /etc/cni/net.d/99-loopback.conf
@@ -130,13 +132,17 @@ cat <<EOF | sudo tee /etc/cni/net.d/99-loopback.conf
 EOF
 ```
 
-### Configure containerd
+These configurations ensure that the pods can communicate within the node and across nodes using the bridge and loopback interfaces.
 
-Create the `containerd` configuration file:
+## Step 5: Configure containerd
+
+`containerd` is a high-performance container runtime that interacts with `runc`. Create the `containerd` configuration file:
 
 ```sh
 sudo mkdir -p /etc/containerd/
 ```
+
+Then, add the configuration details:
 
 ```sh
 cat > config.toml << EOF
@@ -179,9 +185,12 @@ WantedBy=multi-user.target
 EOF
 ```
 
-### Configure the Kubelet
+## Step 06: Configure the Kubelet
 
-### worker-0
+Move the necessary files for the kubelet, including the node-specific certificates and kubeconfig:
+
+### For worker-0:
+
 ```sh
 WORKER_NAME="worker-0"
 echo "${WORKER_NAME}"
@@ -191,7 +200,8 @@ sudo mv ${WORKER_NAME}.kubeconfig /var/lib/kubelet/kubeconfig
 sudo mv ca.pem /var/lib/kubernetes/
 ```
 
-### worker-1
+### For worker-1:
+
 ```sh
 WORKER_NAME="worker-1"
 echo "${WORKER_NAME}"
@@ -297,7 +307,9 @@ WantedBy=multi-user.target
 EOF
 ```
 
-### Configure the Kubernetes Proxy
+## Step 07: Configure the Kubernetes Proxy
+
+Move the kube-proxy configuration file:
 
 ```sh
 sudo mv kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig
@@ -342,7 +354,8 @@ WantedBy=multi-user.target
 EOF
 ```
 
-### Start the Worker Services
+## Step 08: Start the Worker Services
+Enable and start all the required services on each worker node:
 
 ```sh
 sudo systemctl daemon-reload
@@ -350,7 +363,7 @@ sudo systemctl enable containerd kubelet kube-proxy
 sudo systemctl start containerd kubelet kube-proxy
 ```
 
-> Remember to run the above commands on each worker node: `worker-0`, `worker-1`, and `worker-2`.
+> Remember to run the above commands on each worker node: `worker-0`, `worker-1`.
 
 ## Verification
 
@@ -375,4 +388,7 @@ ip-10-0-1-20   Ready    <none>   51s   v1.21.0
 ip-10-0-1-21   Ready    <none>   51s   v1.21.0
 ```
 
-Next: [Configuring kubectl for Remote Access](10-configuring-kubectl.md)
+This output indicates that all worker nodes have successfully joined the Kubernetes cluster and are in the "Ready" state.
+
+
+**Congratulations!** You have successfully bootstrapped the Kubernetes worker nodes and configured them to join your cluster. In the next steps, you can configure kubectl for remote access and start deploying applications on the worker nodes.

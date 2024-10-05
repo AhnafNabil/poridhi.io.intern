@@ -1,6 +1,8 @@
 # Bootstrapping the Kubernetes Control Plane
 
-In this lab you will bootstrap the Kubernetes control plane across three compute instances and configure it for high availability. You will also create an external load balancer that exposes the Kubernetes API Servers to remote clients. The following components will be installed on each node: Kubernetes API Server, Scheduler, and Controller Manager.
+In this lab we will bootstrap the `Kubernetes control plane` across two compute instances and configure it for high availability. We will configure the control plane for high availability by setting up an external load balancer to expose the Kubernetes API servers to remote clients. The following components will be installed on each control plane node: Kubernetes API Server, Scheduler, and Controller Manager.
+
+![](./images/controll-1.drawio.svg)
 
 ## Prerequisites
 
@@ -13,15 +15,17 @@ ssh controller-1
 
 ## Provision the Kubernetes Control Plane
 
-Create the Kubernetes configuration directory:
+Start by creating the necessary configuration directory for Kubernetes:
 
 ```sh
 sudo mkdir -p /etc/kubernetes/config
 ```
 
+This directory will hold the configuration files for the Kubernetes control plane components.
+
 ### Download and Install the Kubernetes Controller Binaries
 
-Download the official Kubernetes release binaries:
+Next, download the official Kubernetes binaries for the **API server, controller manager, scheduler, and kubectl**:
 
 ```sh
 wget -q --show-progress --https-only --timestamping \
@@ -31,7 +35,7 @@ wget -q --show-progress --https-only --timestamping \
   "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl"
 ```
 
-Install the Kubernetes binaries:
+After downloading the binaries, give them execution permissions and move them to `/usr/local/bin/:`
 
 ```sh
 chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
@@ -39,6 +43,8 @@ sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local
 ```
 
 ### Configure the Kubernetes API Server
+
+Create the directory to store the API server's certificates and configuration files and move the necessary TLS certificates and encryption configuration file into the directory:
 
 ```sh
 sudo mkdir -p /var/lib/kubernetes/
@@ -48,11 +54,15 @@ sudo mv ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
   encryption-config.yaml /var/lib/kubernetes/
 ```
 
-The instance internal IP address will be used to advertise the API Server to members of the cluster. Retrieve the internal IP address for the current compute instance:
+These certificates are used to secure communication between the API server, etcd, and other Kubernetes components.
 
-## Controller-0
 
-### Set `INTERNAL_IP`
+### Set Internal IP and Public IP Addresses
+
+The instance `internal IP` address will be used to advertise the API Server to members of the cluster. Retrieve the internal IP address for the current compute instance:
+
+### For Controller-0
+
 If you already know the internal IP of the instance, you can set it like this:
 
 ```bash
@@ -68,9 +78,8 @@ export KUBERNETES_PUBLIC_ADDRESS
 echo $KUBERNETES_PUBLIC_ADDRESS
 ```
 
-## Controller-1
+### For Controller-1
 
-### Set `INTERNAL_IP`. (change the ip accordingly)
 If you already know the internal IP of the instance, you can set it like this
 ```bash
 INTERNAL_IP="10.0.1.11"
@@ -79,13 +88,14 @@ echo $INTERNAL_IP
 ```
 
 ### Set `KUBERNETES_PUBLIC_ADDRESS` (Make sure to change ip)
+
 ```sh
 KUBERNETES_PUBLIC_ADDRESS="13.212.111.231"
 export KUBERNETES_PUBLIC_ADDRESS
 echo $KUBERNETES_PUBLIC_ADDRESS
 ```
 
-Create the `kube-apiserver.service` systemd unit file:
+### Create the `kube-apiserver.service` systemd unit file:
 
 ```sh
 cat <<EOF | sudo tee /etc/systemd/system/kube-apiserver.service
@@ -132,6 +142,13 @@ WantedBy=multi-user.target
 EOF
 ```
 
+This file defines how the API server is launched and managed. Key configuration includes:
+
+- **Advertise and Bind Addresses:** Defines internal and external IP addresses for communication.
+- **Authorization:** Uses Node and RBAC authorization modes.
+- **TLS and Client Certificates:** Specifies certificates for secure communication with etcd and Kubelets.
+- **Admission Plugins:** Controls how resources are created in the cluster.
+
 ### Configure the Kubernetes Controller Manager
 
 Move the `kube-controller-manager` kubeconfig into place:
@@ -170,15 +187,17 @@ WantedBy=multi-user.target
 EOF
 ```
 
+The controller manager is responsible for maintaining the desired state of the cluster, managing controllers like node, pod, and service controllers.
+
 ### Configure the Kubernetes Scheduler
 
-Move the `kube-scheduler` kubeconfig into place:
+**Move the `kube-scheduler` kubeconfig into place:**
 
 ```bash
 sudo mv kube-scheduler.kubeconfig /var/lib/kubernetes/
 ```
 
-Create the `kube-scheduler.yaml` configuration file:
+**Create the `kube-scheduler.yaml` configuration file:**
 
 ```yaml
 cat <<EOF | sudo tee /etc/kubernetes/config/kube-scheduler.yaml
@@ -191,7 +210,7 @@ leaderElection:
 EOF
 ```
 
-Create the `kube-scheduler.service` systemd unit file:
+**Create the `kube-scheduler.service` systemd unit file:**
 
 ```bash
 cat <<EOF | sudo tee /etc/systemd/system/kube-scheduler.service
@@ -211,7 +230,11 @@ WantedBy=multi-user.target
 EOF
 ```
 
+The scheduler is responsible for deciding which node will run newly created pods.
+
 ### Start the Controller Services
+
+Reload the systemd configuration and start the control plane services:
 
 ```sh
 sudo systemctl daemon-reload
@@ -223,6 +246,8 @@ sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
 
 ### Verification
 
+Verify that the Kubernetes control plane is running by checking the cluster status:
+
 ```sh
 kubectl cluster-info --kubeconfig admin.kubeconfig
 ```
@@ -232,7 +257,7 @@ kubectl cluster-info --kubeconfig admin.kubeconfig
 Kubernetes control plane is running at https://127.0.0.1:6443
 ```
 
-> Remember to run the above command on each controller node: `controller-0`, `controller-1`, and `controller-2`.
+> Remember to run the above command on each controller node: `controller-0`, `controller-1`.
 
 ### Add Host File Entries
 
@@ -249,7 +274,7 @@ EOF
 ``` 
 
 > If this step is missed, the [DNS Cluster Add-on](12-dns-addon.md) testing will
-fail with an error like this: `Error from server: error dialing backend: dial tcp: lookup ip-10-0-1-22 on 127.0.0.53:53: server misbehaving`
+fail with an error like this: `Error from server: error dialing backend: dial tcp: lookup ip-10-0-1-22 on 127.0.0.53:53: server misbehaving`.
 
 ## RBAC for Kubelet Authorization
 
@@ -257,7 +282,9 @@ In this section you will configure RBAC permissions to allow the Kubernetes API 
 
 > This tutorial sets the Kubelet `--authorization-mode` flag to `Webhook`. Webhook mode uses the [SubjectAccessReview](https://kubernetes.io/docs/admin/authorization/#checking-api-access) API to determine authorization.
 
-The commands in this section will effect the entire cluster and only need to be run once from one of the controller nodes.
+> The commands in this section will effect the entire cluster and only need to be run `once` from one of the controller nodes.
+
+<!-- The commands in this section will effect the entire cluster and only need to be run once from one of the controller nodes.
 
 ```sh
 external_ip=$(aws ec2 describe-instances --filters \
@@ -266,7 +293,9 @@ external_ip=$(aws ec2 describe-instances --filters \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
 ssh -i kubernetes.id_rsa ubuntu@${external_ip}
-```
+``` -->
+
+## Create the `system:kube-apiserver-to-kubelet`
 
 Create the `system:kube-apiserver-to-kubelet` [ClusterRole](https://kubernetes.io/docs/admin/authorization/rbac/#role-and-clusterrole) with permissions to access the Kubelet API and perform most common tasks associated with managing pods:
 
@@ -340,12 +369,6 @@ Make a HTTP request for the Kubernetes version info:
 curl --cacert ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}/version
 ```
 
-### Bypass
-
-```sh
-curl --insecure https://${KUBERNETES_PUBLIC_ADDRESS}/version
-```
-
 > output
 
 ```
@@ -361,5 +384,3 @@ curl --insecure https://${KUBERNETES_PUBLIC_ADDRESS}/version
   "platform": "linux/amd64"
 }
 ```
-
-Next: [Bootstrapping the Kubernetes Worker Nodes](09-bootstrapping-kubernetes-workers.md)

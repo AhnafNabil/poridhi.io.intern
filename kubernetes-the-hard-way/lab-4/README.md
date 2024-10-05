@@ -1,12 +1,16 @@
 # Bootstrapping the etcd Cluster
 
-Kubernetes components are stateless and store cluster state in [etcd](https://github.com/etcd-io/etcd). In this lab you will bootstrap a `two` node etcd cluster and configure it for high availability and secure remote access.
+Kubernetes components are inherently stateless, and they rely on `etcd` to store all cluster-related data, such as configuration, cluster state, and service discovery information. In this guide, we will set up a two-node `etcd` cluster to provide high availability and secure communication between Kubernetes components. This setup is designed to ensure that the cluster state is consistently stored and available even if one `etcd` node goes down.
 
 ![](./images/etcd.drawio.svg)
 
 ## Prerequisites
 
-The commands in this lab must be run on each controller instances: `controller-0`, `controller-1`. Login to each controller instance using the `ssh` command. Example:
+The commands in this lab must be run on each controller instances: 
+- `controller-0`
+- `controller-1`. 
+
+Login to each controller instance using the `ssh` command. Example:
 
 ```sh
 ssh controller-0
@@ -26,13 +30,13 @@ sudo hostnamectl set-hostname controller-0
 sudo hostnamectl set-hostname controller-1
 ```
 
->Make sure to exit the terminal and again ssh into the instance to reload the changes.
+>Tip: After setting the hostname, exit the SSH session and re-login to reload the changes.
 
 ## Bootstrapping an etcd Cluster Member
 
 ### Download and Install the etcd Binaries
 
-Download the official etcd release binaries from the [etcd](https://github.com/etcd-io/etcd) GitHub project:
+`etcd` is a distributed key-value store that stores cluster state and configuration information. Download the official etcd release binaries from the [etcd](https://github.com/etcd-io/etcd) GitHub project:
 
 ```sh
 wget -q --show-progress --https-only --timestamping \
@@ -45,8 +49,11 @@ Extract and install the `etcd` server and the `etcdctl` command line utility:
 tar -xvf etcd-v3.5.16-linux-amd64.tar.gz
 sudo mv etcd-v3.5.16-linux-amd64/etcd* /usr/local/bin/
 ```
+This command will install both the etcd server and the etcdctl command-line utility, which is used for managing and interacting with the etcd cluster.
 
 ### Configure the etcd Server
+
+Create the necessary directories for etcd configuration and data storage:
 
 ```sh
 sudo mkdir -p /etc/etcd /var/lib/etcd
@@ -54,20 +61,29 @@ sudo chmod 700 /var/lib/etcd
 sudo cp ca.pem kubernetes-key.pem kubernetes.pem /etc/etcd/
 ```
 
-The instance internal IP address will be used to serve client requests and communicate with etcd cluster peers. Retrieve the internal IP address for the current compute instance:
+The TLS certificates `(ca.pem, kubernetes-key.pem, kubernetes.pem)` are used to secure communication between etcd nodes and clients. The certificates ensure that only trusted nodes and clients can communicate with the etcd cluster.
 
 
-## Controller-0
+### Set Environment Variables for etcd Configuration
+
+The internal IP address of each controller node will be used for etcd node communication and client access. Set the environment variables for each controller node as shown below:
+
+
+## For Controller-0
 
 ### Set `INTERNAL_IP`
+
 If you already know the internal IP of the instance, you can set it like this:
+
 ```bash
 INTERNAL_IP="10.0.1.10"
 export INTERNAL_IP
 ```
 
 ### Set `ETCD_NAME`
+
 If you know the etcd name (which typically matches the hostname or a unique identifier for the instance in the etcd cluster), you can set it like this:
+
 ```bash
 ETCD_NAME="controller-0"
 export ETCD_NAME
@@ -75,22 +91,26 @@ export ETCD_NAME
 
 ### Verify the Values
 You can verify that the environment variables are set correctly by running:
+
 ```bash
 echo $INTERNAL_IP
 echo $ETCD_NAME
 ```
 
-## Controller-1
+## For Controller-1
 
 ### Set `INTERNAL_IP`
 If you already know the internal IP of the instance, you can set it like this:
+
 ```bash
 INTERNAL_IP="10.0.1.11"
 export INTERNAL_IP
 ```
 
 ### Set `ETCD_NAME`
+
 If you know the etcd name (which typically matches the hostname or a unique identifier for the instance in the etcd cluster), you can set it like this:
+
 ```bash
 ETCD_NAME="controller-1"
 export ETCD_NAME
@@ -104,6 +124,8 @@ echo $ETCD_NAME
 ```
 
 ## Create the `etcd.service` systemd unit file:
+
+The `etcd` service is managed by `systemd` to ensure it starts at boot and restarts automatically if it fails. Create the `etcd.service` file with the following content:
 
 ```sh
 cat <<EOF | sudo tee /etc/systemd/system/etcd.service
@@ -139,7 +161,13 @@ WantedBy=multi-user.target
 EOF
 ```
 
-### Start the etcd Server
+### Explanation of the Configuration
+- **Peer URLs:** The `--initial-advertise-peer-urls` and `--listen-peer-urls` flags specify the communication address and port (2380) for etcd nodes to talk to each other.
+- **Client URLs:** The `--listen-client-urls` and --advertise-client-urls flags specify the address and port (2379) for clients (like API servers) to communicate with etcd.
+- **TLS Certificates:** The `--cert-file`, `--key-file`, and `--trusted-ca-file` options secure communication between etcd nodes and between clients and etcd.
+- **Cluster Configuration:** The `--initial-cluster` flag defines the initial etcd cluster members and their peer URLs.
+
+### Start and Enable the etcd Service
 
 ```sh
 sudo systemctl daemon-reload
@@ -147,11 +175,11 @@ sudo systemctl enable etcd
 sudo systemctl start etcd
 ```
 
-> Remember to run the above commands on each controller node: `controller-0`, `controller-1`.
+> Important: Remember to run the above commands on each controller node: `controller-0`, `controller-1`.
 
-## Verification
+## Verify the etcd Cluster
 
-List the etcd cluster members:
+Once the etcd service is running on both nodes, verify the cluster status by listing the cluster members:
 
 ```sh
 sudo ETCDCTL_API=3 etcdctl member list \
@@ -167,3 +195,7 @@ sudo ETCDCTL_API=3 etcdctl member list \
 f9b0e395cb8278dc, started, controller-0, https://10.0.1.10:2380, https://10.0.1.10:2379, false
 eecdfcb7e79fc5dd, started, controller-1, https://10.0.1.11:2380, https://10.0.1.11:2379, false
 ```
+
+This output confirms that both `controller-0` and `controller-1` are part of the etcd cluster and are functioning correctly.
+
+So, You have successfully bootstrapped a `two-node` etcd cluster that provides a foundation for storing Kubernetes cluster state and configuration data.

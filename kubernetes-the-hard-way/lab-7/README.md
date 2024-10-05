@@ -2,7 +2,9 @@
 
 In this lab you will generate a kubeconfig file for the `kubectl` command line utility based on the `admin` user credentials.
 
-> Run the commands in this lab from the same directory used to generate the admin client certificates.(poridhi vs code)
+> Run the commands in this lab from the same directory used to generate the admin client certificates
+
+![](./images/remote-1.drawio.svg)
 
 ## The Admin Kubernetes Configuration File
 
