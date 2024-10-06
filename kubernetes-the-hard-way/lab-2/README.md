@@ -4,7 +4,7 @@ In this lab we will provision a [PKI Infrastructure](https://en.wikipedia.org/wi
 
 ![](./images/cert-2.drawio.svg)
 
-## Initialize AWS Infrastructure:
+## Pretasks: Initialize AWS Infrastructure:
 
 ![](./images/infra.drawio.svg)
 
@@ -347,6 +347,35 @@ chmod 400 kubernetes.id_rsa
 ```sh
 pulumi up --yes
 ```
+
+## Export Kubernetes Public Address
+
+After deploying your Kubernetes cluster, you’ll want to interact with it using `kubectl`. For this, you'll need the public address of the Kubernetes API server `(typically the load balancer DNS)`.
+
+### Get the Load Balancer DNS Name and export
+
+Run the following command to fetch the DNS name of the AWS load balancer that will be fronting your Kubernetes API:
+
+```sh
+KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
+  --load-balancer-arns ${LOAD_BALANCER_ARN} \
+  --output text --query 'LoadBalancers[].DNSName')
+export KUBERNETES_PUBLIC_ADDRESS
+echo $KUBERNETES_PUBLIC_ADDRESS
+```
+![alt text](image-2.png)
+
+### Export Kubernetes Hostnames
+
+These hostnames are used to reference your Kubernetes API server. Set them as an environment variable for later use:
+
+```sh
+KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local
+export KUBERNETES_HOSTNAMES
+echo $KUBERNETES_HOSTNAMES
+```
+![alt text](image-3.png)
+
 # Certificate Generation
 
 ## Directory to store all the files
@@ -403,16 +432,15 @@ EOF
 cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 ```
 
+![alt text](image-4.png)
+
 - **ca-config.json:** Defines the configuration for the CA, including the certificate signing profile. The expiry parameter sets the validity period for the certificates (8760 hours = 1 year).
 
 - **ca-csr.json:** Defines the Certificate Signing Request (CSR) for the CA. It includes details like the CN (Common Name), key algorithm and size, and subject details (country, organization, etc.).
 
 Results:
 
-```
-ca-key.pem
-ca.pem
-```
+![alt text](image-5.png)
 
 ## 2. Client and Server Certificates
 
@@ -455,7 +483,7 @@ cfssl gencert \
 
 Results:
 
-```
+```sh
 admin-key.pem
 admin.pem
 ```
@@ -513,7 +541,7 @@ done
 
 Results:
 
-```
+```sh
 worker-0-key.pem
 worker-0.pem
 worker-1-key.pem
@@ -558,7 +586,7 @@ cfssl gencert \
 
 Results:
 
-```
+```sh
 kube-controller-manager-key.pem
 kube-controller-manager.pem
 ```
@@ -600,7 +628,7 @@ cfssl gencert \
 
 Results:
 
-```
+```sh
 kube-proxy-key.pem
 kube-proxy.pem
 ```
@@ -642,7 +670,7 @@ cfssl gencert \
 
 Results:
 
-```
+```sh
 kube-scheduler-key.pem
 kube-scheduler.pem
 ```
@@ -689,7 +717,7 @@ cfssl gencert \
 
 Results:
 
-```
+```sh
 kubernetes-key.pem
 kubernetes.pem
 ```
@@ -731,7 +759,7 @@ cfssl gencert \
 
 Results:
 
-```
+```sh
 service-account-key.pem
 service-account.pem
 ```
@@ -752,6 +780,8 @@ for instance in worker-0 worker-1; do
 done
 ```
 
+![alt text](image-1.png)
+
 Copy the appropriate certificates and private keys to each **controller** instance:
 
 ```sh
@@ -767,8 +797,10 @@ for instance in controller-0 controller-1; do
 done
 ```
 
+![alt text](image.png)
+
 > NOTE: Make Sure to use the specific directory for the keypair.
 
 
-
+So, we have created the necessary certificates and distributed it to the controlle and worker nodes.
 

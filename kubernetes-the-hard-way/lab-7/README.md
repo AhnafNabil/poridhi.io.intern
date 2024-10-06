@@ -33,20 +33,19 @@ kubectl config set-context kubernetes-the-hard-way \
 kubectl config use-context kubernetes-the-hard-way
 ```
 
+![alt text](image-2.png)
+
 ## Verification
 
 Check the version of the remote Kubernetes cluster:
 
-```
+```sh
 kubectl version
 ```
 
 > output
 
-```
-Client Version: version.Info{Major:"1", Minor:"21", GitVersion:"v1.21.0", GitCommit:"cb303e613a121a29364f75cc67d3d580833a7479", GitTreeState:"clean", BuildDate:"2021-04-08T16:31:21Z", GoVersion:"go1.16.1", Compiler:"gc", Platform:"linux/amd64"}
-Server Version: version.Info{Major:"1", Minor:"21", GitVersion:"v1.21.0", GitCommit:"cb303e613a121a29364f75cc67d3d580833a7479", GitTreeState:"clean", BuildDate:"2021-04-08T16:25:06Z", GoVersion:"go1.16.1", Compiler:"gc", Platform:"linux/amd64"}
-```
+![alt text](image.png)
 
 ### Make sure to both have the same version
 
@@ -58,17 +57,9 @@ kubectl get nodes
 
 > output
 
-```
-NAME           STATUS   ROLES    AGE     VERSION
-ip-10-0-1-20   Ready    <none>   3m35s   v1.21.0
-ip-10-0-1-21   Ready    <none>   3m35s   v1.21.0
-ip-10-0-1-22   Ready    <none>   3m35s   v1.21.0
-```
+![alt text](image-3.png)
 
-Next: [Provisioning Pod Network Routes](11-pod-network-routes.md)
-
-
-# Provisioning Pod Network Routes
+## Provisioning Pod Network Routes
 
 Pods scheduled to a node receive an IP address from the node's Pod CIDR range. At this point pods can not communicate with other pods running on different nodes due to missing network [routes](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html).
 
@@ -125,16 +116,7 @@ done
 ```
 > output
 
-```sh
-10.0.1.20 10.200.0.0/24
-{
-    "Return": true
-}
-10.0.1.21 10.200.1.0/24
-{
-    "Return": true
-}
-```
+![alt text](image-4.png)
 
 ## Validate Routes
 
@@ -148,47 +130,4 @@ aws ec2 describe-route-tables \
 
 > output
 
-```
-[
-    [
-        {
-            "DestinationCidrBlock": "10.200.0.0/24",
-            "InstanceId": "i-0879fa49c49be1a3e",
-            "InstanceOwnerId": "107995894928",
-            "NetworkInterfaceId": "eni-0612e82f1247c6282",
-            "Origin": "CreateRoute",
-            "State": "active"
-        },
-        {
-            "DestinationCidrBlock": "10.200.1.0/24",
-            "InstanceId": "i-0db245a70483daa43",
-            "InstanceOwnerId": "107995894928",
-            "NetworkInterfaceId": "eni-0db39a19f4f3970f8",
-            "Origin": "CreateRoute",
-            "State": "active"
-        },
-        {
-            "DestinationCidrBlock": "10.200.2.0/24",
-            "InstanceId": "i-0b93625175de8ee43",
-            "InstanceOwnerId": "107995894928",
-            "NetworkInterfaceId": "eni-0cc95f34f747734d3",
-            "Origin": "CreateRoute",
-            "State": "active"
-        },
-        {
-            "DestinationCidrBlock": "10.0.0.0/16",
-            "GatewayId": "local",
-            "Origin": "CreateRouteTable",
-            "State": "active"
-        },
-        {
-            "DestinationCidrBlock": "0.0.0.0/0",
-            "GatewayId": "igw-00d618a99e45fa508",
-            "Origin": "CreateRoute",
-            "State": "active"
-        }
-    ]
-]
-```
-
-Next: [Deploying the DNS Cluster Add-on](12-dns-addon.md)
+![alt text](image-5.png)

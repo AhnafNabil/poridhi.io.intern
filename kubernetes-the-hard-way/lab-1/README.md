@@ -49,7 +49,7 @@ In this setup, we will design and deploy AWS Infrastructure to support Kubernete
 
 The AWS CLI is a command-line tool that allows you to interact with AWS services programmatically. It simplifies provisioning resources, such as EC2 instances and load balancers, which are required to host your Kubernetes cluster.
 
-### Step 1: Configure AWS CLI
+## Step 1: Configure AWS CLI
 
 Before interacting with AWS services, you must configure the AWS CLI with your credentials. This can be done using the `aws configure` command, which prompts you for four pieces of information:
 
@@ -64,15 +64,13 @@ Run the following command and provide the required information:
 aws configure
 ```
 
+![alt text](image.png)
+
 > Note: Use aws configure list to verify that your configuration is correct and check the active profile and region settings.
 
-### Step 2: Install `jq` for JSON Parsing
+## Step 2: Install `jq` for JSON Parsing
 
-`jq` is a lightweight and flexible command-line JSON processor that is helpful for parsing JSON responses from AWS commands.
-
-#### Installation
-
-Refer to the official jq [download page](https://jqlang.github.io/jq/download/) and follow the instructions for your operating system. On a Debian-based system like Ubuntu, you can use:
+`jq` is a lightweight and flexible command-line JSON processor that is helpful for parsing JSON responses from AWS commands. On a Debian-based system like Ubuntu, you can use:
 
 ```sh
 sudo apt-get update
@@ -81,7 +79,7 @@ sudo apt-get install jq -y
 
 This will install `jq` on your system, allowing you to parse AWS CLI responses more easily.
 
-## Installing Client Tools
+## Step 3: Installing Client Tools
 
 For the Kubernetes the Hard Way tutorial, you'll need the following command-line utilities:
 
@@ -89,7 +87,7 @@ For the Kubernetes the Hard Way tutorial, you'll need the following command-line
 2. **cfssljson**: A tool for working with JSON output from cfssl.
 3. **kubectl**: The command-line tool for interacting with a Kubernetes cluster.
 
-### Step 1: Install CFSSL and CFSSLJSON
+### 1. Install CFSSL and CFSSLJSON
 
 CFSSL (Cloudflare’s PKI and TLS toolkit) will be used for managing the PKI and generating TLS certificates required by Kubernetes components.
 
@@ -118,10 +116,7 @@ cfssl version
 
 You should see output similar to:
 
-```sh
-Version: 1.4.1
-Runtime: go1.12.12
-```
+![alt text](image-1.png)
 
 Similarly, check for `cfssljson`:
 
@@ -129,7 +124,7 @@ Similarly, check for `cfssljson`:
 cfssljson --version
 ```
 
-### Step 2: Install Kubectl
+### 2. Install Kubectl
 
 `kubectl` is the primary tool for interacting with the Kubernetes cluster. You'll use it to deploy applications, inspect cluster resources, and manage Kubernetes objects.
 
@@ -153,11 +148,13 @@ Check that `kubectl` is installed correctly by verifying its version:
 kubectl version --client
 ```
 
-## Provisioning Compute Resources
+![alt text](image-2.png)
+
+## Step 4: Provisioning Compute Resources
 
 In this step, you will provision the necessary AWS resources that will host your Kubernetes cluster.
 
-### Step 1: Create a Directory for Your Infrastructure
+### 1. Create a Directory for Your Infrastructure
 
 Before starting, it’s best to create a dedicated directory for the infrastructure files:
 
@@ -166,7 +163,7 @@ mkdir k8s-infra-aws
 cd k8s-infra-aws
 ```
 
-### Step 2: Install Python `venv`
+### 2. Install Python `venv`
 
 Set up a Python virtual environment (`venv`) to manage dependencies for Pulumi or other Python-based tools:
 
@@ -177,11 +174,11 @@ sudo apt install python3.8-venv -y
 
 This will set up a Python virtual environment which will be useful later when working with Pulumi.
 
-### Step 3: Initialize a New Pulumi Project
+### 3. Initialize a New Pulumi Project
 
 Pulumi is an Infrastructure-as-Code (IaC) tool used to manage cloud infrastructure. In this tutorial, you'll use Pulumi to provision the AWS resources required for Kubernetes.
 
-#### Create a New Pulumi Project
+### Create a New Pulumi Project
 
 Run the following command to initialize a new Pulumi project:
 
@@ -189,9 +186,11 @@ Run the following command to initialize a new Pulumi project:
 pulumi new aws-python
 ```
 
+![alt text](image-3.png)
+
 Pulumi will guide you through setting up a new project and configuring it to use AWS resources.
 
-#### Update the `__main.py__` file:
+### Update the `__main.py__` file:
 
 Open the `__main__.py` file and define the AWS infrastructure required for the Kubernetes cluster. This Pulumi code provisions the foundational infrastructure required to set up a Kubernetes cluster on AWS. It handles the creation of a **Virtual Private Cloud (VPC)**, **subnets**, **security groups**, **EC2 instances** (for both control plane and worker nodes), and a **Network Load Balancer (NLB)**.
 
@@ -513,60 +512,8 @@ pulumi up
 ```
 After the creation check from the AWS console management or PULUMI ouputs for ensuring if all the necessary resources are created or not.
 
-
-
-## Export Kubernetes Public Address
-
-After deploying your Kubernetes cluster, you’ll want to interact with it using `kubectl`. For this, you'll need the public address of the Kubernetes API server (typically the load balancer DNS).
-
-### Step 1: Get the Load Balancer DNS Name
-
-Run the following command to fetch the DNS name of the AWS load balancer that will be fronting your Kubernetes API:
-
-```sh
-KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
-  --load-balancer-arns ${LOAD_BALANCER_ARN} \
-  --output text --query 'LoadBalancers[].DNSName')
-export KUBERNETES_PUBLIC_ADDRESS
-echo $KUBERNETES_PUBLIC_ADDRESS
-```
-
-> **Note**: The compute resources required for this tutorial exceed the free tier of Amazon Web Services (AWS). Ensure you clean up resources after completing this tutorial to avoid unnecessary costs.
-
-### Step 2: Export Kubernetes Hostnames
-
-These hostnames are used to reference your Kubernetes API server. Set them as an environment variable for later use:
-
-```sh
-KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local
-export KUBERNETES_HOSTNAMES
-echo $KUBERNETES_HOSTNAMES
-```
+![alt text](image-4.png)
 
 ---
 
-This document sets up the basic infrastructure and client tools necessary for following Kubernetes the Hard Way. Each step ensures that you have the right environment, permissions, and tools to proceed further with setting up a Kubernetes cluster.
-
-## SSH into the Instances
-
-SSH into the instances, `controller-0`, `controller-1`, `worker-0`, `worker-1` using these commands:
-
-- **controller-0**
-    ```sh
-    ssh controller-0
-    ```
-
-- **controller-1**
-    ```sh
-    ssh controller-1
-    ```
-
-- **worker-0**
-    ```sh
-    ssh worker-0
-    ```
-
-- **worker-0**
-    ```sh
-    ssh worker-1
-    ```
+So, we have set up the basic infrastructure and client tools necessary for following Kubernetes the Hard Way. Each step ensures that you have the right environment, permissions, and tools to proceed further with setting up a Kubernetes cluster.

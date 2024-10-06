@@ -4,7 +4,7 @@ In this lab you will generate [Kubernetes configuration files](https://kubernete
 
 ![](./images/kube.drawio.svg)
 
-## Initialize AWS Infrastructure:
+## Pretask: Initialize AWS Infrastructure:
 
 We have covered this setup in detailed in lab 1. Just follow this setup to intialize the infrastructure.
 
@@ -350,6 +350,32 @@ chmod 400 kubernetes.id_rsa
 pulumi up --yes
 ```
 
+
+
+## Get the Load Balancer DNS Name and export
+
+Run the following command to fetch the DNS name of the AWS load balancer that will be fronting your Kubernetes API:
+
+```sh
+KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
+  --load-balancer-arns ${LOAD_BALANCER_ARN} \
+  --output text --query 'LoadBalancers[].DNSName')
+export KUBERNETES_PUBLIC_ADDRESS
+echo $KUBERNETES_PUBLIC_ADDRESS
+```
+![alt text](image-2.png)
+
+### Export Kubernetes Hostnames
+
+These hostnames are used to reference your Kubernetes API server. Set them as an environment variable for later use:
+
+```sh
+KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local
+export KUBERNETES_HOSTNAMES
+echo $KUBERNETES_HOSTNAMES
+```
+![alt text](image-3.png)
+
 ## Certificate Generation
 
 1. Create a directory to store all the necessary certifications and config files.
@@ -587,6 +613,20 @@ for instance in controller-0 controller-1; do
 done
 ```
 
+This script will install all the necessary certificates.
+
+- Now, Save the script as `certificate.sh`
+- Make the script executable:
+
+```sh
+chmod +x certificate.sh
+```
+- Run the script:
+
+```sh
+./certificate.sh
+```
+
 ## Client Authentication Configs
 
 In this section we will generate kubeconfig files for the `controller manager`, `kubelet`, `kube-proxy`, and `scheduler` clients and the `admin` user.
@@ -595,10 +635,6 @@ In this section we will generate kubeconfig files for the `controller manager`, 
 
 Each kubeconfig requires a Kubernetes API Server to connect to. To support high availability the IP address assigned to the external load balancer fronting the Kubernetes API Servers will be used.
 
-```sh
-echo $KUBERNETES_PUBLIC_ADDRESS
-```
-
 Retrieve the `kubernetes-the-hard-way` DNS address:
 
 ```sh
@@ -606,6 +642,12 @@ KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
   --load-balancer-arns ${LOAD_BALANCER_ARN} \
   --output text --query 'LoadBalancers[0].DNSName')
 ```
+
+```sh
+echo $KUBERNETES_PUBLIC_ADDRESS
+```
+
+![alt text](image.png)
 
 ### The kubelet Kubernetes Configuration File
 
@@ -638,11 +680,7 @@ done
 
 Results:
 
-```
-worker-0.kubeconfig
-worker-1.kubeconfig
-worker-2.kubeconfig
-```
+![alt text](image-1.png)
 
 ### The kube-proxy Kubernetes Configuration File
 
@@ -671,7 +709,7 @@ kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
 
 Results:
 
-```
+```sh
 kube-proxy.kubeconfig
 ```
 
@@ -736,7 +774,7 @@ kubectl config use-context default --kubeconfig=kube-scheduler.kubeconfig
 
 Results:
 
-```
+```sh
 kube-scheduler.kubeconfig
 ```
 
@@ -768,7 +806,7 @@ kubectl config use-context default --kubeconfig=admin.kubeconfig
 
 Results:
 
-```
+```sh
 admin.kubeconfig
 ```
 
@@ -789,6 +827,8 @@ done
 
 ```
 
+![alt text](image-3.png)
+
 Copy the appropriate `kube-controller-manager` and `kube-scheduler` kubeconfig files to each controller instance:
 
 ```sh
@@ -804,13 +844,13 @@ done
 
 ```
 
-Next: [Generating the Data Encryption Config and Key](06-data-encryption-keys.md)
+![alt text](image-4.png)
 
-# Generating the Data Encryption Config and Key
+## Generating the Data Encryption Config and Key
 
 Kubernetes stores a variety of data including cluster state, application configurations, and secrets. Kubernetes supports the ability to [encrypt](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data) cluster data at rest.
 
-In this lab you will generate an encryption key and an [encryption config](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/#understanding-the-encryption-at-rest-configuration) suitable for encrypting Kubernetes Secrets.
+In this section you will generate an encryption key and an [encryption config](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/#understanding-the-encryption-at-rest-configuration) suitable for encrypting Kubernetes Secrets.
 
 ## The Encryption Key
 
@@ -852,3 +892,5 @@ for instance in controller-0 controller-1; do
   scp -i ~/.ssh/kubernetes.id_rsa encryption-config.yaml ubuntu@${external_ip}:~/
 done
 ```
+
+![alt text](image-2.png)

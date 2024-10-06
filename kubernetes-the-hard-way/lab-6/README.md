@@ -20,6 +20,11 @@ This guide covers bootstrapping two worker nodes and configuring them to communi
 
 The commands in this lab must be run on each worker instance: `worker-0`, `worker-1`. Login to each worker instance using the `ssh` command.
 
+```sh
+ssh worker-0
+ssh worker-1
+```
+
 ## Step 01: Install the OS Dependencies
 
 Start by installing the necessary OS dependencies on each worker node. This includes tools like `socat` and `conntrack`, which are required for Kubernetes operations.
@@ -63,6 +68,8 @@ wget -q --show-progress --https-only --timestamping \
   https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubelet
 ```
 
+![alt text](image.png)
+
 Create the directories required for storing these binaries and configurations:
 
 ```sh
@@ -87,6 +94,8 @@ chmod +x crictl kubectl kube-proxy kubelet runc
 sudo mv crictl kubectl kube-proxy kubelet runc /usr/local/bin/
 sudo mv containerd/bin/* /bin/
 ```
+
+![alt text](image-1.png)
 
 ## Step 4: Configure Container Networking Interface (CNI)
 
@@ -200,6 +209,8 @@ sudo mv ${WORKER_NAME}.kubeconfig /var/lib/kubelet/kubeconfig
 sudo mv ca.pem /var/lib/kubernetes/
 ```
 
+![alt text](image-2.png)
+
 ### For worker-1:
 
 ```sh
@@ -275,7 +286,7 @@ WantedBy=multi-user.target
 EOF
 ```
 
-### worker-1
+### worker-1 (no need)
 
 ```sh
 cat <<EOF | sudo tee /etc/systemd/system/kubelet.service
@@ -355,6 +366,7 @@ EOF
 ```
 
 ## Step 08: Start the Worker Services
+
 Enable and start all the required services on each worker node:
 
 ```sh
@@ -367,7 +379,22 @@ sudo systemctl start containerd kubelet kube-proxy
 
 ## Verification
 
-> The compute instances created in this tutorial will not have permission to complete this section. Run the following commands from the same machine used to create the compute instances.
+Check the status of the containerd, kubelet, kube-proxy
+
+```sh
+sudo systemctl status containerd 
+```
+![alt text](image-3.png)
+```sh
+sudo systemctl status kubelet
+```
+![alt text](image-4.png)
+```sh
+sudo systemctl status kube-proxy
+```
+![alt text](image-5.png)
+
+> The compute instances created in this tutorial will not have permission to complete this section. Run the following commands from the `same machine` used to create the compute instances.
 
 List the registered Kubernetes nodes:
 
@@ -382,11 +409,7 @@ ssh -i ~/.ssh/kubernetes.id_rsa ubuntu@${external_ip} kubectl get nodes --kubeco
 
 > output
 
-```
-NAME             STATUS   ROLES    AGE   VERSION
-ip-10-0-1-20   Ready    <none>   51s   v1.21.0
-ip-10-0-1-21   Ready    <none>   51s   v1.21.0
-```
+![alt text](image-6.png)
 
 This output indicates that all worker nodes have successfully joined the Kubernetes cluster and are in the "Ready" state.
 

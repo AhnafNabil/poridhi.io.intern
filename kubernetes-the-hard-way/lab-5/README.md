@@ -6,7 +6,7 @@ In this lab we will bootstrap the `Kubernetes control plane` across two compute 
 
 ## Prerequisites
 
-The commands in this lab must be run on each controller instance: `controller-0`, `controller-1`. Login to each controller instance using the `ssh` command. Example:
+The commands in this lab must be run on each controller instance: `controller-0`, `controller-1`. Login to each controller instance using the `ssh` command.
 
 ```sh
 ssh controller-0
@@ -35,6 +35,8 @@ wget -q --show-progress --https-only --timestamping \
   "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl"
 ```
 
+![alt text](image.png)
+
 After downloading the binaries, give them execution permissions and move them to `/usr/local/bin/:`
 
 ```sh
@@ -57,9 +59,9 @@ sudo mv ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
 These certificates are used to secure communication between the API server, etcd, and other Kubernetes components.
 
 
-### Set Internal IP and Public IP Addresses
+### Set Private IP and Public IP Addresses
 
-The instance `internal IP` address will be used to advertise the API Server to members of the cluster. Retrieve the internal IP address for the current compute instance:
+The instance `Private IP` address will be used to advertise the API Server to members of the cluster. Retrieve the private IP address for the current compute instance:
 
 ### For Controller-0
 
@@ -72,8 +74,9 @@ echo $INTERNAL_IP
 ```
 
 ### Set `KUBERNETES_PUBLIC_ADDRESS` (Make user to change the public ip)
+
 ```sh
-KUBERNETES_PUBLIC_ADDRESS="18.142.90.139"
+KUBERNETES_PUBLIC_ADDRESS="<public_ip_of_controller-0>"
 export KUBERNETES_PUBLIC_ADDRESS
 echo $KUBERNETES_PUBLIC_ADDRESS
 ```
@@ -81,19 +84,22 @@ echo $KUBERNETES_PUBLIC_ADDRESS
 ### For Controller-1
 
 If you already know the internal IP of the instance, you can set it like this
+
 ```bash
 INTERNAL_IP="10.0.1.11"
 export INTERNAL_IP
 echo $INTERNAL_IP
 ```
 
-### Set `KUBERNETES_PUBLIC_ADDRESS` (Make sure to change ip)
+### Set `KUBERNETES_PUBLIC_ADDRESS`
 
 ```sh
-KUBERNETES_PUBLIC_ADDRESS="13.212.111.231"
+KUBERNETES_PUBLIC_ADDRESS="<public_ip_of_controller-1>"
 export KUBERNETES_PUBLIC_ADDRESS
 echo $KUBERNETES_PUBLIC_ADDRESS
 ```
+
+![alt text](image-1.png)
 
 ### Create the `kube-apiserver.service` systemd unit file:
 
@@ -253,9 +259,7 @@ kubectl cluster-info --kubeconfig admin.kubeconfig
 ```
 >OUTPUT:
 
-```
-Kubernetes control plane is running at https://127.0.0.1:6443
-```
+![alt text](image-2.png)
 
 > Remember to run the above command on each controller node: `controller-0`, `controller-1`.
 
@@ -271,10 +275,12 @@ cat <<EOF | sudo tee -a /etc/hosts
 10.0.1.20 ip-10-0-1-20
 10.0.1.21 ip-10-0-1-21
 EOF
-``` 
+```
+
+![alt text](image-3.png)
 
 > If this step is missed, the [DNS Cluster Add-on](12-dns-addon.md) testing will
-fail with an error like this: `Error from server: error dialing backend: dial tcp: lookup ip-10-0-1-22 on 127.0.0.53:53: server misbehaving`.
+fail with an error like this: `Error from server: error dialing backend: dial tcp: lookup ip-10-0-1-21 on 127.0.0.53:53: server misbehaving`.
 
 ## RBAC for Kubelet Authorization
 
@@ -283,17 +289,6 @@ In this section you will configure RBAC permissions to allow the Kubernetes API 
 > This tutorial sets the Kubelet `--authorization-mode` flag to `Webhook`. Webhook mode uses the [SubjectAccessReview](https://kubernetes.io/docs/admin/authorization/#checking-api-access) API to determine authorization.
 
 > The commands in this section will effect the entire cluster and only need to be run `once` from one of the controller nodes.
-
-<!-- The commands in this section will effect the entire cluster and only need to be run once from one of the controller nodes.
-
-```sh
-external_ip=$(aws ec2 describe-instances --filters \
-    "Name=tag:Name,Values=controller-0" \
-    "Name=instance-state-name,Values=running" \
-    --output text --query 'Reservations[].Instances[].PublicIpAddress')
-
-ssh -i kubernetes.id_rsa ubuntu@${external_ip}
-``` -->
 
 ## Create the `system:kube-apiserver-to-kubelet`
 
@@ -323,6 +318,8 @@ rules:
 EOF
 ```
 
+![alt text](image-4.png)
+
 The Kubernetes API Server authenticates to the Kubelet as the `kubernetes` user using the client certificate as defined by the `--kubelet-client-certificate` flag.
 
 Bind the `system:kube-apiserver-to-kubelet` ClusterRole to the `kubernetes` user:
@@ -344,6 +341,8 @@ subjects:
     name: kubernetes
 EOF
 ```
+
+![alt text](image-5.png)
 
 ### Verification of cluster public endpoint
 
@@ -371,16 +370,4 @@ curl --cacert ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}/version
 
 > output
 
-```
-{
-  "major": "1",
-  "minor": "21",
-  "gitVersion": "v1.21.0",
-  "gitCommit": "cb303e613a121a29364f75cc67d3d580833a7479",
-  "gitTreeState": "clean",
-  "buildDate": "2021-04-08T16:25:06Z",
-  "goVersion": "go1.16.1",
-  "compiler": "gc",
-  "platform": "linux/amd64"
-}
-```
+![alt text](image-6.png)
