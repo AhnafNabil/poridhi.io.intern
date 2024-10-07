@@ -1,12 +1,21 @@
 # Bootstrapping the etcd Cluster
 
-Kubernetes components are inherently stateless, and they rely on `etcd` to store all cluster-related data, such as configuration, cluster state, and service discovery information. In this guide, we will set up a two-node `etcd` cluster to provide high availability and secure communication between Kubernetes components. This setup is designed to ensure that the cluster state is consistently stored and available even if one `etcd` node goes down.
+
+## Introduction
+
+Kubernetes components are inherently **stateless**, and they rely on `etcd` to store all cluster-related data, such as configuration, cluster state, and service discovery information.
 
 ![](./images/etcd.drawio.svg)
 
-## Pretask: Initialize AWS Infrastructure:
+This is the fourth lab on setting up a Kubernetes cluster from scratch on Amazon Web Services (AWS) series. In this guide, we will set up a two-node `etcd` cluster to provide high availability and secure communication between Kubernetes components. This setup is designed to ensure that the cluster state is consistently stored and available even if one `etcd` node goes down.
 
-We have covered this setup in detailed in lab 1. Just follow this setup to intialize the infrastructure.
+## Pretask: Initialize AWS Infrastructure
+
+In this setup, we will design and deploy AWS Infrastructure to support Kubernetes Cluster. The cluster will 
+
+- Consist of `four` public instances, divided into `two` categories: **Controller nodes** and **Worker nodes**. 
+- To enable connectivity and internet access to the nodes, we will create a **public route table** and attach an **internet gateway** to it. This will allow the nodes to communicate with each other and access external resources and services. 
+- Finally, we will utilize Pulumi python to create and manage this AWS infrastructure.
 
 ![](./images/infra.drawio.svg)
 
@@ -18,7 +27,7 @@ aws configure
 
 ### 2. Create a script to install the necessary tools:
 
-```sh
+```bash
 #!/bin/bash
 
 # Script to install jq, cfssl, cfssljson, kubectl, and python3.8-venv
@@ -66,26 +75,18 @@ else
   echo "kubectl installed successfully."
 fi
 
-# Install python3.8-venv if not already installed
-if command_exists python3.8 && python3.8 -m venv --help &> /dev/null; then
-  echo "python3.8-venv is already installed."
-else
-  echo "Installing python3.8-venv..."
-  sudo apt-get install python3.8-venv -y
-  echo "python3.8-venv installed successfully."
-fi
-
 echo "All tools installed successfully!"
 ```
 This script will install **jq, cfssl, cfssljson, kubectl**, and **python3.8-venv**.
 
-- Now, Save the script as install_k8s_tools.sh
+- Now, Save the script as `install_k8s_tools.sh`
 - Make the script executable:
 
 ```sh
 chmod +x install_k8s_tools.sh
 ```
 - Run the script:
+
 ```sh
 ./install_k8s_tools.sh
 ```
@@ -99,12 +100,19 @@ mkdir k8s-infra-aws
 cd k8s-infra-aws
 ```
 
-**2. Create a New Pulumi Project**
+**2. Install Python `venv`**
+
+```sh
+sudo apt update
+sudo apt install python3.8-venv -y
+```
+
+**3. Create a New Pulumi Project**
 
 ```sh
 pulumi new aws-python
 ```
-**3. Update the `__main.py__` file:**
+**4. Update the `__main.py__` file:**
 
 ```python
 import pulumi
@@ -336,7 +344,7 @@ all_ips = [controller.public_ip for controller in controller_instances] + [worke
 pulumi.Output.all(*all_ips).apply(create_config_file)
 ```
 
-**4. Generate the key Pair**
+**5. Generate the key Pair**
 
 ```sh
 cd ~/.ssh/
@@ -344,37 +352,11 @@ aws ec2 create-key-pair --key-name kubernetes --output text --query 'KeyMaterial
 chmod 400 kubernetes.id_rsa
 ```
 
-**5. Create Infra**
+**6. Create Infra**
 
 ```sh
 pulumi up --yes
 ```
-
-
-
-## Get the Load Balancer DNS Name and export
-
-Run the following command to fetch the DNS name of the AWS load balancer that will be fronting your Kubernetes API:
-
-```sh
-KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
-  --load-balancer-arns ${LOAD_BALANCER_ARN} \
-  --output text --query 'LoadBalancers[].DNSName')
-export KUBERNETES_PUBLIC_ADDRESS
-echo $KUBERNETES_PUBLIC_ADDRESS
-```
-![alt text](image-2.png)
-
-### Export Kubernetes Hostnames
-
-These hostnames are used to reference your Kubernetes API server. Set them as an environment variable for later use:
-
-```sh
-KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local
-export KUBERNETES_HOSTNAMES
-echo $KUBERNETES_HOSTNAMES
-```
-![alt text](image-3.png)
 
 ## Certificate Generation
 
@@ -389,6 +371,14 @@ cd k8s-files
 
 ```sh
 #!/bin/bash
+
+KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
+  --load-balancer-arns ${LOAD_BALANCER_ARN} \
+  --output text --query 'LoadBalancers[].DNSName')
+export KUBERNETES_PUBLIC_ADDRESS
+
+KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local
+export KUBERNETES_HOSTNAMES
            
 # Generate CA configuration and certificate
 cat > ca-config.json <<EOF
@@ -812,12 +802,9 @@ chmod +x kube_config.sh
 ![alt text](image.png)
 
 
-## NOTES
+## Bootstrapping the etcd Cluster
 
-The commands in this lab must be run on each controller instances:
-
-- `controller-0`
-- `controller-1`
+> NOTE: From now on wards, the commands must be run on each controller instances: `controller-0`, `controller-1`
 
 Login to each controller instance using the `ssh` command. Example:
 
@@ -836,15 +823,14 @@ sudo hostnamectl set-hostname controller-0
 ![alt text](image-1.png)
 
 **2. Controller-1**
+
 ```sh
 sudo hostnamectl set-hostname controller-1
 ```
 
 >Tip: After setting the hostname, exit the SSH session and re-login to reload the changes.
 
-## Bootstrapping an etcd Cluster Member
-
-### Download and Install the etcd Binaries
+## Download and Install the etcd Binaries
 
 `etcd` is a distributed key-value store that stores cluster state and configuration information. Download the official etcd release binaries from the [etcd](https://github.com/etcd-io/etcd) GitHub project:
 
@@ -861,7 +847,7 @@ Extract and install the `etcd` server and the `etcdctl` command line utility:
 tar -xvf etcd-v3.5.16-linux-amd64.tar.gz
 sudo mv etcd-v3.5.16-linux-amd64/etcd* /usr/local/bin/
 ```
-This command will install both the etcd server and the etcdctl command-line utility, which is used for managing and interacting with the etcd cluster.
+This command will install both the `etcd server` and the `etcdctl` command-line utility, which is used for managing and interacting with the etcd cluster.
 
 ### Configure the etcd Server
 
@@ -878,14 +864,14 @@ The TLS certificates `(ca.pem, kubernetes-key.pem, kubernetes.pem)` are used to 
 
 ### Set Environment Variables for etcd Configuration
 
-The internal IP(private ip) address of each controller node will be used for etcd node communication and client access. Set the environment variables for each controller node as shown below:
+The internal IP (private ip) address of each controller node will be used for etcd node communication and client access. Set the environment variables for each controller node as shown below:
 
 
 ## For Controller-0
 
 ### Set `INTERNAL_IP`
 
-If you already know the internal IP of the instance, you can set it like this:
+Set the INTERNAL_IP with the private IP of controller-0.
 
 ```bash
 INTERNAL_IP="10.0.1.10"
@@ -914,7 +900,7 @@ echo $ETCD_NAME
 ## For Controller-1
 
 ### Set `INTERNAL_IP`
-If you already know the internal IP of the instance, you can set it like this:
+Set the INTERNAL_IP with the private IP of controller-1.
 
 ```bash
 INTERNAL_IP="10.0.1.11"

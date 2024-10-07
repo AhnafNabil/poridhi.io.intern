@@ -1,12 +1,20 @@
 # Generating Kubernetes Configuration Files for Authentication
 
-In this lab you will generate [Kubernetes configuration files](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/), also known as kubeconfigs, which enable Kubernetes clients to locate and authenticate to the Kubernetes API Servers.
+## Introduction
+
+In Kubernetes, configuration files known as kubeconfigs are used to enable various Kubernetes clients, such as the **controller manager**, **kubelet**, **kube-proxy, and scheduler clients**, as well as the **admin user**, to locate and authenticate to the Kubernetes API servers. The kubeconfig files help clients interact with the API server securely and ensure that requests are routed correctly based on roles and permissions defined within the cluster.
 
 ![](./images/kube.drawio.svg)
 
-## Pretask: Initialize AWS Infrastructure:
+This is the third lab on setting up a Kubernetes cluster from scratch on Amazon Web Services (AWS) series. In this lab you will generate [Kubernetes configuration files](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/), also known as `kubeconfigs`, which enable Kubernetes clients to locate and authenticate to the Kubernetes API Servers.
 
-We have covered this setup in detailed in lab 1. Just follow this setup to intialize the infrastructure.
+## Pretask: Initialize AWS Infrastructure
+
+In this setup, we will design and deploy AWS Infrastructure to support Kubernetes Cluster. The cluster will 
+
+- Consist of `four` public instances, divided into `two` categories: **Controller nodes** and **Worker nodes**. 
+- To enable connectivity and internet access to the nodes, we will create a **public route table** and attach an **internet gateway** to it. This will allow the nodes to communicate with each other and access external resources and services. 
+- Finally, we will utilize Pulumi python to create and manage this AWS infrastructure.
 
 ![](./images/infra.drawio.svg)
 
@@ -66,26 +74,18 @@ else
   echo "kubectl installed successfully."
 fi
 
-# Install python3.8-venv if not already installed
-if command_exists python3.8 && python3.8 -m venv --help &> /dev/null; then
-  echo "python3.8-venv is already installed."
-else
-  echo "Installing python3.8-venv..."
-  sudo apt-get install python3.8-venv -y
-  echo "python3.8-venv installed successfully."
-fi
-
 echo "All tools installed successfully!"
 ```
 This script will install **jq, cfssl, cfssljson, kubectl**, and **python3.8-venv**.
 
-- Now, Save the script as install_k8s_tools.sh
+- Now, Save the script as `install_k8s_tools.sh`
 - Make the script executable:
 
 ```sh
 chmod +x install_k8s_tools.sh
 ```
 - Run the script:
+
 ```sh
 ./install_k8s_tools.sh
 ```
@@ -99,12 +99,19 @@ mkdir k8s-infra-aws
 cd k8s-infra-aws
 ```
 
-**2. Create a New Pulumi Project**
+**2. Install Python `venv`**
+
+```sh
+sudo apt update
+sudo apt install python3.8-venv -y
+```
+
+**3. Create a New Pulumi Project**
 
 ```sh
 pulumi new aws-python
 ```
-**3. Update the `__main.py__` file:**
+**4. Update the `__main.py__` file:**
 
 ```python
 import pulumi
@@ -336,7 +343,7 @@ all_ips = [controller.public_ip for controller in controller_instances] + [worke
 pulumi.Output.all(*all_ips).apply(create_config_file)
 ```
 
-**4. Generate the key Pair**
+**5. Generate the key Pair**
 
 ```sh
 cd ~/.ssh/
@@ -344,37 +351,11 @@ aws ec2 create-key-pair --key-name kubernetes --output text --query 'KeyMaterial
 chmod 400 kubernetes.id_rsa
 ```
 
-**5. Create Infra**
+**6. Create Infra**
 
 ```sh
 pulumi up --yes
 ```
-
-
-
-## Get the Load Balancer DNS Name and export
-
-Run the following command to fetch the DNS name of the AWS load balancer that will be fronting your Kubernetes API:
-
-```sh
-KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
-  --load-balancer-arns ${LOAD_BALANCER_ARN} \
-  --output text --query 'LoadBalancers[].DNSName')
-export KUBERNETES_PUBLIC_ADDRESS
-echo $KUBERNETES_PUBLIC_ADDRESS
-```
-![alt text](image-2.png)
-
-### Export Kubernetes Hostnames
-
-These hostnames are used to reference your Kubernetes API server. Set them as an environment variable for later use:
-
-```sh
-KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local
-export KUBERNETES_HOSTNAMES
-echo $KUBERNETES_HOSTNAMES
-```
-![alt text](image-3.png)
 
 ## Certificate Generation
 
@@ -385,10 +366,18 @@ mkdir k8s-files
 cd k8s-files
 ```
 
-2. Create a script `(certificate.sh)` in the `k8s-files` files directory to create the necessary certificates.
+2. Create a script file `(certificate.sh)` in the `k8s-files` directory to create the necessary certificates:
 
 ```sh
 #!/bin/bash
+
+KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
+  --load-balancer-arns ${LOAD_BALANCER_ARN} \
+  --output text --query 'LoadBalancers[].DNSName')
+export KUBERNETES_PUBLIC_ADDRESS
+
+KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local
+export KUBERNETES_HOSTNAMES
            
 # Generate CA configuration and certificate
 cat > ca-config.json <<EOF
@@ -627,13 +616,18 @@ chmod +x certificate.sh
 ./certificate.sh
 ```
 
-## Client Authentication Configs
+## Generating the Client Authentication Configs
 
-In this section we will generate kubeconfig files for the `controller manager`, `kubelet`, `kube-proxy`, and `scheduler` clients and the `admin` user.
+In this section we will generate kubeconfig files for the 
+- `controller manager`
+- `kubelet`
+- `kube-proxy`
+- `scheduler` clients
+- `admin` user.
 
-### Kubernetes Public DNS Address
+### Retrieve The Kubernetes Public DNS Address
 
-Each kubeconfig requires a Kubernetes API Server to connect to. To support high availability the IP address assigned to the external load balancer fronting the Kubernetes API Servers will be used.
+Each kubeconfig requires a `Kubernetes API Server` to connect to. To support high availability the IP address assigned to the external load balancer fronting the Kubernetes API Servers will be used.
 
 Retrieve the `kubernetes-the-hard-way` DNS address:
 
@@ -651,7 +645,7 @@ echo $KUBERNETES_PUBLIC_ADDRESS
 
 ### The kubelet Kubernetes Configuration File
 
-When generating kubeconfig files for Kubelets the client certificate matching the Kubelet's node name must be used. This will ensure Kubelets are properly authorized by the Kubernetes [Node Authorizer](https://kubernetes.io/docs/admin/authorization/node/).
+When generating kubeconfig files for Kubelets the client certificate matching the `Kubelet's node` name must be used. This will ensure Kubelets are properly authorized by the Kubernetes [Node Authorizer](https://kubernetes.io/docs/admin/authorization/node/).
 
 Generate a kubeconfig file for each worker node:
 
@@ -677,6 +671,13 @@ for instance in worker-0 worker-1; do
   kubectl config use-context default --kubeconfig=${instance}.kubeconfig
 done
 ```
+
+### The sequence of commands above does the following for each worker node:
+
+1. Creates a kubeconfig file that contains the cluster information, including the API server’s address and the CA certificate.
+2. Specifies the client credentials (client certificate and private key) to authenticate the kubelet node with the API server.
+3. Sets up a context to link the client credentials with the cluster information.
+4. Activates the created context, making it the default configuration to use when interacting with the cluster through this kubeconfig file.
 
 Results:
 
@@ -706,6 +707,16 @@ kubectl config set-context default \
 
 kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
 ```
+
+### Purpose:
+
+1. **Set Cluster Configuration (`set-cluster`)**: Defines the cluster details, such as the API server address (`--server`) and the CA certificate (`ca.pem`) for authentication. This ensures that `kube-proxy` can securely connect to the specified API server using the certificate.
+
+2. **Set Client Credentials (`set-credentials`)**: Specifies the client certificate (`kube-proxy.pem`) and private key (`kube-proxy-key.pem`) to authenticate `kube-proxy` to the Kubernetes API server. These credentials allow `kube-proxy` to securely access the cluster.
+
+3. **Set Context (`set-context`)**: Creates a context that associates the cluster (`kubernetes-the-hard-way`) with the `kube-proxy` user, allowing `kube-proxy` to interact with the API server using the specified credentials.
+
+4. **Use Context (`use-context`)**: Sets the newly created context as the active context for `kube-proxy`, making it the default configuration when `kube-proxy` interacts with the cluster.
 
 Results:
 
@@ -738,6 +749,16 @@ kubectl config set-context default \
 kubectl config use-context default --kubeconfig=kube-controller-manager.kubeconfig
 
 ```
+
+### Purpose:
+
+1. **Set Cluster Configuration (`set-cluster`)**: Configures the cluster details, including the API server address (`https://127.0.0.1:6443`) and the CA certificate (`ca.pem`) for secure communication. This setup ensures that the `kube-controller-manager` can authenticate and communicate with the Kubernetes API server.
+
+2. **Set Client Credentials (`set-credentials`)**: Specifies the client certificate (`kube-controller-manager.pem`) and private key (`kube-controller-manager-key.pem`) for `kube-controller-manager` authentication. These credentials confirm its identity to the Kubernetes API server.
+
+3. **Set Context (`set-context`)**: Creates a context that associates the cluster (`kubernetes-the-hard-way`) with the `system:kube-controller-manager` user, enabling `kube-controller-manager` to interact with the API server using its credentials.
+
+4. **Use Context (`use-context`)**: Sets the created context as the active context in the kubeconfig file, making it the default configuration for `kube-controller-manager` when interacting with the cluster.
 
 Results:
 
@@ -772,6 +793,16 @@ kubectl config use-context default --kubeconfig=kube-scheduler.kubeconfig
 
 ```
 
+### Purpose:
+
+1. **Set Cluster Configuration (`set-cluster`)**: Configures the cluster information for `kube-scheduler`, including the API server’s address (`https://127.0.0.1:6443`) and the CA certificate (`ca.pem`). This ensures that `kube-scheduler` knows where to find and connect securely to the API server.
+
+2. **Set Client Credentials (`set-credentials`)**: Specifies the client certificate (`kube-scheduler.pem`) and private key (`kube-scheduler-key.pem`) for `kube-scheduler` to use when authenticating with the API server. These credentials are used to prove the identity of `kube-scheduler` to the Kubernetes API server.
+
+3. **Set Context (`set-context`)**: Creates a context that associates the cluster (`kubernetes-the-hard-way`) with the `system:kube-scheduler` user. This context ties together the cluster details and client credentials, enabling `kube-scheduler` to communicate with the API server.
+
+4. **Use Context (`use-context`)**: Sets the newly created context as the active context in the kubeconfig file, making it the default configuration for `kube-scheduler` when interacting with the cluster.
+
 Results:
 
 ```sh
@@ -803,6 +834,16 @@ kubectl config set-context default \
 kubectl config use-context default --kubeconfig=admin.kubeconfig
 
 ```
+
+### Purpose:
+
+1. **Set Cluster Configuration (`set-cluster`)**: Configures the cluster details for the `admin` user, including the API server’s address (`https://127.0.0.1:6443`) and the CA certificate (`ca.pem`).
+
+2. **Set Client Credentials (`set-credentials`)**: Specifies the client certificate (`admin.pem`) and private key (`admin-key.pem`) for the `admin` user.
+
+3. **Set Context (`set-context`)**: Creates a context that associates the cluster (`kubernetes-the-hard-way`) with the `admin` user.
+
+4. **Use Context (`use-context`)**: Sets the newly created context as the active context in the `admin.kubeconfig` file.
 
 Results:
 
@@ -843,6 +884,8 @@ for instance in controller-0 controller-1; do
 done
 
 ```
+
+> NOTE: Make sure to use the specific path for the keypair
 
 ![alt text](image-4.png)
 
@@ -894,3 +937,5 @@ done
 ```
 
 ![alt text](image-2.png)
+
+You have successfully generated and distributed the necessary kubeconfig files and encryption configuration for your Kubernetes cluster. This setup ensures secure communication and access control for all Kubernetes components, allowing them to interact with the API server securely and authenticate their actions within the cluster.

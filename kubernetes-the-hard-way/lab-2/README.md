@@ -1,10 +1,22 @@
-# Provisioning a CA and Generating TLS Certificates
+# Provisioning CA and Generating TLS Certificates for Kubernetes
 
-In this lab we will provision a [PKI Infrastructure](https://en.wikipedia.org/wiki/Public_key_infrastructure) using CloudFlare's PKI toolkit, [cfssl](https://github.com/cloudflare/cfssl), then use it to bootstrap a Certificate Authority, and generate TLS certificates for the following components: **etcd, kube-apiserver, kube-controller-manager, kube-scheduler, kubelet, and kube-proxy**. This setup ensures that all the Kubernetes services authenticate and communicate securely.
+## Introduction
+
+In a Kubernetes cluster, secure communication between various components is critical for maintaining the integrity and confidentiality of data and operations. To achieve this, Kubernetes uses Transport Layer Security (TLS) certificates to encrypt communication and authenticate each component. This ensures that only trusted nodes and users can interact with the cluster.
+
 
 ![](./images/cert-2.drawio.svg)
 
-## Pretasks: Initialize AWS Infrastructure:
+This is the second lab on setting up a Kubernetes cluster from scratch on Amazon Web Services (AWS) series. This lab provides detailed instructions for setting up a robust Public Key Infrastructure (PKI) using `CloudFlare's cfssl` tool. We will create a **Certificate Authority (CA)** to issue and manage the certificates required for Kubernetes components such as the `etcd`, `kube-apiserver`, `kube-controller-manager`, `kube-scheduler`, `kubelet`, and `kube-proxy`. By following these steps, you'll establish a secure environment where each component can authenticate and communicate reliably.
+
+
+## Pretask: Initialize AWS Infrastructure
+
+In this setup, we will design and deploy AWS Infrastructure to support Kubernetes Cluster. The cluster will 
+
+- Consist of `four` public instances, divided into `two` categories: **Controller nodes** and **Worker nodes**. 
+- To enable connectivity and internet access to the nodes, we will create a **public route table** and attach an **internet gateway** to it. This will allow the nodes to communicate with each other and access external resources and services. 
+- Finally, we will utilize Pulumi python to create and manage this AWS infrastructure.
 
 ![](./images/infra.drawio.svg)
 
@@ -64,15 +76,6 @@ else
   echo "kubectl installed successfully."
 fi
 
-# Install python3.8-venv if not already installed
-if command_exists python3.8 && python3.8 -m venv --help &> /dev/null; then
-  echo "python3.8-venv is already installed."
-else
-  echo "Installing python3.8-venv..."
-  sudo apt-get install python3.8-venv -y
-  echo "python3.8-venv installed successfully."
-fi
-
 echo "All tools installed successfully!"
 ```
 This script will install **jq, cfssl, cfssljson, kubectl**, and **python3.8-venv**.
@@ -84,6 +87,7 @@ This script will install **jq, cfssl, cfssljson, kubectl**, and **python3.8-venv
 chmod +x install_k8s_tools.sh
 ```
 - Run the script:
+
 ```sh
 ./install_k8s_tools.sh
 ```
@@ -97,12 +101,19 @@ mkdir k8s-infra-aws
 cd k8s-infra-aws
 ```
 
-**2. Create a New Pulumi Project**
+**2. Install Python `venv`**
+
+```sh
+sudo apt update
+sudo apt install python3.8-venv -y
+```
+
+**3. Create a New Pulumi Project**
 
 ```sh
 pulumi new aws-python
 ```
-**3. Update the `__main.py__` file:**
+**4. Update the `__main.py__` file:**
 
 ```python
 import pulumi
@@ -334,7 +345,7 @@ all_ips = [controller.public_ip for controller in controller_instances] + [worke
 pulumi.Output.all(*all_ips).apply(create_config_file)
 ```
 
-**4. Generate the key Pair**
+**5. Generate the key Pair**
 
 ```sh
 cd ~/.ssh/
@@ -342,7 +353,7 @@ aws ec2 create-key-pair --key-name kubernetes --output text --query 'KeyMaterial
 chmod 400 kubernetes.id_rsa
 ```
 
-**5. Create Infra**
+**6. Create Infra**
 
 ```sh
 pulumi up --yes
@@ -380,7 +391,7 @@ echo $KUBERNETES_HOSTNAMES
 
 ## Directory to store all the files
 
-Create a directory to store all the necessary certifications and config files.
+Start by creating a directory to store all the certificates and configuration files that will be generated throughout this setup.
 
 ```sh
 mkdir k8s-files
@@ -438,7 +449,7 @@ cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 
 - **ca-csr.json:** Defines the Certificate Signing Request (CSR) for the CA. It includes details like the CN (Common Name), key algorithm and size, and subject details (country, organization, etc.).
 
-Results:
+**Results:**
 
 ![alt text](image-5.png)
 
@@ -481,7 +492,7 @@ cfssl gencert \
 - **Purpose:** This certificate is used to authenticate the admin user, who typically has elevated privileges to manage the Kubernetes cluster.
 - **Common Name (CN):** Set to admin, and it belongs to the *system:masters group*, granting it full access to the cluster.
 
-Results:
+**Results:**
 
 ```sh
 admin-key.pem
@@ -539,7 +550,7 @@ done
 
 - **Authorization:** Kubelets must be in the *system:nodes* group, and the *CN* format helps the Node Authorizer grant the necessary permissions.
 
-Results:
+**Results:**
 
 ```sh
 worker-0-key.pem
@@ -584,7 +595,7 @@ cfssl gencert \
 
 - **Purpose:** This certificate is used by the Kubernetes Controller Manager to authenticate with the Kubernetes API server and manage the cluster state.
 
-Results:
+**Results:**
 
 ```sh
 kube-controller-manager-key.pem
@@ -626,7 +637,7 @@ cfssl gencert \
 
 - **Purpose:** This certificate is used by the kube-proxy to authenticate itself to the API server and route traffic correctly within the cluster.
 
-Results:
+**Results:**
 
 ```sh
 kube-proxy-key.pem
@@ -668,7 +679,7 @@ cfssl gencert \
 
 - This certificate is used by the Kubernetes Scheduler to authenticate with the API server.
 
-Results:
+**Results:**
 
 ```sh
 kube-scheduler-key.pem
@@ -715,7 +726,7 @@ cfssl gencert \
 
 > The Kubernetes API server is automatically assigned the `kubernetes` internal dns name, which will be linked to the first IP address (`10.32.0.1`) from the address range (`10.32.0.0/24`) reserved for internal cluster services.
 
-Results:
+**Results:**
 
 ```sh
 kubernetes-key.pem
@@ -757,7 +768,7 @@ cfssl gencert \
 
 ```
 
-Results:
+**Results:**
 
 ```sh
 service-account-key.pem
@@ -802,5 +813,13 @@ done
 > NOTE: Make Sure to use the specific directory for the keypair.
 
 
-So, we have created the necessary certificates and distributed it to the controlle and worker nodes.
+After following these steps, we have successfully:
+
+1. Provisioned a Certificate Authority (CA).
+2. Generated client and server certificates for all Kubernetes components.
+3. Distributed the necessary certificates to the appropriate nodes in the cluster.
+
+This setup forms the foundation for secure communication and authentication within the Kubernetes cluster, ensuring that all services operate securely and only trusted components can interact with each other.
+
+> NOTE: Always keep the CA private key secure and do not distribute it outside the control plane environment.
 

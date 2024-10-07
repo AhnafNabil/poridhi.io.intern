@@ -1,4 +1,12 @@
 #!/bin/bash
+
+KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
+  --load-balancer-arns ${LOAD_BALANCER_ARN} \
+  --output text --query 'LoadBalancers[].DNSName')
+export KUBERNETES_PUBLIC_ADDRESS
+
+KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local
+export KUBERNETES_HOSTNAMES
            
 # Generate CA configuration and certificate
 cat > ca-config.json <<EOF

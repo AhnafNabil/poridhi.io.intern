@@ -143,7 +143,7 @@ Port forwarding is a great option for accessing services locally on your machine
    After running the port-forward command, you can access the service locally on your machine by navigating to:
 
    ```sh
-   http://localhost:8080
+   http://localhost:8000
    ```
 
    This is useful for testing or accessing services locally without modifying your cluster's networking configuration.

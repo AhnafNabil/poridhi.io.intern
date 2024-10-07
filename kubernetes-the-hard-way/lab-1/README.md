@@ -1,17 +1,17 @@
-# Kubernetes the Hard Way on AWS: Part 01
+# Kubernetes the Hard Way on AWS: Infrastructure Setup
 
 ## Introduction
 
-This is the first lab on setting up a Kubernetes cluster from scratch on Amazon Web Services (AWS). The goal of this tutorial is to help you understand the internal workings of Kubernetes by manually provisioning the necessary cloud infrastructure and configuring each component step-by-step.
+This is the first lab on setting up a Kubernetes cluster from scratch on Amazon Web Services (AWS) series. The goal of this tutorial is to help you understand the internal workings of Kubernetes by manually provisioning the necessary cloud infrastructure and configuring each component step-by-step.
 
-By the end of this tutorial series, you'll have a deeper understanding of how each Kubernetes component interacts and will be able to troubleshoot any issues that arise during the setup process.
+By the end of this lab series, you'll have a deeper understanding of how each Kubernetes component interacts and will be able to troubleshoot any issues that arise during the setup process.
 
 ### Prerequisites:
 
-- Basic familiarity with AWS and its services (EC2, VPC, IAM, etc.)
+- Basic familiarity with AWS and its services **(EC2, VPC, IAM, etc.)**
 - AWS account with sufficient permissions to create EC2 instances, VPCs, and IAM roles
 - Working knowledge of Kubernetes architecture and components
-- Installed AWS CLI, jq, and Python 3 on your local machine
+- Installed **AWS CLI, jq, and Python 3** on your local machine
 
 ## Kubernetes Architecture Overview
 
@@ -28,7 +28,7 @@ In a typical Kubernetes setup, the cluster is divided into control plane nodes a
 - **kube-scheduler:** Assigns tasks to nodes based on resource availability and workload requirements.
 - **kube-controller-manager:** Manages the state of the cluster, ensuring that the desired number of pods are running at all times.
 
-**2. Node Components:**
+**2. Worker Node Components:**
 
 - **kubelet**: Runs on each worker node and ensures that containers are running as expected.
 - **kube-proxy:** Maintains network rules for allowing pods to communicate with each other and with services.
@@ -39,8 +39,8 @@ The setup will include deploying a secure, highly-available control plane, multi
 
 In this setup, we will design and deploy AWS Infrastructure to support Kubernetes Cluster. The cluster will 
 
-- Consist of four public instances, divided into two categories: Controller nodes and Worker nodes. 
-- To enable connectivity and internet access to the nodes, we will create a public route table and attach an internet gateway to it. This will allow the nodes to communicate with each other and access external resources and services. 
+- Consist of `four` public instances, divided into `two` categories: **Controller nodes** and **Worker nodes**. 
+- To enable connectivity and internet access to the nodes, we will create a **public route table** and attach an **internet gateway** to it. This will allow the nodes to communicate with each other and access external resources and services. 
 - Finally, we will utilize Pulumi python to create and manage this AWS infrastructure.
 
 ![](./images/infra.drawio.svg)
@@ -89,7 +89,7 @@ For the Kubernetes the Hard Way tutorial, you'll need the following command-line
 
 ### 1. Install CFSSL and CFSSLJSON
 
-CFSSL (Cloudflare’s PKI and TLS toolkit) will be used for managing the PKI and generating TLS certificates required by Kubernetes components.
+**CFSSL (Cloudflare’s PKI and TLS toolkit)** will be used for managing the `PKI` and generating `TLS` certificates required by Kubernetes components.
 
 #### Download and Install
 
@@ -176,9 +176,7 @@ This will set up a Python virtual environment which will be useful later when wo
 
 ### 3. Initialize a New Pulumi Project
 
-Pulumi is an Infrastructure-as-Code (IaC) tool used to manage cloud infrastructure. In this tutorial, you'll use Pulumi to provision the AWS resources required for Kubernetes.
-
-### Create a New Pulumi Project
+`Pulumi` is an Infrastructure-as-Code (IaC) tool used to manage cloud infrastructure. In this tutorial, you'll use Pulumi python to provision the AWS resources required for Kubernetes.
 
 Run the following command to initialize a new Pulumi project:
 
@@ -190,7 +188,7 @@ pulumi new aws-python
 
 Pulumi will guide you through setting up a new project and configuring it to use AWS resources.
 
-### Update the `__main.py__` file:
+### 4. Update the `__main.py__` file:
 
 Open the `__main__.py` file and define the AWS infrastructure required for the Kubernetes cluster. This Pulumi code provisions the foundational infrastructure required to set up a Kubernetes cluster on AWS. It handles the creation of a **Virtual Private Cloud (VPC)**, **subnets**, **security groups**, **EC2 instances** (for both control plane and worker nodes), and a **Network Load Balancer (NLB)**.
 
@@ -429,7 +427,7 @@ listener = aws.lb.Listener(
 #### 10. **Export Outputs**
 
 
-This section exports various outputs (public and private IPs)
+This section **exports** necessary outputs:
 
 ```python
 # Export Public DNS Name of the NLB
@@ -485,9 +483,9 @@ pulumi.Output.all(*all_ips).apply(create_config_file)
 ### Key Points
 - This code provides a complete setup for a Kubernetes cluster’s base infrastructure.
 - It creates a VPC, subnet, route tables, security groups, EC2 instances, and configures a Network Load Balancer for handling Kubernetes API traffic.
-- The code dynamically updates the SSH config file, simplifying SSH access to EC2 instances.
+- The code dynamically updates the `SSH config file`, simplifying SSH access to EC2 instances.
 
-### Step 4: Create an AWS Key Pair
+### 5. Create an AWS Key Pair
 
 Kubernetes nodes need to communicate securely. This key pair will be used to authenticate when accessing EC2 instances.
 
@@ -501,14 +499,14 @@ aws ec2 create-key-pair --key-name kubernetes --output text --query 'KeyMaterial
 chmod 400 kubernetes.id_rsa
 ```
 
-This will save the private key as `kubernetes.id_rsa` in your `~/.ssh/` directory and restrict its permissions.
+This will save the private key as `kubernetes.id_rsa` in the `~/.ssh/` directory and restrict its permissions.
 
-### Step 5: Create Infra
+### 6. Create Infrastructure
 
 Now Create the infrastructure using this command:
 
 ```sh
-pulumi up
+pulumi up --yes
 ```
 After the creation check from the AWS console management or PULUMI ouputs for ensuring if all the necessary resources are created or not.
 
