@@ -80,13 +80,13 @@ This script will install **jq, cfssl, cfssljson, kubectl**, and **python3.8-venv
 chmod +x install_k8s_tools.sh
 ```
 
-![alt text](./images/image-4.png)
-
 **3. Run the script:**
 
 ```sh
 ./install_k8s_tools.sh
 ```
+
+![alt text](./images/image-4.png)
 
 ## Provisioning Compute Resources
 
@@ -823,7 +823,6 @@ ssh controller-1
 ```sh
 sudo hostnamectl set-hostname controller-0
 ```
-![alt text](./images/image-1.png)
 
 **2. Controller-1**
 

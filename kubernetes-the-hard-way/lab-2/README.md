@@ -24,6 +24,8 @@ In this setup, we will design and deploy AWS Infrastructure to support Kubernete
 aws configure
 ```
 
+![alt text](./images/image-7.png)
+
 ### 2. Create a script to install the necessary tools:
 
 ```sh
@@ -90,6 +92,8 @@ chmod +x install_k8s_tools.sh
 ./install_k8s_tools.sh
 ```
 
+![alt text](./images/image-8.png)
+
 ## Provisioning Compute Resources
 
 **1. Create a Directory for Your Infrastructure**
@@ -105,6 +109,8 @@ cd k8s-infra-aws
 sudo apt update
 sudo apt install python3.8-venv -y
 ```
+
+![alt text](./images/image-9.png)
 
 **3. Create a New Pulumi Project**
 
@@ -357,7 +363,7 @@ chmod 400 kubernetes.id_rsa
 pulumi up --yes
 ```
 
-![alt text](image-6.png)
+![alt text](./images/image-6.png)
 
 ## Export Kubernetes Public Address
 
@@ -374,7 +380,7 @@ KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
 export KUBERNETES_PUBLIC_ADDRESS
 echo $KUBERNETES_PUBLIC_ADDRESS
 ```
-![alt text](image-2.png)
+![alt text](./images/image-2.png)
 
 ### Export Kubernetes Hostnames
 
@@ -385,7 +391,7 @@ KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubern
 export KUBERNETES_HOSTNAMES
 echo $KUBERNETES_HOSTNAMES
 ```
-![alt text](image-3.png)
+![alt text](./images/image-3.png)
 
 # Certificate Generation
 
@@ -443,7 +449,7 @@ EOF
 cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 ```
 
-![alt text](image-4.png)
+![alt text](./images/image-4.png)
 
 - **ca-config.json:** Defines the configuration for the CA, including the certificate signing profile. The expiry parameter sets the validity period for the certificates (8760 hours = 1 year).
 
@@ -451,7 +457,7 @@ cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 
 **Results:**
 
-![alt text](image-5.png)
+![alt text](./images/image-5.png)
 
 ## 2. Client and Server Certificates
 
@@ -791,7 +797,7 @@ for instance in worker-0 worker-1; do
 done
 ```
 
-![alt text](image-1.png)
+![alt text](./images/image-1.png)
 
 Copy the appropriate certificates and private keys to each **controller** instance:
 
@@ -808,7 +814,7 @@ for instance in controller-0 controller-1; do
 done
 ```
 
-![alt text](image.png)
+![alt text](./images/image.png)
 
 > NOTE: Make Sure to use the specific directory for the keypair.
 

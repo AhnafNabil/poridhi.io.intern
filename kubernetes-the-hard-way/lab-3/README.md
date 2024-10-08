@@ -24,6 +24,8 @@ In this setup, we will design and deploy AWS Infrastructure to support Kubernete
 aws configure
 ```
 
+![alt text](./images/image-7.png)
+
 ### 2. Create a script to install the necessary tools:
 
 ```sh
@@ -90,7 +92,7 @@ chmod +x install_k8s_tools.sh
 ./install_k8s_tools.sh
 ```
 
-![alt text](image-5.png)
+![alt text](./images/image-5.png)
 
 ## Provisioning Compute Resources
 
@@ -107,6 +109,8 @@ cd k8s-infra-aws
 sudo apt update
 sudo apt install python3.8-venv -y
 ```
+
+![alt text](./images/image-8.png)
 
 **3. Create a New Pulumi Project**
 
@@ -359,7 +363,7 @@ chmod 400 kubernetes.id_rsa
 pulumi up --yes
 ```
 
-![alt text](image-6.png)
+![alt text](./images/image-6.png)
 
 ## Certificate Generation
 
@@ -608,17 +612,20 @@ done
 
 This script will install all the necessary certificates.
 
-- Now, Save the script as `certificate.sh`
-- Make the script executable:
+**1. Now, Save the script as `certificate.sh`**
+
+**2. Make the script executable:**
 
 ```sh
 chmod +x certificate.sh
 ```
-- Run the script:
+**3. Run the script:**
 
 ```sh
 ./certificate.sh
 ```
+
+![alt text](./images/image-9.png)
 
 ## Generating the Client Authentication Configs
 
@@ -645,7 +652,7 @@ KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
 echo $KUBERNETES_PUBLIC_ADDRESS
 ```
 
-![alt text](image.png)
+![alt text](./images/image.png)
 
 ### The kubelet Kubernetes Configuration File
 
@@ -685,7 +692,7 @@ done
 
 Results:
 
-![alt text](image-1.png)
+![alt text](./images/image-1.png)
 
 ### The kube-proxy Kubernetes Configuration File
 
@@ -872,7 +879,7 @@ done
 
 ```
 
-![alt text](image-3.png)
+![alt text](./images/image-3.png)
 
 Copy the appropriate `kube-controller-manager` and `kube-scheduler` kubeconfig files to each controller instance:
 
@@ -891,7 +898,7 @@ done
 
 > NOTE: Make sure to use the specific path for the keypair
 
-![alt text](image-4.png)
+![alt text](./images/image-4.png)
 
 ## Generating the Data Encryption Config and Key
 
@@ -940,6 +947,6 @@ for instance in controller-0 controller-1; do
 done
 ```
 
-![alt text](image-2.png)
+![alt text](./images/image-2.png)
 
-You have successfully generated and distributed the necessary kubeconfig files and encryption configuration for your Kubernetes cluster. This setup ensures secure communication and access control for all Kubernetes components, allowing them to interact with the API server securely and authenticate their actions within the cluster.
+You have **successfully** generated and distributed the necessary kubeconfig files and encryption configuration for your Kubernetes cluster. This setup ensures secure communication and access control for all Kubernetes components, allowing them to interact with the API server securely and authenticate their actions within the cluster.

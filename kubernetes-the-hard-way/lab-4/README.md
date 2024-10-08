@@ -7,7 +7,7 @@ Kubernetes components are inherently **stateless**, and they rely on `etcd` to s
 
 ![](./images/etcd.drawio.svg)
 
-This is the fourth lab on setting up a Kubernetes cluster from scratch on Amazon Web Services (AWS) series. In this guide, we will set up a two-node `etcd` cluster to provide high availability and secure communication between Kubernetes components. This setup is designed to ensure that the cluster state is consistently stored and available even if one `etcd` node goes down.
+This is the **fourth** lab on setting up a Kubernetes cluster from scratch on Amazon Web Services (AWS) series. In this guide, we will set up a two-node `etcd` cluster to provide high availability and secure communication between Kubernetes components. This setup is designed to ensure that the cluster state is consistently stored and available even if one `etcd` node goes down.
 
 ## Pretask: Initialize AWS Infrastructure
 
@@ -24,6 +24,8 @@ In this setup, we will design and deploy AWS Infrastructure to support Kubernete
 ```sh
 aws configure
 ```
+
+![alt text](./images/image-6.png)
 
 ### 2. Create a script to install the necessary tools:
 
@@ -79,17 +81,20 @@ echo "All tools installed successfully!"
 ```
 This script will install **jq, cfssl, cfssljson, kubectl**, and **python3.8-venv**.
 
-- Now, Save the script as `install_k8s_tools.sh`
-- Make the script executable:
+**1. Now, Save the script as `install_k8s_tools.sh`**
+
+**2. Make the script executable:**
 
 ```sh
 chmod +x install_k8s_tools.sh
 ```
-- Run the script:
+**3. Run the script:**
 
 ```sh
 ./install_k8s_tools.sh
 ```
+
+![alt text](./images/image-7.png)
 
 ## Provisioning Compute Resources
 
@@ -106,6 +111,8 @@ cd k8s-infra-aws
 sudo apt update
 sudo apt install python3.8-venv -y
 ```
+
+![alt text](./images/image-8.png)
 
 **3. Create a New Pulumi Project**
 
@@ -358,16 +365,18 @@ chmod 400 kubernetes.id_rsa
 pulumi up --yes
 ```
 
+![alt text](./images/image-9.png)
+
 ## Certificate Generation
 
-1. Create a directory to store all the necessary certifications and config files.
+**1. Create a directory to store all the necessary certifications and config files.**
 
 ```sh
 mkdir k8s-files
 cd k8s-files
 ```
 
-2. Create a script `(certificate.sh)` in the `k8s-files` files directory to create the necessary certificates.
+**2. Create a script `(certificate.sh)` in the `k8s-files` files directory to create the necessary certificates.**
 
 ```sh
 #!/bin/bash
@@ -605,13 +614,17 @@ done
 
 This script will install all the necessary certificates.
 
-- Now, Save the script as `certificate.sh`
-- Make the script executable:
+**3. Now, Save the script as `certificate.sh`**
+
+**4. Make the script executable:**
 
 ```sh
 chmod +x certificate.sh
 ```
-- Run the script:
+
+![alt text](./images/image-10.png)
+
+**5. Run the script:**
 
 ```sh
 ./certificate.sh
@@ -788,18 +801,19 @@ echo "Kubernetes configuration files and encryption config have been generated a
 
 This script will install all the necessary Client Authentication Configs.
 
-- Now, Save the script as `kube_config.sh`
-- Make the script executable:
+**1. Now, Save the script as `kube_config.sh`**
+
+**2. Make the script executable:**
 
 ```sh
 chmod +x kube_config.sh
 ```
-- Run the script:
+**3. Run the script:**
 
 ```sh
 ./kube_config.sh
 ```
-![alt text](image.png)
+![alt text](./images/image.png)
 
 
 ## Bootstrapping the etcd Cluster
@@ -820,7 +834,7 @@ We can also set the hostname of each controller:
 ```sh
 sudo hostnamectl set-hostname controller-0
 ```
-![alt text](image-1.png)
+![alt text](./images/image-1.png)
 
 **2. Controller-1**
 
@@ -839,7 +853,7 @@ wget -q --show-progress --https-only --timestamping \
   "https://github.com/etcd-io/etcd/releases/download/v3.5.16/etcd-v3.5.16-linux-amd64.tar.gz"
 ```
 
-![alt text](image-2.png)
+![alt text](./images/image-2.png)
 
 Extract and install the `etcd` server and the `etcdctl` command line utility:
 
@@ -895,7 +909,7 @@ echo $INTERNAL_IP
 echo $ETCD_NAME
 ```
 
-![alt text](image-3.png)
+![alt text](./images/image-3.png)
 
 ## For Controller-1
 
@@ -986,7 +1000,7 @@ First check if etcd service is ruinning on both nodes or not
 sudo systemctl status etcd
 ```
 
-![alt text](image-4.png)
+![alt text](./images/image-4.png)
 
 Once the etcd service is running on both nodes, verify the cluster status by listing the cluster members:
 
@@ -1000,8 +1014,8 @@ sudo ETCDCTL_API=3 etcdctl member list \
 
 > output
 
-![alt text](image-5.png)
+![alt text](./images/image-5.png)
 
 This output confirms that both `controller-0` and `controller-1` are part of the etcd cluster and are functioning correctly.
 
-So, You have successfully bootstrapped a `two-node` etcd cluster that provides a foundation for storing Kubernetes cluster state and configuration data.
+So, You have **successfully** bootstrapped a `two-node` etcd cluster that provides a foundation for storing Kubernetes cluster state and configuration data.

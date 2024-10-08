@@ -14,7 +14,7 @@ The worker nodes in a Kubernetes cluster run critical components that enable the
 - **kubelet:** The primary Kubernetes node agent responsible for managing pods and container health.
 - **kube-proxy:** Handles networking and communication between services within the cluster.
 
-This guide covers bootstrapping two worker nodes and configuring them to communicate securely with the control plane.
+This guide covers bootstrapping **two worker nodes** and configuring them to communicate securely with the control plane.
 
 
 ## Pretask: Initialize AWS Infrastructure
@@ -32,6 +32,7 @@ In this setup, we will design and deploy AWS Infrastructure to support Kubernete
 ```sh
 aws configure
 ```
+![alt text](./images/image-7.png)
 
 ### 2. Create a script to install the necessary tools:
 
@@ -87,7 +88,7 @@ echo "All tools installed successfully!"
 ```
 This script will install **jq, cfssl, cfssljson, kubectl**, and **python3.8-venv**.
 
-- Now, Save the script as `install_k8s_tools.sh`
+1. Now, Save the script as `install_k8s_tools.sh`
 - Make the script executable:
 
 ```sh
@@ -98,6 +99,8 @@ chmod +x install_k8s_tools.sh
 ```sh
 ./install_k8s_tools.sh
 ```
+
+![alt text](./images/image-8.png)
 
 ## Provisioning Compute Resources
 
@@ -114,6 +117,8 @@ cd k8s-infra-aws
 sudo apt update
 sudo apt install python3.8-venv -y
 ```
+
+![alt text](./images/image-9.png)
 
 **3. Create a New Pulumi Project**
 
@@ -366,16 +371,18 @@ chmod 400 kubernetes.id_rsa
 pulumi up --yes
 ```
 
+![alt text](./images/image-10.png)
+
 ## Certificate Generation
 
-1. Create a directory to store all the necessary certifications and config files.
+**1. Create a directory to store all the necessary certifications and config files.**
 
 ```sh
 mkdir k8s-files
 cd k8s-files
 ```
 
-2. Create a script `(certificate.sh)` in the `k8s-files` files directory to create the necessary certificates.
+**2. Create a script `(certificate.sh)` in the `k8s-files` files directory to create the necessary certificates.**
 
 ```sh
 #!/bin/bash
@@ -613,17 +620,20 @@ done
 
 This script will install all the necessary certificates.
 
-- Now, Save the script as `certificate.sh`
-- Make the script executable:
+**3. Now, Save the script as `certificate.sh`**
+
+**4. Make the script executable:**
 
 ```sh
 chmod +x certificate.sh
 ```
-- Run the script:
+**5. Run the script:**
 
 ```sh
 ./certificate.sh
 ```
+
+![alt text](./images/image-11.png)
 
 ## Client Authentication Configs
 
@@ -796,18 +806,19 @@ echo "Kubernetes configuration files and encryption config have been generated a
 
 This script will install all the necessary Client Authentication Configs.
 
-- Now, Save the script as `kube_config.sh`
-- Make the script executable:
+**1. Save the script as `kube_config.sh`**
+
+**2. Make the script executable:**
 
 ```sh
 chmod +x kube_config.sh
 ```
-- Run the script:
+**3. Run the script**
 
 ```sh
 ./kube_config.sh
 ```
-![alt text](image.png)
+![alt text](./images/image-12.png)
 
 ## Bootstrapping an etcd Cluster Member
 
@@ -827,7 +838,7 @@ ssh controller-1
 ```sh
 sudo hostnamectl set-hostname controller-0
 ```
-![alt text](image-1.png)
+![alt text](./images/image-13.png)
 
 **2. Controller-1**
 
@@ -918,12 +929,14 @@ Please update the placeholder values of <INTERNAL_IP> and <ETCD_NAME> for `Contr
 INTERNAL_IP="10.0.1.10"
 ETCD_NAME="controller-0"
 ```
+![alt text](./images/image-14.png)
 For `Controller-1`
 
 ```sh
 INTERNAL_IP="10.0.1.11"
 ETCD_NAME="controller-1"
 ```
+![alt text](./images/image-15.png)
 
 **1. After Updating, Save the script as `bootstrap_etcd.sh`**
 
@@ -932,11 +945,14 @@ ETCD_NAME="controller-1"
 ```sh
 chmod +x bootstrap_etcd.sh
 ```
+
 **3. Run the script**
 
 ```sh
 ./bootstrap_etcd.sh
 ```
+
+![alt text](./images/image-16.png)
 
 
 ## Verify the etcd Cluster
@@ -947,7 +963,7 @@ First check if etcd service is ruinning on both nodes or not
 sudo systemctl status etcd
 ```
 
-![alt text](image-4.png)
+![alt text](./images/image-17.png)
 
 Once the etcd service is running on both nodes, verify the cluster status by listing the cluster members:
 
@@ -961,7 +977,7 @@ sudo ETCDCTL_API=3 etcdctl member list \
 
 > output
 
-![alt text](image-5.png)
+![alt text](./images/image-18.png)
 
 ## Provision the Kubernetes Control Plane
 
@@ -1116,6 +1132,8 @@ sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
 
 ### NOTE: Please update the `<PRIVATE_IP_OF_CONTROLLER>`, `<PUBLIC_IP_OF_CONTROLLER>` values with Private_IP and Public_IP of each controller instance.
 
+![alt text](./images/image-19.png)
+
 
 **1. After updating, Save the script as `provision_k8s_control_plane.sh`**
 
@@ -1130,6 +1148,8 @@ chmod +x provision_k8s_control_plane.sh
 ./provision_k8s_control_plane.sh
 ```
 
+![alt text](./images/image-20.png)
+
 > Allow up to 10 seconds for the Kubernetes API Server to fully initialize.
 
 ### Verification
@@ -1141,7 +1161,7 @@ kubectl cluster-info --kubeconfig admin.kubeconfig
 ```
 >OUTPUT:
 
-![alt text](image-2.png)
+![alt text](./images/image-21.png)
 
 > Remember to run the above command on each controller node: `controller-0`, `controller-1`.
 
@@ -1156,7 +1176,7 @@ cat <<EOF | sudo tee -a /etc/hosts
 EOF
 ```
 
-![alt text](image-3.png)
+![alt text](./images/image-22.png)
 
 > If this step is missed, the [DNS Cluster Add-on](12-dns-addon.md) testing will
 fail with an error like this: `Error from server: error dialing backend: dial tcp: lookup ip-10-0-1-21 on 127.0.0.53:53: server misbehaving`.
@@ -1197,8 +1217,6 @@ rules:
 EOF
 ```
 
-![alt text](image-4.png)
-
 The Kubernetes API Server authenticates to the Kubelet as the `kubernetes` user using the client certificate as defined by the `--kubelet-client-certificate` flag.
 
 Bind the `system:kube-apiserver-to-kubelet` ClusterRole to the `kubernetes` user:
@@ -1221,7 +1239,7 @@ subjects:
 EOF
 ```
 
-![alt text](image-5.png)
+![alt text](./images/image-23.png)
 
 ### Verification of cluster public endpoint
 
@@ -1249,7 +1267,7 @@ curl --cacert ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}/version
 
 > output
 
-![alt text](image-6.png)
+![alt text](./images/image-24.png)
 
 
 
@@ -1309,7 +1327,7 @@ wget -q --show-progress --https-only --timestamping \
   https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubelet
 ```
 
-![alt text](image.png)
+![alt text](./images/image.png)
 
 Create the directories required for storing these binaries and configurations:
 
@@ -1336,7 +1354,7 @@ sudo mv crictl kubectl kube-proxy kubelet runc /usr/local/bin/
 sudo mv containerd/bin/* /bin/
 ```
 
-![alt text](image-1.png)
+![alt text](./images/image-1.png)
 
 ## Step 4: Configure Container Networking Interface (CNI)
 
@@ -1450,7 +1468,7 @@ sudo mv ${WORKER_NAME}.kubeconfig /var/lib/kubelet/kubeconfig
 sudo mv ca.pem /var/lib/kubernetes/
 ```
 
-![alt text](image-2.png)
+![alt text](./images/image-2.png)
 
 ### For worker-1:
 
@@ -1591,15 +1609,15 @@ Check the status of the containerd, kubelet, kube-proxy
 ```sh
 sudo systemctl status containerd 
 ```
-![alt text](image-3.png)
+![alt text](./images/image-3.png)
 ```sh
 sudo systemctl status kubelet
 ```
-![alt text](image-4.png)
+![alt text](./images/image-4.png)
 ```sh
 sudo systemctl status kube-proxy
 ```
-![alt text](image-5.png)
+![alt text](./images/image-5.png)
 
 > The compute instances created in this tutorial will not have permission to complete this section. Run the following commands from the `same machine` used to create the compute instances.
 
@@ -1611,7 +1629,7 @@ ssh controller-0 kubectl get nodes --kubeconfig admin.kubeconfig
 
 > output
 
-![alt text](image-6.png)
+![alt text](./images/image-6.png)
 
 This output indicates that all worker nodes have successfully joined the Kubernetes cluster and are in the "Ready" state.
 
