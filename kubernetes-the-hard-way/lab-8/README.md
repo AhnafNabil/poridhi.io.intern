@@ -2,6 +2,8 @@
 
 In this lab you will complete a series of tasks to ensure your Kubernetes cluster is functioning correctly.
 
+![](./images/smoke.drawio.svg)
+
 ## Pretask: Initialize AWS Infrastructure
 
 In this setup, we will design and deploy AWS Infrastructure to support Kubernetes Cluster. The cluster will 
