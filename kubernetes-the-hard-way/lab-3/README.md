@@ -90,6 +90,8 @@ chmod +x install_k8s_tools.sh
 ./install_k8s_tools.sh
 ```
 
+![alt text](image-5.png)
+
 ## Provisioning Compute Resources
 
 **1. Create a Directory for Your Infrastructure**
@@ -356,6 +358,8 @@ chmod 400 kubernetes.id_rsa
 ```sh
 pulumi up --yes
 ```
+
+![alt text](image-6.png)
 
 ## Certificate Generation
 

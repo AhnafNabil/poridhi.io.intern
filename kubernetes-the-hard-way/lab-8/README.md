@@ -1,8 +1,6 @@
 # Smoke Test
 
-In this lab you will deploy the [DNS add-on](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/) which provides DNS based service discovery, backed by [CoreDNS](https://coredns.io/), to applications running inside the Kubernetes cluster.
-
-
+In this lab you will complete a series of tasks to ensure your Kubernetes cluster is functioning correctly.
 
 ## Pretask: Initialize AWS Infrastructure
 
@@ -81,6 +79,9 @@ This script will install **jq, cfssl, cfssljson, kubectl**, and **python3.8-venv
 ```sh
 chmod +x install_k8s_tools.sh
 ```
+
+![alt text](./images/image-4.png)
+
 **3. Run the script:**
 
 ```sh
@@ -102,6 +103,8 @@ cd k8s-infra-aws
 sudo apt update
 sudo apt install python3.8-venv -y
 ```
+
+![alt text](./images/image-3.png)
 
 **3. Create a New Pulumi Project**
 
@@ -354,16 +357,18 @@ chmod 400 kubernetes.id_rsa
 pulumi up --yes
 ```
 
+![alt text](./images/image-5.png)
+
 ## Certificate Generation
 
-1. Create a directory to store all the necessary certifications and config files.
+**1. Create a directory to store all the necessary certifications and config files.**
 
 ```sh
 mkdir k8s-files
 cd k8s-files
 ```
 
-2. Create a script `(certificate.sh)` in the `k8s-files` files directory to create the necessary certificates.
+**2. Create a script `certificate.sh` in the `k8s-files` files directory to create the necessary certificates.**
 
 ```sh
 #!/bin/bash
@@ -601,21 +606,24 @@ done
 
 This script will install all the necessary certificates.
 
-- Now, Save the script as `certificate.sh`
-- Make the script executable:
+**1. Now, Save the script as `certificate.sh`**
+
+**2. Make the script executable:**
 
 ```sh
 chmod +x certificate.sh
 ```
-- Run the script:
+**3. Run the script:**
 
 ```sh
 ./certificate.sh
 ```
 
+![alt text](./images/image-6.png)
+
 ## Client Authentication Configs
 
-Create a script `(kube_config.sh)` in the `k8s-files` files directory to create the necessary certificates.
+Create a script `kube_config.sh` in the `k8s-files` files directory to create the necessary certificates.
 
 ```sh
 #!/bin/bash
@@ -795,7 +803,7 @@ chmod +x kube_config.sh
 ```sh
 ./kube_config.sh
 ```
-![alt text](image.png)
+![alt text](./images/image-7.png)
 
 ## Bootstrapping an etcd Cluster Member
 
@@ -815,7 +823,7 @@ ssh controller-1
 ```sh
 sudo hostnamectl set-hostname controller-0
 ```
-![alt text](image-1.png)
+![alt text](./images/image-1.png)
 
 **2. Controller-1**
 
@@ -906,12 +914,17 @@ Please update the placeholder values of <INTERNAL_IP> and <ETCD_NAME> for `Contr
 INTERNAL_IP="10.0.1.10"
 ETCD_NAME="controller-0"
 ```
+
+![alt text](./images/image-9.png)
+
 For `Controller-1`
 
 ```sh
 INTERNAL_IP="10.0.1.11"
 ETCD_NAME="controller-1"
 ```
+
+![alt text](./images/image-10.png)
 
 **1. After Updating, Save the script as `bootstrap_etcd.sh`**
 
@@ -925,7 +938,7 @@ chmod +x bootstrap_etcd.sh
 ```sh
 ./bootstrap_etcd.sh
 ```
-
+![alt text](./images/image-11.png)
 
 ## Verify the etcd Cluster
 
@@ -935,9 +948,9 @@ First check if etcd service is ruinning on both nodes or not
 sudo systemctl status etcd
 ```
 
-![alt text](image-4.png)
+![alt text](./images/image-12.png)
 
-Once the etcd service is running on both nodes, verify the cluster status by listing the cluster members:
+Once the etcd service is running on `both` nodes, verify the cluster status by listing the cluster members:
 
 ```sh
 sudo ETCDCTL_API=3 etcdctl member list \
@@ -949,7 +962,8 @@ sudo ETCDCTL_API=3 etcdctl member list \
 
 > output
 
-![alt text](image-5.png)
+![alt text](./images/image-13.png)
+![alt text](./images/image-14.png)
 
 ## Provision the Kubernetes Control Plane
 
@@ -1104,6 +1118,8 @@ sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
 
 ### NOTE: Please update the `<PRIVATE_IP_OF_CONTROLLER>`, `<PUBLIC_IP_OF_CONTROLLER>` values with Private_IP and Public_IP of each controller instance.
 
+![alt text](./images/image-16.png)
+
 
 **1. After updating, Save the script as `provision_k8s_control_plane.sh`**
 
@@ -1118,7 +1134,9 @@ chmod +x provision_k8s_control_plane.sh
 ./provision_k8s_control_plane.sh
 ```
 
-> Allow up to 10 seconds for the Kubernetes API Server to fully initialize.
+![alt text](./images/image-15.png)
+
+> After the execution of the script, allow up to 10 seconds for the Kubernetes API Server to fully initialize.
 
 ### Verification
 
@@ -1129,7 +1147,7 @@ kubectl cluster-info --kubeconfig admin.kubeconfig
 ```
 >OUTPUT:
 
-![alt text](image-2.png)
+![alt text](./images/image-17.png)
 
 > Remember to run the above command on each controller node: `controller-0`, `controller-1`.
 
@@ -1144,7 +1162,7 @@ cat <<EOF | sudo tee -a /etc/hosts
 EOF
 ```
 
-![alt text](image-3.png)
+![alt text](./images/image-18.png)
 
 > If this step is missed, the [DNS Cluster Add-on](12-dns-addon.md) testing will
 fail with an error like this: `Error from server: error dialing backend: dial tcp: lookup ip-10-0-1-21 on 127.0.0.53:53: server misbehaving`.
@@ -1155,7 +1173,7 @@ In this section you will configure RBAC permissions to allow the Kubernetes API 
 
 > This tutorial sets the Kubelet `--authorization-mode` flag to `Webhook`. Webhook mode uses the [SubjectAccessReview](https://kubernetes.io/docs/admin/authorization/#checking-api-access) API to determine authorization.
 
-> The commands in this section will effect the entire cluster and only need to be run `once` from one of the controller nodes.
+> NOTE: The commands in this section will effect the **entire cluster** and only need to be run `once` from one of the controller nodes.
 
 ## Create the `system:kube-apiserver-to-kubelet`
 
@@ -1185,8 +1203,6 @@ rules:
 EOF
 ```
 
-![alt text](image-4.png)
-
 The Kubernetes API Server authenticates to the Kubelet as the `kubernetes` user using the client certificate as defined by the `--kubelet-client-certificate` flag.
 
 Bind the `system:kube-apiserver-to-kubelet` ClusterRole to the `kubernetes` user:
@@ -1209,7 +1225,7 @@ subjects:
 EOF
 ```
 
-![alt text](image-5.png)
+![alt text](./images/image-19.png)
 
 ### Verification of cluster public endpoint
 
@@ -1237,7 +1253,7 @@ curl --cacert ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}/version
 
 > output
 
-![alt text](image-6.png)
+![alt text](./images/image-20.png)
 
 
 # Bootstrapping the Kubernetes Worker Nodes
@@ -1472,10 +1488,15 @@ For Worker-0:
 ```sh
 WORKER_NAME="worker-0"
 ```
+
+![alt text](./images/image-21.png)
+
 For Worker-1
+
 ```sh
 WORKER_NAME="worker-1"
 ```
+![alt text](./images/image-22.png)
 
 **1. After update, Save the script as `bootstrap_k8s_worker.sh`**
 
@@ -1490,6 +1511,8 @@ chmod +x bootstrap_k8s_worker.sh
 ./bootstrap_k8s_worker.sh
 ```
 
+![alt text](./images/image-23.png)
+
 > Remember to run the above script on each worker node: `worker-0`, `worker-1`.
 
 ## Verification
@@ -1499,15 +1522,13 @@ Check the status of the containerd, kubelet, kube-proxy
 ```sh
 sudo systemctl status containerd 
 ```
-![alt text](image-3.png)
+![alt text](./images/image-24.png)
 ```sh
 sudo systemctl status kubelet
 ```
-![alt text](image-4.png)
 ```sh
 sudo systemctl status kube-proxy
 ```
-![alt text](image-5.png)
 
 > The compute instances created in this tutorial will not have permission to complete this section. Run the following commands from the `same machine` used to create the `compute instances`.
 
@@ -1519,7 +1540,7 @@ ssh controller-0 kubectl get nodes --kubeconfig admin.kubeconfig
 
 > output
 
-![alt text](image-6.png)
+![alt text](./images/image-25.png)
 
 This output indicates that all worker nodes have successfully joined the Kubernetes cluster and are in the "Ready" state.
 
@@ -1552,7 +1573,6 @@ kubectl config set-context kubernetes-the-hard-way \
 kubectl config use-context kubernetes-the-hard-way
 ```
 
-![alt text](image-2.png)
 
 ## Verification
 
@@ -1564,7 +1584,7 @@ kubectl version
 
 > output
 
-![alt text](image.png)
+![alt text](./images/image-26.png)
 
 ### Make sure to both have the same version
 
@@ -1576,7 +1596,7 @@ kubectl get nodes
 
 > output
 
-![alt text](image-3.png)
+![alt text](./images/image-27.png)
 
 ## Provisioning Pod Network Routes
 
@@ -1635,7 +1655,7 @@ done
 ```
 > output
 
-![alt text](image-4.png)
+![alt text](./images/image-28.png)
 
 ## Validate Routes
 
@@ -1649,11 +1669,13 @@ aws ec2 describe-route-tables \
 
 > output
 
-![alt text](image-5.png)
+![alt text](./images/image-33.png)
 
 So, we have configured kubectl for remote access and Provisioned Pod Network Routes.
 
 ## The DNS Cluster Add-on
+
+In this step, you will deploy the [DNS add-on](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/) which provides DNS based service discovery, backed by [CoreDNS](https://coredns.io/), to applications running inside the Kubernetes cluster.
 
 Deploy the `coredns` cluster add-on:
 
@@ -1858,7 +1880,7 @@ kubectl apply -f coredns.yml
 
 > output
 
-![alt text](image.png)
+![alt text](./images/image.png)
 
 List the pods created by the `core-dns` deployment:
 
@@ -1868,7 +1890,7 @@ kubectl get pods -l k8s-app=kube-dns -n kube-system
 
 > output
 
-![alt text](image-1.png)
+![alt text](./images/image-1.png)
 
 > Issue: One pod is not in the running state.
 
@@ -1905,7 +1927,7 @@ annotations:
 
 > Output
 
-![alt text](image-2.png)
+![alt text](./images/image-2.png)
 
 # Smoke Test
 
@@ -1922,8 +1944,6 @@ kubectl create secret generic kubernetes-the-hard-way \
   --from-literal="mykey=mydata"
 ```
 
-![alt text](image.png)
-
 Print a hexdump of the `kubernetes-the-hard-way` secret stored in etcd:
 
 ```sh
@@ -1938,7 +1958,7 @@ ssh controller-0 \
 
 > output
 
-![alt text](image-1.png)
+![alt text](./images/image-29.png)
 
 The etcd key should be prefixed with `k8s:enc:aescbc:v1:key1`, which indicates the `aescbc` provider was used to encrypt the data with the `key1` encryption key.
 
@@ -2003,7 +2023,7 @@ kubectl get pods -l app=nginx
 
 > output
 
-![alt text](image-2.png)
+![alt text](./images/image-30.png)
 
 ### Port Forwarding
 
@@ -2044,7 +2064,7 @@ Port forwarding is a great option for accessing services locally on your machine
    kubectl port-forward service/nginx-service 8000:80
    ```
 
-   ![alt text](image-3.png)
+   ![alt text](./images/image-32.png)
 
    This forwards traffic from the `nginx-service` service on port `80` to your local machine on port `8000`.
 
@@ -2055,16 +2075,16 @@ Port forwarding is a great option for accessing services locally on your machine
    http://localhost:8000
    ```
 
+   ![alt text](./images/image-31.png)
+
    This is useful for testing or accessing services locally without modifying your cluster's networking configuration.
 
 
 
-### Conclusion
+## Conclusion
 
-**Congratulations!** You have successfully completed the entire "Kubernetes the Hard Way on AWS" series. Throughout this journey, you provisioned and configured a Kubernetes cluster from the ground up, step-by-step, using manual processes to understand the inner workings of Kubernetes. 
+**Congratulations!** You have successfully completed the entire "Kubernetes the Hard Way on AWS" series. 
 
 From setting up a secure PKI infrastructure, generating TLS certificates, and configuring each Kubernetes component to managing authentication with kubeconfig files, you have gained hands-on experience in building and operating a Kubernetes cluster without using any automated tools or managed services.
 
 By performing a smoke test at the end, you validated that the cluster is functioning as expected, confirming the successful deployment of your Kubernetes environment. This experience not only deepened your understanding of Kubernetes architecture but also prepared you to troubleshoot and manage Kubernetes clusters with confidence.
-
-This knowledge is invaluable whether you're building Kubernetes clusters in a production environment or preparing for a certification exam. Well done!

@@ -4,11 +4,9 @@
 
 In a Kubernetes cluster, secure communication between various components is critical for maintaining the integrity and confidentiality of data and operations. To achieve this, Kubernetes uses Transport Layer Security (TLS) certificates to encrypt communication and authenticate each component. This ensures that only trusted nodes and users can interact with the cluster.
 
-
 ![](./images/cert-2.drawio.svg)
 
 This is the second lab on setting up a Kubernetes cluster from scratch on Amazon Web Services (AWS) series. This lab provides detailed instructions for setting up a robust Public Key Infrastructure (PKI) using `CloudFlare's cfssl` tool. We will create a **Certificate Authority (CA)** to issue and manage the certificates required for Kubernetes components such as the `etcd`, `kube-apiserver`, `kube-controller-manager`, `kube-scheduler`, `kubelet`, and `kube-proxy`. By following these steps, you'll establish a secure environment where each component can authenticate and communicate reliably.
-
 
 ## Pretask: Initialize AWS Infrastructure
 
@@ -358,6 +356,8 @@ chmod 400 kubernetes.id_rsa
 ```sh
 pulumi up --yes
 ```
+
+![alt text](image-6.png)
 
 ## Export Kubernetes Public Address
 
