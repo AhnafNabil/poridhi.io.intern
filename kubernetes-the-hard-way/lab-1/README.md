@@ -64,7 +64,7 @@ Run the following command and provide the required information:
 aws configure
 ```
 
-![alt text](image.png)
+![alt text](./images/image.png)
 
 > Note: Use aws configure list to verify that your configuration is correct and check the active profile and region settings.
 
@@ -116,7 +116,7 @@ cfssl version
 
 You should see output similar to:
 
-![alt text](image-1.png)
+![alt text](./images/image-1.png)
 
 Similarly, check for `cfssljson`:
 
@@ -148,7 +148,7 @@ Check that `kubectl` is installed correctly by verifying its version:
 kubectl version --client
 ```
 
-![alt text](image-2.png)
+![alt text](./images/image-2.png)
 
 ## Step 4: Provisioning Compute Resources
 
@@ -184,7 +184,7 @@ Run the following command to initialize a new Pulumi project:
 pulumi new aws-python
 ```
 
-![alt text](image-3.png)
+![alt text](./images/image-3.png)
 
 Pulumi will guide you through setting up a new project and configuring it to use AWS resources.
 
@@ -510,7 +510,7 @@ pulumi up --yes
 ```
 After the creation check from the AWS console management or PULUMI ouputs for ensuring if all the necessary resources are created or not.
 
-![alt text](image-4.png)
+![alt text](./images/image-4.png)
 
 ---
 
